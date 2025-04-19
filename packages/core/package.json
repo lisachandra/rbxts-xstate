@@ -1,101 +1,13 @@
 {
-  "name": "xstate",
+  "name": "@rbxts/xstate",
   "version": "5.19.2",
-  "description": "Finite State Machines and Statecharts for the Modern Web.",
-  "main": "dist/xstate.cjs.js",
-  "module": "dist/xstate.esm.js",
-  "umd:main": "dist/xstate.umd.min.js",
-  "exports": {
-    ".": {
-      "types": {
-        "import": "./dist/xstate.cjs.mjs",
-        "default": "./dist/xstate.cjs.js"
-      },
-      "development": {
-        "module": "./dist/xstate.development.esm.js",
-        "import": "./dist/xstate.development.cjs.mjs",
-        "default": "./dist/xstate.development.cjs.js"
-      },
-      "module": "./dist/xstate.esm.js",
-      "import": "./dist/xstate.cjs.mjs",
-      "default": "./dist/xstate.cjs.js"
-    },
-    "./guards": {
-      "types": {
-        "import": "./guards/dist/xstate-guards.cjs.mjs",
-        "default": "./guards/dist/xstate-guards.cjs.js"
-      },
-      "development": {
-        "module": "./guards/dist/xstate-guards.development.esm.js",
-        "import": "./guards/dist/xstate-guards.development.cjs.mjs",
-        "default": "./guards/dist/xstate-guards.development.cjs.js"
-      },
-      "module": "./guards/dist/xstate-guards.esm.js",
-      "import": "./guards/dist/xstate-guards.cjs.mjs",
-      "default": "./guards/dist/xstate-guards.cjs.js"
-    },
-    "./actions": {
-      "types": {
-        "import": "./actions/dist/xstate-actions.cjs.mjs",
-        "default": "./actions/dist/xstate-actions.cjs.js"
-      },
-      "development": {
-        "module": "./actions/dist/xstate-actions.development.esm.js",
-        "import": "./actions/dist/xstate-actions.development.cjs.mjs",
-        "default": "./actions/dist/xstate-actions.development.cjs.js"
-      },
-      "module": "./actions/dist/xstate-actions.esm.js",
-      "import": "./actions/dist/xstate-actions.cjs.mjs",
-      "default": "./actions/dist/xstate-actions.cjs.js"
-    },
-    "./dev": {
-      "types": {
-        "import": "./dev/dist/xstate-dev.cjs.mjs",
-        "default": "./dev/dist/xstate-dev.cjs.js"
-      },
-      "development": {
-        "module": "./dev/dist/xstate-dev.development.esm.js",
-        "import": "./dev/dist/xstate-dev.development.cjs.mjs",
-        "default": "./dev/dist/xstate-dev.development.cjs.js"
-      },
-      "module": "./dev/dist/xstate-dev.esm.js",
-      "import": "./dev/dist/xstate-dev.cjs.mjs",
-      "default": "./dev/dist/xstate-dev.cjs.js"
-    },
-    "./actors": {
-      "types": {
-        "import": "./actors/dist/xstate-actors.cjs.mjs",
-        "default": "./actors/dist/xstate-actors.cjs.js"
-      },
-      "development": {
-        "module": "./actors/dist/xstate-actors.development.esm.js",
-        "import": "./actors/dist/xstate-actors.development.cjs.mjs",
-        "default": "./actors/dist/xstate-actors.development.cjs.js"
-      },
-      "module": "./actors/dist/xstate-actors.esm.js",
-      "import": "./actors/dist/xstate-actors.cjs.mjs",
-      "default": "./actors/dist/xstate-actors.cjs.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "imports": {
-    "#is-development": {
-      "development": "./src/true.ts",
-      "default": "./src/false.ts"
-    }
-  },
-  "sideEffects": false,
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/xstate"
-  },
+  "description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
+  "main": "out/init.lua",
+  "types": "out/index.d.ts",
   "files": [
-    "dist",
-    "actors",
-    "actions",
-    "invoke",
-    "guards",
-    "dev"
+    "out",
+    "!**/*.tsbuildinfo",
+    "!**/__tests__"
   ],
   "keywords": [
     "statechart",
@@ -106,33 +18,34 @@
     "state",
     "interpreter"
   ],
-  "scripts": {},
+  "scripts": {
+    "build": "shx rm -rf out && rbxtsc --verbose",
+    "dev": "shx rm -rf out && rbxtsc -w"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/statelyai/xstate.git"
+    "url": "git+https://github.com/lisachandra/rbxts-xstate.git"
   },
   "author": "David Khourshid <davidkpiano@gmail.com>",
+  "contributors": [
+    "lisachandra <lisachandra@proton.me>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/statelyai/xstate/issues"
+    "url": "https://github.com/lisachandra/rbxts-xstate/issues"
   },
-  "homepage": "https://github.com/statelyai/xstate/tree/main/packages/core#readme",
+  "homepage": "https://github.com/lisachandra/rbxts-xstate/tree/main/packages/core#readme",
+  "dependencies": {
+    "@rbxts/lemon-signal": "^1.2.0",
+    "@rbxts/luau-polyfill": "1.1.3",
+    "@rbxts/services": "^1.5.5"
+  },
   "devDependencies": {
-    "@scion-scxml/test-framework": "^2.0.15",
-    "@xstate-repo/jest-utils": "workspace:^",
+    "@rbxts/compiler-types": "^3.0.0-types.0",
+    "@rbxts/types": "^1.0.844",
     "ajv": "^8.12.0",
     "pkg-up": "^3.1.0",
-    "rxjs": "^7.8.1",
-    "xml-js": "^1.6.11"
-  },
-  "preconstruct": {
-    "umdName": "XState",
-    "entrypoints": [
-      "./index.ts",
-      "./actions.ts",
-      "./actors/index.ts",
-      "./guards.ts",
-      "./dev/index.ts"
-    ]
+    "roblox-ts": "^3.0.0",
+    "shx": "^0.3.4"
   }
 }

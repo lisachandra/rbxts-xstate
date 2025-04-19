@@ -1,40 +1,33 @@
 // @ts-check
-import globals from 'globals';
-import js from '@eslint/js';
-import ts from 'typescript-eslint';
+import process from "node:process";
+import tseslint from 'typescript-eslint';
+import eslint from "@eslint/js";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginRoblox from "isentinel-eslint-plugin-roblox-ts";
 
-export default ts.config(
-  // plugins
-  js.configs.recommended,
-  ...ts.configs.recommendedTypeChecked,
-
-  // global ignore
+export default tseslint.config(
+  eslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  eslintPluginPrettierRecommended,
   {
-    ignores: [
-      '{docs,examples,templates}/',
-      '**/dist',
-      '**/*.test.*',
-      'scripts/jest-utils/'
-    ]
-  },
-
-  // global language and linter options
-  {
-    languageOptions: {
-      globals: { ...globals.browser, ...globals.node },
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname
-      }
+    plugins: {
+      "roblox-ts": eslintPluginRoblox
     },
-    linterOptions: {
-      reportUnusedDisableDirectives: 'error'
-    }
+    ...eslintPluginRoblox.configs.recommended
   },
-
-  // global rule overrides
   {
     rules: {
+      'prettier/prettier': ["warn", {
+        "printWidth": 80,
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": true,
+        "singleQuote": true,
+        "trailingComma": "none",
+        "bracketSpacing": true,
+        "plugins": ["prettier-plugin-jsdoc"],
+        "tsdoc": true
+      }],
       '@typescript-eslint/no-empty-object-type': [
         'error',
         {
@@ -70,21 +63,22 @@ export default ts.config(
       ]
     }
   },
-
-  // disable type-checking for js files
   {
-    files: ['**/*.{js,cjs,mjs}'],
-    ...ts.configs.disableTypeChecked
-  },
-
-  // js-specific config and rules
-  {
-    files: ['**/*.{js,cjs}'],
+    ignores: [
+      '{docs,examples,templates}/',
+      '**/dist',
+      '**/*.test.*',
+      'scripts/jest-utils/',
+      'pnpm-lock.yaml',
+    ],
     languageOptions: {
-      sourceType: 'commonjs'
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: process.cwd(),
+      }
     },
-    rules: {
-      '@typescript-eslint/no-require-imports': 'off'
-    }
+    linterOptions: {
+      reportUnusedDisableDirectives: 'error'
+    },
   }
 );

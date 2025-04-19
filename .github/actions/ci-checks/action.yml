@@ -13,15 +13,3 @@ runs:
     - name: Typecheck
       run: pnpm typecheck
       shell: bash
-
-    - name: Test
-      run: pnpm test --silent
-      shell: bash
-
-    - name: Svelte Check
-      run: pnpm --filter @xstate/svelte svelte-check
-      shell: bash
-
-    - name: Knip
-      run: pnpm knip
-      shell: bash
