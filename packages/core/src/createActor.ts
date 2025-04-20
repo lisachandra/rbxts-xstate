@@ -49,10 +49,10 @@ export enum ProcessingStatus {
 
 const defaultOptions = {
   clock: {
-    setTimeout: (fn, ms) => {
+    setTimeout(fn, ms) {
       return setTimeout(fn, ms);
     },
-    clearTimeout: (id) => {
+    clearTimeout(id) {
       return clearTimeout(id);
     },
   } as Clock,

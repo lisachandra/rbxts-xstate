@@ -22,8 +22,8 @@ interface ScheduledEvent {
 }
 
 export interface Clock {
-  setTimeout: (fn: (...args: any[]) => void, timeout: number) => any;
-  clearTimeout: (id: any) => void;
+  setTimeout(fn: (...args: any[]) => void, timeout: number): any;
+  clearTimeout(id: any): void;
 }
 
 interface Scheduler {

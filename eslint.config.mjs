@@ -79,6 +79,7 @@ export default tseslint.config(
   {
     ignores: [
       '{docs,examples,templates}/',
+      '**/out',
       '**/dist',
       '**/*.test.*',
       'scripts/jest-utils/',

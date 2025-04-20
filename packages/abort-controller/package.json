@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/whatwg-abort-controller",
-  "version": "3.0.0",
+  "version": "3.0.0-rev.1",
   "description": "An implementation of WHATWG AbortController interface. (Ported to Roblox-TS)",
   "main": "out/init.luau",
   "types": "out/index.d.ts",
