@@ -24,6 +24,9 @@
     "source.fixAll.eslint": "always",
     "source.organizeImports": "never"
   },
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true,
   "npm.packageManager": "pnpm",
   "typescript.tsdk": "node_modules/typescript/lib",
   "roblox-ts.command.npm.useNpmScripts": true,

@@ -2,21 +2,20 @@
   "name": "rbxts-xstate-monorepo",
   "private": true,
   "description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
   "scripts": {
     "postinstall": "manypkg check",
-    "build": "pnpm --filter @rbxts/xstate build",
-    "dev": "pnpm --filter @rbxts/xstate dev",
+    "build:packages": "pnpm --filter \"./packages/**\" build",
+    "build:test": "pnpm --filter \"./test/**\" build",
+    "dev:packages": "pnpm --filter \"./packages/**\" dev",
+    "dev:test": "pnpm --filter \"./test/**\" dev",
+    "test": "sh scripts/shell/test-local.sh test/default.project.json test/src/test/spec.server.luau",
     "fix": "manypkg fix",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --cache --quiet",
     "changeset": "changeset",
     "release": "pnpm -r publish --access=public && changeset tag",
-    "version": "changeset version"
+    "version": "changeset version",
+    "serve": "rojo serve test/default.project.json"
   },
   "repository": {
     "type": "git",

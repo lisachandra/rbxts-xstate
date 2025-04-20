@@ -25,10 +25,11 @@ asphalt.lock.toml
 !places/*.rbxl
 
 # Build output
-/out
-/dist
-/include
-/build
+include/
+!**/src/include
+out/
+dist/
+build/
 flamework.build
 sourcemap.json
 

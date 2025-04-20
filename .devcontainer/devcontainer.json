@@ -1,0 +1,20 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "roblox-ts.vscode-roblox-ts",
+        "evaera.vscode-rojo"
+      ]
+    }
+  },
+  "postCreateCommand": ".devcontainer/setup.sh",
+  "remoteUser": "root",
+  "forwardPorts": [34872]
+}

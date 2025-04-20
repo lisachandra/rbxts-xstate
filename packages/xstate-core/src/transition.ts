@@ -1,11 +1,11 @@
-import { createInertActorScope } from './getNextSnapshot';
+import { createInertActorScope } from "./getNextSnapshot";
 import {
   AnyActorLogic,
   EventFromLogic,
   InputFrom,
   SnapshotFrom,
-  ExecutableActionsFrom
-} from './types';
+  ExecutableActionsFrom,
+} from "./types";
 
 /**
  * Given actor `logic`, a `snapshot`, and an `event`, returns a tuple of the
@@ -16,7 +16,7 @@ import {
 export function transition<T extends AnyActorLogic>(
   logic: T,
   snapshot: SnapshotFrom<T>,
-  event: EventFromLogic<T>
+  event: EventFromLogic<T>,
 ): [nextSnapshot: SnapshotFrom<T>, actions: ExecutableActionsFrom<T>[]] {
   const executableActions = [] as ExecutableActionsFrom<T>[];
 
@@ -52,7 +52,7 @@ export function initialTransition<T extends AnyActorLogic>(
 
   const nextSnapshot = logic.getInitialSnapshot(
     actorScope,
-    input
+    input,
   ) as SnapshotFrom<T>;
 
   return [nextSnapshot, executableActions];

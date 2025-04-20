@@ -66,42 +66,8 @@ importers:
         specifier: ^1.5.5
         version: 1.5.5
       '@rbxts/whatwg-event-target':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../event-target
-    devDependencies:
-      '@rbxts/compiler-types':
-        specifier: ^3.0.0-types.0
-        version: 3.0.0-types.0
-      '@rbxts/types':
-        specifier: ^1.0.844
-        version: 1.0.847
-      ajv:
-        specifier: ^8.12.0
-        version: 8.17.1
-      pkg-up:
-        specifier: ^3.1.0
-        version: 3.1.0
-      roblox-ts:
-        specifier: ^3.0.0
-        version: 3.0.0
-      shx:
-        specifier: ^0.3.4
-        version: 0.3.4
-
-  packages/core:
-    dependencies:
-      '@rbxts/luau-polyfill':
-        specifier: ^1.1.3
-        version: 1.1.3
-      '@rbxts/regexp':
-        specifier: ^0.2.1-ts.4
-        version: 0.2.1-ts.4
-      '@rbxts/services':
-        specifier: ^1.5.5
-        version: 1.5.5
-      '@rbxts/whatwg-abort-controller':
-        specifier: workspace:*
-        version: link:../abort-controller
     devDependencies:
       '@rbxts/compiler-types':
         specifier: ^3.0.0-types.0
@@ -152,6 +118,92 @@ importers:
       shx:
         specifier: ^0.3.4
         version: 0.3.4
+
+  packages/xstate-core:
+    dependencies:
+      '@rbxts/luau-polyfill':
+        specifier: ^1.1.3
+        version: 1.1.3
+      '@rbxts/regexp':
+        specifier: ^0.2.1-ts.4
+        version: 0.2.1-ts.4
+      '@rbxts/services':
+        specifier: ^1.5.5
+        version: 1.5.5
+      '@rbxts/whatwg-abort-controller':
+        specifier: workspace:^
+        version: link:../abort-controller
+    devDependencies:
+      '@rbxts/compiler-types':
+        specifier: ^3.0.0-types.0
+        version: 3.0.0-types.0
+      '@rbxts/types':
+        specifier: ^1.0.844
+        version: 1.0.847
+      ajv:
+        specifier: ^8.12.0
+        version: 8.17.1
+      pkg-up:
+        specifier: ^3.1.0
+        version: 3.1.0
+      roblox-ts:
+        specifier: ^3.0.0
+        version: 3.0.0
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
+
+  test:
+    dependencies:
+      '@rbxts/jest':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@rbxts/jest-globals':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@rbxts/jest-vendor':
+        specifier: workspace:^
+        version: link:packages/jest-vendor
+      '@rbxts/luau-polyfill':
+        specifier: ^1.1.3
+        version: 1.1.3
+      '@rbxts/services':
+        specifier: ^1.5.5
+        version: 1.5.5
+      '@rbxts/whatwg-abort-controller':
+        specifier: workspace:^
+        version: link:../packages/abort-controller
+      '@rbxts/whatwg-event-target':
+        specifier: workspace:^
+        version: link:../packages/event-target
+      '@rbxts/xstate':
+        specifier: workspace:^
+        version: link:../packages/xstate-core
+    devDependencies:
+      '@rbxts/compiler-types':
+        specifier: ^3.0.0-types.0
+        version: 3.0.0-types.0
+      '@rbxts/types':
+        specifier: ^1.0.844
+        version: 1.0.847
+      ajv:
+        specifier: ^8.12.0
+        version: 8.17.1
+      pkg-up:
+        specifier: ^3.1.0
+        version: 3.1.0
+      roblox-ts:
+        specifier: ^3.0.0
+        version: 3.0.0
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
+
+  test/packages/jest-vendor:
+    dependencies:
+      '@rbxts/react-vendor':
+        specifier: '*'
+        version: 17.2.3
 
 packages:
 
@@ -343,11 +395,29 @@ packages:
   '@rbxts/compiler-types@3.0.0-types.0':
     resolution: {integrity: sha512-VGOHJPoL7+56NTatMGqQj3K7xWuzEV+aP4QD5vZiHu+bcff3kiTmtoadaF6NkJrmwfFAvbsd4Dg764ZjWNceag==}
 
+  '@rbxts/jest-globals@0.1.0':
+    resolution: {integrity: sha512-k6sPSVfohlHRLLBT+LuK5xhWy87YzNg7LpcWmPkzXZUUM6iUU+uXWtphegcT+fR4ZHRXFt0tjDepA61uMRQQQA==}
+
+  '@rbxts/jest-matcher-utils@0.1.0':
+    resolution: {integrity: sha512-SvUm5b47KvxjXWMdg3Ei7nMaAurLI8uDlOR7lN02QNCSSqm1KekkLe1p/knc4adyZuq3L/07cDUSRYLCIgn9qA==}
+
+  '@rbxts/jest-vendor@0.1.0':
+    resolution: {integrity: sha512-qEQbp8cUtIkiOFoxIC2wR7ml3++0Pf56Xf17YIGTQRrQig3UAZincD+DHxVd/YNHft38MRGpD7FinWfroNxUNA==}
+
+  '@rbxts/jest@0.1.0':
+    resolution: {integrity: sha512-0JmmHh0vPbydCRhPWNaU8eb9RcY82i80RP6N5uJphLSZSV57kUvX8ahk1RhbPcn8xFoTmh+Pm6YEdGiPAzX1BA==}
+
   '@rbxts/lemon-signal@1.2.0':
     resolution: {integrity: sha512-R8iZqtwqLCnA4g2gS8d8j/QVnctkvzLQspq3VfuKfFbXp+Zqs7rw/2LebD/9ifX/NGpHAGgatRqj0C6DABT9Rw==}
 
   '@rbxts/luau-polyfill@1.1.3':
     resolution: {integrity: sha512-HhTeV1aeCDrr6PoTCc0khnAAxyBcDm0iXeu/t7l96u2Mr1fyA+0ugZd66A1xpThZwz/7YbTSFpiFp5SIFeu2Ug==}
+
+  '@rbxts/pretty-format@0.1.0':
+    resolution: {integrity: sha512-ZEZM6wd2kWXhXYcr+Q6Vey2wcre6JP6LDRX4u6PnLOEHmSy5XiLCmed1sicYFQfFYgkG5bRk+sGCySSWFEbqoA==}
+
+  '@rbxts/react-vendor@17.2.3':
+    resolution: {integrity: sha512-dWCiVelvTK6h920geaFH/OQ5zoWHyhyqyfH51hKx2/iVZ6OiiyNVJ5UqEIkJMG4HsJ8JnkTORizV3+MtQ41BtA==}
 
   '@rbxts/regexp@0.2.1-ts.4':
     resolution: {integrity: sha512-UGHGq9xJ86ObpfY4bKkOeoBSQz6GpCwhfYteoxh5M15QFNS1MG8Ut9BPp8m3r8VOKftk94yY5X0hZ1bKYm439g==}
@@ -2704,9 +2774,36 @@ snapshots:
 
   '@rbxts/compiler-types@3.0.0-types.0': {}
 
+  '@rbxts/jest-globals@0.1.0':
+    dependencies:
+      '@rbxts/jest-matcher-utils': 0.1.0
+      '@rbxts/jest-vendor': 0.1.0
+      '@rbxts/pretty-format': 0.1.0
+
+  '@rbxts/jest-matcher-utils@0.1.0':
+    dependencies:
+      '@rbxts/jest-vendor': 0.1.0
+      '@rbxts/pretty-format': 0.1.0
+
+  '@rbxts/jest-vendor@0.1.0':
+    dependencies:
+      '@rbxts/react-vendor': 17.2.3
+
+  '@rbxts/jest@0.1.0':
+    dependencies:
+      '@rbxts/jest-globals': 0.1.0
+      '@rbxts/jest-vendor': 0.1.0
+      '@rbxts/pretty-format': 0.1.0
+
   '@rbxts/lemon-signal@1.2.0': {}
 
   '@rbxts/luau-polyfill@1.1.3': {}
+
+  '@rbxts/pretty-format@0.1.0':
+    dependencies:
+      '@rbxts/jest-vendor': 0.1.0
+
+  '@rbxts/react-vendor@17.2.3': {}
 
   '@rbxts/regexp@0.2.1-ts.4': {}
 

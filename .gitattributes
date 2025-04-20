@@ -1,0 +1,223 @@
+## GITATTRIBUTES FOR WEB PROJECTS
+#
+# These settings are for any web project.
+#
+# Details per file setting:
+#   text    These files should be normalized (i.e. convert CRLF to LF).
+#   binary  These files are binary and should be left untouched.
+#
+# Note that binary is a macro for -text -diff.
+######################################################################
+
+# Auto detect
+##   Handle line endings automatically for files detected as
+##   text and leave all files detected as binary untouched.
+##   This will handle all files NOT defined below.
+*                 text=auto
+
+# Source code
+*.bash            text eol=lf
+*.bat             text eol=crlf
+*.cmd             text eol=crlf
+*.coffee          text eol=lf
+*.css             text diff=css eol=lf
+*.htm             text diff=html eol=lf
+*.html            text diff=html eol=lf
+*.inc             text eol=lf
+*.ini             text eol=lf
+*.js              text eol=lf
+*.mjs             text eol=lf
+*.cjs             text eol=lf
+*.json            text eol=lf
+*.jsx             text eol=lf
+*.less            text eol=lf
+*.ls              text eol=lf
+*.map             text -diff eol=lf
+*.od              text eol=lf
+*.onlydata        text eol=lf
+*.php             text diff=php eol=lf
+*.pl              text eol=lf
+*.ps1             text eol=crlf
+*.py              text diff=python eol=lf
+*.rb              text diff=ruby eol=lf
+*.sass            text eol=lf
+*.scm             text eol=lf
+*.scss            text diff=css eol=lf
+*.sh              text eol=lf
+.husky/*          text eol=lf
+*.sql             text eol=lf
+*.styl            text eol=lf
+*.tag             text eol=lf
+*.ts              text eol=lf
+*.tsx             text eol=lf
+*.xml             text eol=lf
+*.xhtml           text diff=html eol=lf
+*.lua             text eol=lf
+*.luau            text eol=lf
+
+# Docker
+Dockerfile        text
+
+# Documentation
+*.ipynb           text eol=lf
+*.markdown        text diff=markdown
+*.md              text diff=markdown
+*.mdwn            text diff=markdown
+*.mdown           text diff=markdown
+*.mkd             text diff=markdown
+*.mkdn            text diff=markdown
+*.mdtxt           text
+*.mdtext          text
+*.txt             text
+AUTHORS           text
+CHANGELOG         text
+CHANGES           text
+CONTRIBUTING      text
+COPYING           text
+copyright         text
+*COPYRIGHT*       text
+INSTALL           text
+license           text
+LICENSE           text
+NEWS              text
+readme            text
+*README*          text
+TODO              text
+
+# Templates
+*.dot             text
+*.ejs             text
+*.erb             text
+*.haml            text
+*.handlebars      text
+*.hbs             text
+*.hbt             text
+*.jade            text
+*.latte           text
+*.mustache        text
+*.njk             text
+*.phtml           text
+*.svelte          text
+*.tmpl            text
+*.tpl             text
+*.twig            text
+*.vue             text
+
+# Configs
+*.cnf             text
+*.conf            text
+*.config          text
+.editorconfig     text
+.env              text
+.gitattributes    text
+.gitconfig        text
+.htaccess         text
+*.lock            text -diff
+package.json      text eol=lf
+package-lock.json text eol=lf -diff
+pnpm-lock.yaml    text eol=lf -diff
+.prettierrc       text
+yarn.lock         text -diff
+*.toml            text
+*.yaml            text
+*.yml             text
+browserslist      text
+Makefile          text
+makefile          text
+# Fixes syntax highlighting on GitHub to allow comments
+tsconfig.json     linguist-language=JSON-with-Comments
+
+# Heroku
+Procfile          text
+
+# Graphics
+*.ai              filter=lfs diff=lfs merge=lfs binary
+*.bmp             filter=lfs diff=lfs merge=lfs binary
+*.eps             filter=lfs diff=lfs merge=lfs binary
+*.gif             filter=lfs diff=lfs merge=lfs binary
+*.gifv            filter=lfs diff=lfs merge=lfs binary
+*.ico             filter=lfs diff=lfs merge=lfs binary
+*.jng             filter=lfs diff=lfs merge=lfs binary
+*.jp2             filter=lfs diff=lfs merge=lfs binary
+*.jpg             filter=lfs diff=lfs merge=lfs binary
+*.jpeg            filter=lfs diff=lfs merge=lfs binary
+*.jpx             filter=lfs diff=lfs merge=lfs binary
+*.jxr             filter=lfs diff=lfs merge=lfs binary
+*.pdf             filter=lfs diff=lfs merge=lfs binary
+*.png             filter=lfs diff=lfs merge=lfs binary
+*.psb             filter=lfs diff=lfs merge=lfs binary
+*.psd             filter=lfs diff=lfs merge=lfs binary
+# SVG treated as an asset (binary) by default.
+*.svg             text
+# If you want to treat it as binary,
+# use the following line instead.
+# *.svg           binary
+*.svgz            filter=lfs diff=lfs merge=lfs binary
+*.tif             filter=lfs diff=lfs merge=lfs binary
+*.tiff            filter=lfs diff=lfs merge=lfs binary
+*.wbmp            filter=lfs diff=lfs merge=lfs binary
+*.webp            filter=lfs diff=lfs merge=lfs binary
+
+# Audio
+*.kar             filter=lfs diff=lfs merge=lfs binary
+*.m4a             filter=lfs diff=lfs merge=lfs binary
+*.mid             filter=lfs diff=lfs merge=lfs binary
+*.midi            filter=lfs diff=lfs merge=lfs binary
+*.mp3             filter=lfs diff=lfs merge=lfs binary
+*.ogg             filter=lfs diff=lfs merge=lfs binary
+*.ra              filter=lfs diff=lfs merge=lfs binary
+*.wav             filter=lfs diff=lfs merge=lfs binary
+
+# Video
+*.3gpp            filter=lfs diff=lfs merge=lfs binary
+*.3gp             filter=lfs diff=lfs merge=lfs binary
+*.as              filter=lfs diff=lfs merge=lfs binary
+*.asf             filter=lfs diff=lfs merge=lfs binary
+*.asx             filter=lfs diff=lfs merge=lfs binary
+*.avi             filter=lfs diff=lfs merge=lfs binary
+*.fla             filter=lfs diff=lfs merge=lfs binary
+*.flv             filter=lfs diff=lfs merge=lfs binary
+*.m4v             filter=lfs diff=lfs merge=lfs binary
+*.mng             filter=lfs diff=lfs merge=lfs binary
+*.mov             filter=lfs diff=lfs merge=lfs binary
+*.mp4             filter=lfs diff=lfs merge=lfs binary
+*.mpeg            filter=lfs diff=lfs merge=lfs binary
+*.mpg             filter=lfs diff=lfs merge=lfs binary
+*.ogv             filter=lfs diff=lfs merge=lfs binary
+*.swc             filter=lfs diff=lfs merge=lfs binary
+*.swf             filter=lfs diff=lfs merge=lfs binary
+*.webm            filter=lfs diff=lfs merge=lfs binary
+
+# Archives
+*.7z              filter=lfs diff=lfs merge=lfs binary
+*.gz              filter=lfs diff=lfs merge=lfs binary
+*.jar             filter=lfs diff=lfs merge=lfs binary
+*.rar             filter=lfs diff=lfs merge=lfs binary
+*.tar             filter=lfs diff=lfs merge=lfs binary
+*.zip             filter=lfs diff=lfs merge=lfs binary
+
+# Fonts
+*.ttf             filter=lfs diff=lfs merge=lfs binary
+*.eot             filter=lfs diff=lfs merge=lfs binary
+*.otf             filter=lfs diff=lfs merge=lfs binary
+*.woff            filter=lfs diff=lfs merge=lfs binary
+*.woff2           filter=lfs diff=lfs merge=lfs binary
+
+# Executables
+*.exe             filter=lfs diff=lfs merge=lfs binary
+*.pyc             filter=lfs diff=lfs merge=lfs binary
+
+# Prevents massive diffs caused by vendored, minified files
+**/.yarn/releases/**   filter=lfs diff=lfs merge=lfs binary
+**/.yarn/plugins/**    filter=lfs diff=lfs merge=lfs binary
+
+# RC files (like .babelrc or .eslintrc)
+*.*rc             text
+
+# Ignore files (like .npmignore or .gitignore)
+*.*ignore         text
+
+# Assets
+*.rbxm            filter=lfs diff=lfs merge=lfs binary
+*.rbxl            filter=lfs diff=lfs merge=lfs binary
+*.rbxlx           filter=lfs diff=lfs merge=lfs binary

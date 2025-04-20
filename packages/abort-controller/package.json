@@ -42,7 +42,7 @@
   "dependencies": {
     "@rbxts/luau-polyfill": "^1.1.3",
     "@rbxts/services": "^1.5.5",
-    "@rbxts/whatwg-event-target": "workspace:*"
+    "@rbxts/whatwg-event-target": "workspace:^"
   },
   "devDependencies": {
     "@rbxts/compiler-types": "^3.0.0-types.0",
