@@ -1,43 +1,37 @@
-export * from './actions.ts';
-export * from './actors/index.ts';
-export { assertEvent } from './assert.ts';
+export * from "./actions";
+export * from "./actors/index";
+export { assertEvent } from "./assert";
 export {
   Actor,
   createActor,
   interpret,
   type Interpreter,
-  type RequiredActorOptionsKeys as RequiredActorOptionsKeys
-} from './createActor.ts';
-export { createMachine } from './createMachine.ts';
-export { getInitialSnapshot, getNextSnapshot } from './getNextSnapshot.ts';
-export { and, not, or, stateIn } from './guards.ts';
+  type RequiredActorOptionsKeys as RequiredActorOptionsKeys,
+} from "./createActor";
+export { createMachine } from "./createMachine";
+export { getInitialSnapshot, getNextSnapshot } from "./getNextSnapshot";
+export { andG as and, notG as not, orG as or, stateIn } from "./guards";
 export type {
   InspectedActorEvent,
   InspectedEventEvent,
   InspectedSnapshotEvent,
-  InspectionEvent
-} from './inspection.ts';
-export { setup } from './setup.ts';
-export { SimulatedClock } from './SimulatedClock.ts';
-export { type Spawner } from './spawn.ts';
-export { isMachineSnapshot, type MachineSnapshot } from './State.ts';
-export { StateMachine } from './StateMachine.ts';
-export { StateNode } from './StateNode.ts';
-export { getStateNodes } from './stateUtils.ts';
-export type { ActorSystem } from './system.ts';
-export { toPromise } from './toPromise.ts';
-export * from './types.ts';
+  InspectionEvent,
+} from "./inspection";
+export { setup } from "./setup";
+export { SimulatedClock } from "./SimulatedClock";
+export { type Spawner } from "./spawn";
+export { isMachineSnapshot, type MachineSnapshot } from "./State";
+export { StateMachine } from "./StateMachine";
+export { StateNode } from "./StateNode";
+export { getStateNodes } from "./stateUtils";
+export type { ActorSystem } from "./system";
+export { toPromise } from "./toPromise";
+export * from "./types";
 export {
   getAllOwnEventDescriptors as __unsafe_getAllOwnEventDescriptors,
   matchesState,
   pathToStateValue,
-  toObserver
-} from './utils.ts';
-export { transition, initialTransition } from './transition.ts';
-export { waitFor } from './waitFor.ts';
-
-declare global {
-  interface SymbolConstructor {
-    readonly observable: symbol;
-  }
-}
+  toObserver,
+} from "./utils";
+export { transition, initialTransition } from "./transition";
+export { waitFor } from "./waitFor";

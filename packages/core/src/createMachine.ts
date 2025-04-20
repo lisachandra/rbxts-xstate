@@ -1,5 +1,5 @@
-import { StateMachine } from './StateMachine.ts';
-import { ResolvedStateMachineTypes, TODO } from './types.ts';
+import { StateMachine } from "./StateMachine";
+import { ResolvedStateMachineTypes, TODO } from "./types";
 import {
   AnyActorRef,
   EventObject,
@@ -14,8 +14,8 @@ import {
   ProvidedActor,
   StateValue,
   ToChildren,
-  MetaObject
-} from './types.ts';
+  MetaObject,
+} from "./types";
 
 type TestValue =
   | string
@@ -87,7 +87,7 @@ export function createMachine<
   // it's important to have at least one default type parameter here
   // it allows us to benefit from contextual type instantiation as it makes us to pass the hasInferenceCandidatesOrDefault check in the compiler
   // we should be able to remove this when we start inferring TConfig, with it we'll always have an inference candidate
-  _ = any
+  _ = any,
 >(
   config: {
     types?: MachineTypes<
@@ -128,7 +128,7 @@ export function createMachine<
       TTag,
       TEmitted
     >
-  >
+  >,
 ): StateMachine<
   TContext,
   TEvent,
@@ -160,5 +160,5 @@ export function createMachine<
     any, // TEmitted
     any, // TMeta
     any // TStateSchema
-  >(config as any, implementations as any);
+  >(config as never, implementations as never);
 }

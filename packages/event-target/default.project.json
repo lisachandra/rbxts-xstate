@@ -1,0 +1,6 @@
+{
+  "name": "whatwg-event-target",
+  "tree": {
+    "$path": "out"
+  }
+}

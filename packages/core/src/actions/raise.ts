@@ -1,5 +1,6 @@
-import isDevelopment from '#is-development';
-import { executingCustomAction } from '../createActor.ts';
+import isDevelopment from "../isDevelopment";
+import { Error } from "@rbxts/luau-polyfill";
+import { executingCustomAction } from "../createActor";
 import {
   ActionArgs,
   ActionFunction,
@@ -14,25 +15,25 @@ import {
   ParameterizedObject,
   RaiseActionOptions,
   SendExpr,
-  BuiltinActionResolution
-} from '../types.ts';
+  BuiltinActionResolution,
+} from "../types";
 
 function resolveRaise(
   _: AnyActorScope,
   snapshot: AnyMachineSnapshot,
   args: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject['params'] | undefined,
+  actionParams: ParameterizedObject["params"] | undefined,
   {
     event: eventOrExpr,
     id,
-    delay
+    delay,
   }: {
     event:
       | EventObject
       | SendExpr<
           MachineContext,
           EventObject,
-          ParameterizedObject['params'] | undefined,
+          ParameterizedObject["params"] | undefined,
           EventObject,
           EventObject
         >;
@@ -43,38 +44,36 @@ function resolveRaise(
       | DelayExpr<
           MachineContext,
           EventObject,
-          ParameterizedObject['params'] | undefined,
+          ParameterizedObject["params"] | undefined,
           EventObject
         >
       | undefined;
   },
-  { internalQueue }: { internalQueue: AnyEventObject[] }
+  { internalQueue }: { internalQueue: AnyEventObject[] },
 ): BuiltinActionResolution {
   const delaysMap = snapshot.machine.implementations.delays;
 
-  if (typeof eventOrExpr === 'string') {
+  if (typeIs(eventOrExpr, "string")) {
     throw new Error(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `Only event objects may be used with raise; use raise({ type: "${eventOrExpr}" }) instead`
+      `Only event objects may be used with raise; use raise({ type: "${eventOrExpr}" }) instead`,
     );
   }
-  const resolvedEvent =
-    typeof eventOrExpr === 'function'
-      ? eventOrExpr(args, actionParams)
-      : eventOrExpr;
+  const resolvedEvent = typeIs(eventOrExpr, "function")
+    ? eventOrExpr(args, actionParams)
+    : eventOrExpr;
 
   let resolvedDelay: number | undefined;
-  if (typeof delay === 'string') {
+  if (typeIs(delay, "string")) {
     const configDelay = delaysMap && delaysMap[delay];
-    resolvedDelay =
-      typeof configDelay === 'function'
-        ? configDelay(args, actionParams)
-        : configDelay;
+    resolvedDelay = typeIs(configDelay, "function")
+      ? configDelay(args, actionParams)
+      : configDelay;
   } else {
-    resolvedDelay =
-      typeof delay === 'function' ? delay(args, actionParams) : delay;
+    resolvedDelay = typeIs(delay, "function")
+      ? delay(args, actionParams)
+      : delay;
   }
-  if (typeof resolvedDelay !== 'number') {
+  if (typeIs(resolvedDelay, "number")) {
     internalQueue.push(resolvedEvent);
   }
   return [
@@ -82,9 +81,9 @@ function resolveRaise(
     {
       event: resolvedEvent,
       id,
-      delay: resolvedDelay
+      delay: resolvedDelay,
     },
-    undefined
+    undefined,
   ];
 }
 
@@ -94,13 +93,13 @@ function executeRaise(
     event: EventObject;
     id: string | undefined;
     delay: number | undefined;
-  }
+  },
 ) {
   const { event, delay, id } = params;
-  if (typeof delay === 'number') {
+  if (typeIs(delay, "number")) {
     actorScope.defer(() => {
-      const self = actorScope.self;
-      actorScope.system.scheduler.schedule(self, self, event, delay, id);
+      const itself = actorScope.self;
+      actorScope.system.scheduler.schedule(itself, itself, event, delay, id);
     });
     return;
   }
@@ -109,9 +108,9 @@ function executeRaise(
 export interface RaiseAction<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
+  TParams extends ParameterizedObject["params"] | undefined,
   TEvent extends EventObject,
-  TDelay extends string
+  TDelay extends string,
 > {
   (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
   _out_TEvent?: TEvent;
@@ -128,9 +127,9 @@ export function raise<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
   TEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
+  TParams extends ParameterizedObject["params"] | undefined,
   TDelay extends string = never,
-  TUsedDelay extends TDelay = never
+  TUsedDelay extends TDelay = never,
 >(
   eventOrExpr:
     | DoNotInfer<TEvent>
@@ -141,7 +140,7 @@ export function raise<
     TParams,
     DoNotInfer<TEvent>,
     TUsedDelay
-  >
+  >,
 ): ActionFunction<
   TContext,
   TExpressionEvent,
@@ -154,21 +153,21 @@ export function raise<
   never
 > {
   if (isDevelopment && executingCustomAction) {
-    console.warn(
-      'Custom actions should not call `raise()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.'
+    warn(
+      "Custom actions should not call `raise()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
     );
   }
 
   function raise(
     _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: TParams
+    _params: TParams,
   ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
   }
 
-  raise.type = 'xstate.raise';
+  raise.type = "xstate.raise";
   raise.event = eventOrExpr;
   raise.id = options?.id;
   raise.delay = options?.delay;
@@ -180,7 +179,7 @@ export function raise<
 }
 
 export interface ExecutableRaiseAction extends ExecutableActionObject {
-  type: 'xstate.raise';
+  type: "xstate.raise";
   params: {
     event: EventObject;
     id: string | undefined;

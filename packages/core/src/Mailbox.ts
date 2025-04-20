@@ -1,12 +1,12 @@
 interface MailboxItem<T> {
   value: T;
-  next: MailboxItem<T> | null;
+  next: MailboxItem<T> | undefined;
 }
 
 export class Mailbox<T> {
   private _active: boolean = false;
-  private _current: MailboxItem<T> | null = null;
-  private _last: MailboxItem<T> | null = null;
+  private _current: MailboxItem<T> | undefined = undefined;
+  private _last: MailboxItem<T> | undefined = undefined;
 
   constructor(private _process: (ev: T) => void) {}
 
@@ -16,10 +16,10 @@ export class Mailbox<T> {
   }
 
   public clear(): void {
-    // we can't set _current to null because we might be currently processing
+    // we can't set _current to undefined because we might be currently processing
     // and enqueue following clear shouldnt start processing the enqueued item immediately
     if (this._current) {
-      this._current.next = null;
+      this._current.next = undefined;
       this._last = this._current;
     }
   }
@@ -27,7 +27,7 @@ export class Mailbox<T> {
   public enqueue(event: T): void {
     const enqueued = {
       value: event,
-      next: null
+      next: undefined,
     };
 
     if (this._current) {
@@ -52,6 +52,6 @@ export class Mailbox<T> {
       this._process(consumed.value);
       this._current = consumed.next;
     }
-    this._last = null;
+    this._last = undefined;
   }
 }

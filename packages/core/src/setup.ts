@@ -1,6 +1,6 @@
-import { StateMachine } from './StateMachine';
-import { createMachine } from './createMachine';
-import { GuardPredicate } from './guards';
+import { StateMachine } from "./StateMachine";
+import { createMachine } from "./createMachine";
+import { GuardPredicate } from "./guards";
 
 import {
   ActionFunction,
@@ -20,14 +20,14 @@ import {
   ToChildren,
   ToStateValue,
   UnknownActorLogic,
-  Values
-} from './types';
+  Values,
+} from "./types";
 
 type ToParameterizedObject<
   TParameterizedMap extends Record<
     string,
-    ParameterizedObject['params'] | undefined
-  >
+    ParameterizedObject["params"] | undefined
+  >,
 > = // `silentNeverType` to `never` conversion (explained in `ToProvidedActor`)
   IsNever<TParameterizedMap> extends true
     ? never
@@ -42,7 +42,7 @@ type ToParameterizedObject<
 // this could be reconsidered in the future
 type ToProvidedActor<
   TChildrenMap extends Record<string, string>,
-  TActors extends Record<string, UnknownActorLogic>
+  TActors extends Record<string, UnknownActorLogic>,
 > =
   // this essentially is meant to convert a leaked `silentNeverType` to the true `never` type
   // it shouldn't be observable but here we are
@@ -66,9 +66,8 @@ type ToProvidedActor<
         };
       }>;
 
-type RequiredSetupKeys<TChildrenMap> = IsNever<keyof TChildrenMap> extends true
-  ? never
-  : 'actors';
+type RequiredSetupKeys<TChildrenMap> =
+  IsNever<keyof TChildrenMap> extends true ? never : "actors";
 
 export function setup<
   TContext extends MachineContext,
@@ -77,24 +76,24 @@ export function setup<
   TChildrenMap extends Record<string, string> = {},
   TActions extends Record<
     string,
-    ParameterizedObject['params'] | undefined
+    ParameterizedObject["params"] | undefined
   > = {},
   TGuards extends Record<
     string,
-    ParameterizedObject['params'] | undefined
+    ParameterizedObject["params"] | undefined
   > = {},
   TDelay extends string = never,
   TTag extends string = string,
   TInput = NonReducibleUnknown,
   TOutput extends NonReducibleUnknown = NonReducibleUnknown,
   TEmitted extends EventObject = EventObject,
-  TMeta extends MetaObject = MetaObject
+  TMeta extends MetaObject = MetaObject,
 >({
   schemas,
   actors,
   actions,
   guards,
-  delays
+  delays,
 }: {
   schemas?: unknown;
   types?: SetupTypes<
@@ -139,7 +138,7 @@ export function setup<
     [K in TDelay]: DelayConfig<
       TContext,
       TEvent,
-      ToParameterizedObject<TActions>['params'],
+      ToParameterizedObject<TActions>["params"],
       TEvent
     >;
   };
@@ -159,9 +158,9 @@ export function setup<
       TOutput,
       TEmitted,
       TMeta
-    >
+    >,
   >(
-    config: TConfig
+    config: TConfig,
   ) => StateMachine<
     TContext,
     TEvent,
@@ -184,14 +183,14 @@ export function setup<
 } {
   return {
     createMachine: (config) =>
-      (createMachine as any)(
+      (createMachine as Callback)(
         { ...config, schemas },
         {
           actors,
           actions,
           guards,
-          delays
-        }
-      )
+          delays,
+        },
+      ),
   };
 }

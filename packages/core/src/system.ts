@@ -1,4 +1,5 @@
-import { InspectionEvent } from './inspection.ts';
+import { Error } from "@rbxts/luau-polyfill";
+import { InspectionEvent } from "./inspection";
 import {
   AnyEventObject,
   ActorSystemInfo,
@@ -6,9 +7,10 @@ import {
   Observer,
   HomomorphicOmit,
   EventObject,
-  Subscription
-} from './types.ts';
-import { toObserver } from './utils.ts';
+  Subscription,
+} from "./types";
+import { toObserver } from "./utils";
+import randomBase36String from "randomBase36String";
 
 interface ScheduledEvent {
   id: string;
@@ -20,27 +22,27 @@ interface ScheduledEvent {
 }
 
 export interface Clock {
-  setTimeout(fn: (...args: any[]) => void, timeout: number): any;
-  clearTimeout(id: any): void;
+  setTimeout: (fn: (...args: any[]) => void, timeout: number) => any;
+  clearTimeout: (id: any) => void;
 }
 
 interface Scheduler {
-  schedule(
+  schedule: (
     source: AnyActorRef,
     target: AnyActorRef,
     event: EventObject,
     delay: number,
-    id: string | undefined
-  ): void;
-  cancel(source: AnyActorRef, id: string): void;
-  cancelAll(actorRef: AnyActorRef): void;
+    id: string | undefined,
+  ) => void;
+  cancel: (source: AnyActorRef, id: string) => void;
+  cancelAll: (actorRef: AnyActorRef) => void;
 }
 
 type ScheduledEventId = string & { __scheduledEventId: never };
 
 function createScheduledEventId(
   actorRef: AnyActorRef,
-  id: string
+  id: string,
 ): ScheduledEventId {
   return `${actorRef.sessionId}.${id}` as ScheduledEventId;
 }
@@ -53,23 +55,23 @@ export interface ActorSystem<T extends ActorSystemInfo> {
   /** @internal */
   _unregister: (actorRef: AnyActorRef) => void;
   /** @internal */
-  _set: <K extends keyof T['actors']>(key: K, actorRef: T['actors'][K]) => void;
-  get: <K extends keyof T['actors']>(key: K) => T['actors'][K] | undefined;
+  _set: <K extends keyof T["actors"]>(key: K, actorRef: T["actors"][K]) => void;
+  get: <K extends keyof T["actors"]>(key: K) => T["actors"][K] | undefined;
 
   inspect: (
     observer:
       | Observer<InspectionEvent>
-      | ((inspectionEvent: InspectionEvent) => void)
+      | ((inspectionEvent: InspectionEvent) => void),
   ) => Subscription;
   /** @internal */
   _sendInspectionEvent: (
-    event: HomomorphicOmit<InspectionEvent, 'rootId'>
+    event: HomomorphicOmit<InspectionEvent, "rootId">,
   ) => void;
   /** @internal */
   _relay: (
     source: AnyActorRef | undefined,
     target: AnyActorRef,
-    event: AnyEventObject
+    event: AnyEventObject,
   ) => void;
   scheduler: Scheduler;
   getSnapshot: () => {
@@ -93,30 +95,24 @@ export function createSystem<T extends ActorSystemInfo>(
     clock: Clock;
     logger: (...args: any[]) => void;
     snapshot?: unknown;
-  }
+  },
 ): ActorSystem<T> {
   const children = new Map<string, AnyActorRef>();
-  const keyedActors = new Map<keyof T['actors'], AnyActorRef | undefined>();
-  const reverseKeyedActors = new WeakMap<AnyActorRef, keyof T['actors']>();
+  const keyedActors = new Map<keyof T["actors"], AnyActorRef | undefined>();
+  const reverseKeyedActors = new WeakMap<AnyActorRef, keyof T["actors"]>();
   const inspectionObservers = new Set<Observer<InspectionEvent>>();
   const timerMap: { [id: ScheduledEventId]: number } = {};
   const { clock, logger } = options;
 
   const scheduler: Scheduler = {
-    schedule: (
-      source,
-      target,
-      event,
-      delay,
-      id = Math.random().toString(36).slice(2)
-    ) => {
+    schedule: (source, target, event, delay, id = randomBase36String()) => {
       const scheduledEvent: ScheduledEvent = {
         source,
         target,
         event,
         delay,
         id,
-        startedAt: Date.now()
+        startedAt: os.clock(),
       };
       const scheduledEventId = createScheduledEventId(source, id);
       system._snapshot._scheduledEvents[scheduledEventId] = scheduledEvent;
@@ -142,34 +138,36 @@ export function createSystem<T extends ActorSystemInfo>(
       }
     },
     cancelAll: (actorRef) => {
-      for (const scheduledEventId in system._snapshot._scheduledEvents) {
+      // eslint-disable-next-line roblox-ts/no-array-pairs
+      for (const [scheduledEventId] of pairs(
+        system._snapshot._scheduledEvents,
+      )) {
         const scheduledEvent =
-          system._snapshot._scheduledEvents[
-            scheduledEventId as ScheduledEventId
-          ];
+          system._snapshot._scheduledEvents[scheduledEventId];
         if (scheduledEvent.source === actorRef) {
           scheduler.cancel(actorRef, scheduledEvent.id);
         }
       }
-    }
+    },
   };
   const sendInspectionEvent = (event: InspectionEvent) => {
-    if (!inspectionObservers.size) {
+    if (!inspectionObservers.size()) {
       return;
     }
     const resolvedInspectionEvent: InspectionEvent = {
       ...event,
-      rootId: rootActor.sessionId
+      rootId: rootActor.sessionId,
     };
     inspectionObservers.forEach((observer) =>
-      observer.next?.(resolvedInspectionEvent)
+      observer.next?.(resolvedInspectionEvent),
     );
   };
 
   const system: ActorSystem<T> = {
     _snapshot: {
       _scheduledEvents:
-        (options?.snapshot && (options.snapshot as any).scheduler) ?? {}
+        ((options?.snapshot &&
+          options.snapshot["scheduler" as never]) as never) ?? {},
     },
     _bookId: () => `x:${idCounter++}`,
     _register: (sessionId, actorRef) => {
@@ -186,13 +184,13 @@ export function createSystem<T extends ActorSystemInfo>(
       }
     },
     get: (systemId) => {
-      return keyedActors.get(systemId) as T['actors'][any];
+      return keyedActors.get(systemId) as T["actors"][any];
     },
     _set: (systemId, actorRef) => {
       const existing = keyedActors.get(systemId);
       if (existing && existing !== actorRef) {
         throw new Error(
-          `Actor with system ID '${systemId as string}' already exists.`
+          `Actor with system ID '${systemId as string}' already exists.`,
         );
       }
 
@@ -206,16 +204,16 @@ export function createSystem<T extends ActorSystemInfo>(
       return {
         unsubscribe() {
           inspectionObservers.delete(observer);
-        }
+        },
       };
     },
-    _sendInspectionEvent: sendInspectionEvent as any,
+    _sendInspectionEvent: sendInspectionEvent as never,
     _relay: (source, target, event) => {
       system._sendInspectionEvent({
-        type: '@xstate.event',
+        type: "@xstate.event",
         sourceRef: source,
         actorRef: target,
-        event
+        event,
       });
 
       target._send(event);
@@ -223,20 +221,21 @@ export function createSystem<T extends ActorSystemInfo>(
     scheduler,
     getSnapshot: () => {
       return {
-        _scheduledEvents: { ...system._snapshot._scheduledEvents }
+        _scheduledEvents: { ...system._snapshot._scheduledEvents },
       };
     },
     start: () => {
       const scheduledEvents = system._snapshot._scheduledEvents;
       system._snapshot._scheduledEvents = {};
-      for (const scheduledId in scheduledEvents) {
+      // eslint-disable-next-line roblox-ts/no-array-pairs
+      for (const [scheduledId] of pairs(scheduledEvents)) {
         const { source, target, event, delay, id } =
-          scheduledEvents[scheduledId as ScheduledEventId];
+          scheduledEvents[scheduledId];
         scheduler.schedule(source, target, event, delay, id);
       }
     },
     _clock: clock,
-    _logger: logger
+    _logger: logger,
   };
 
   return system;

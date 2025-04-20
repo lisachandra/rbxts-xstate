@@ -1,3 +1,31 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "eslint.lintTask.enable": true,
+  "eslint.run": "onType",
+  "eslint.format.enable": true,
+  "eslint.useFlatConfig": true,
+  "eslint.validate": [
+    "typescript",
+    "typescriptreact",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml",
+    "toml",
+    "luau"
+  ],
+  "eslint.rules.customizations": [
+    {
+      "rule": "prettier/*",
+      "severity": "off",
+      "fixable": true
+    }
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.organizeImports": "never"
+  },
+  "npm.packageManager": "pnpm",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "roblox-ts.command.npm.useNpmScripts": true,
+  "roblox-ts.command.npm.watchScript": "dev"
 }

@@ -1,2 +1,4 @@
 packages:
   - 'packages/*'
+overrides:
+  typescript: ^5.7.3

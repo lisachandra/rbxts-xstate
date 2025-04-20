@@ -1,15 +1,14 @@
-import isDevelopment from '#is-development';
-import { Mailbox } from './Mailbox.ts';
-import { XSTATE_STOP } from './constants.ts';
-import { devToolsAdapter } from './dev/index.ts';
+import isDevelopment from "./isDevelopment";
+import { Mailbox } from "./Mailbox";
+import { XSTATE_STOP } from "./constants";
 import {
   createDoneActorEvent,
   createErrorActorEvent,
-  createInitEvent
-} from './eventUtils.ts';
-import { reportUnhandledError } from './reportUnhandledError.ts';
-import { symbolObservable } from './symbolObservable.ts';
-import { AnyActorSystem, Clock, createSystem } from './system.ts';
+  createInitEvent,
+} from "./eventUtils";
+import { reportUnhandledError } from "./reportUnhandledError";
+import { symbolObservable } from "./symbolObservable";
+import { AnyActorSystem, Clock, createSystem } from "./system";
 
 export let executingCustomAction: boolean = false;
 
@@ -24,25 +23,28 @@ import type {
   InputFrom,
   IsNotNever,
   Snapshot,
-  SnapshotFrom
-} from './types.ts';
+  SnapshotFrom,
+} from "./types";
 import {
   ActorOptions,
   ActorRef,
   EventObject,
   InteropSubscribable,
   Observer,
-  Subscription
-} from './types.ts';
-import { toObserver } from './utils.ts';
+  Subscription,
+} from "./types";
+import { toObserver } from "./utils";
+import { clearTimeout, Error, Object, setTimeout } from "@rbxts/luau-polyfill";
+import { bind } from "bind";
+import { HttpService } from "@rbxts/services";
 
-export const $$ACTOR_TYPE = 1;
+export const __ACTOR_TYPE = 1;
 
 // those values are currently used by @xstate/react directly so it's important to keep the assigned values in sync
 export enum ProcessingStatus {
   NotStarted = 0,
   Running = 1,
-  Stopped = 2
+  Stopped = 2,
 }
 
 const defaultOptions = {
@@ -52,10 +54,10 @@ const defaultOptions = {
     },
     clearTimeout: (id) => {
       return clearTimeout(id);
-    }
+    },
   } as Clock,
-  logger: console.log.bind(console),
-  devTools: false
+  logger: print,
+  devTools: false,
 };
 
 /**
@@ -80,7 +82,7 @@ export class Actor<TLogic extends AnyActorLogic>
   public id: string;
 
   private mailbox: Mailbox<EventFromLogic<TLogic>> = new Mailbox(
-    this._process.bind(this)
+    bind(this["_process" as never], this),
   );
 
   private observers: Set<Observer<SnapshotFrom<TLogic>>> = new Set();
@@ -130,11 +132,11 @@ export class Actor<TLogic extends AnyActorLogic>
    */
   constructor(
     public logic: TLogic,
-    options?: ActorOptions<TLogic>
+    options?: ActorOptions<TLogic>,
   ) {
     const resolvedOptions = {
       ...defaultOptions,
-      ...options
+      ...options,
     };
 
     const { clock, logger, parent, syncSnapshot, id, systemId, inspect } =
@@ -144,7 +146,7 @@ export class Actor<TLogic extends AnyActorLogic>
       ? parent.system
       : createSystem(this, {
           clock,
-          logger
+          logger,
         });
 
     if (inspect && !parent) {
@@ -174,20 +176,22 @@ export class Actor<TLogic extends AnyActorLogic>
       stopChild: (child) => {
         if (child._parent !== this) {
           throw new Error(
-            `Cannot stop child actor ${child.id} of ${this.id} because it is not a child`
+            `Cannot stop child actor ${child.id} of ${this.id} because it is not a child`,
           );
         }
-        (child as any)._stop();
+        (child["_stop" as never] as Callback)();
       },
       emit: (emittedEvent) => {
-        const listeners = this.eventListeners.get(emittedEvent.type);
-        const wildcardListener = this.eventListeners.get('*');
+        const listeners = this.eventListeners.get(
+          (emittedEvent as object)["type" as never],
+        );
+        const wildcardListener = this.eventListeners.get("*");
         if (!listeners && !wildcardListener) {
           return;
         }
         const allListeners = [
-          ...(listeners ? listeners.values() : []),
-          ...(wildcardListener ? wildcardListener.values() : [])
+          ...(listeners ? Object.keys(listeners) : []),
+          ...(wildcardListener ? Object.keys(wildcardListener) : []),
         ];
         for (const handler of allListeners) {
           handler(emittedEvent);
@@ -196,12 +200,12 @@ export class Actor<TLogic extends AnyActorLogic>
       actionExecutor: (action) => {
         const exec = () => {
           this._actorScope.system._sendInspectionEvent({
-            type: '@xstate.action',
+            type: "@xstate.action",
             actorRef: this,
             action: {
               type: action.type,
-              params: action.params
-            }
+              params: action.params,
+            },
           });
           if (!action.exec) {
             return;
@@ -219,16 +223,16 @@ export class Actor<TLogic extends AnyActorLogic>
         } else {
           this._deferred.push(exec);
         }
-      }
+      },
     };
 
     // Ensure that the send method is bound to this Actor instance
     // if destructured
-    this.send = this.send.bind(this);
+    this.send = bind(this["send" as never], this);
 
     this.system._sendInspectionEvent({
-      type: '@xstate.actor',
-      actorRef: this
+      type: "@xstate.actor",
+      actorRef: this,
     });
 
     if (systemId) {
@@ -238,7 +242,7 @@ export class Actor<TLogic extends AnyActorLogic>
 
     this._initState(options?.snapshot ?? options?.state);
 
-    if (systemId && (this._snapshot as any).status !== 'active') {
+    if (systemId && this._snapshot["status"] !== "active") {
       this.system._unregister(this);
     }
   }
@@ -246,8 +250,8 @@ export class Actor<TLogic extends AnyActorLogic>
   private _initState(persistedState?: Snapshot<unknown>) {
     try {
       this._snapshot = persistedState
-        ? this.logic.restoreSnapshot
-          ? this.logic.restoreSnapshot(persistedState, this._actorScope)
+        ? "restoreSnapshot" in this.logic
+          ? this.logic.restoreSnapshot!(persistedState, this._actorScope)
           : persistedState
         : this.logic.getInitialSnapshot(this._actorScope, this.options?.input);
     } catch (err) {
@@ -255,10 +259,10 @@ export class Actor<TLogic extends AnyActorLogic>
       // we can't get the true `TSnapshot & { status: 'error'; }`, it's impossible
       // so right now this is a lie of sorts
       this._snapshot = {
-        status: 'error',
+        status: "error",
         output: undefined,
-        error: err
-      } as any;
+        error: err,
+      } as never;
     }
   }
 
@@ -281,17 +285,17 @@ export class Actor<TLogic extends AnyActorLogic>
         // when the actor is already running we always execute them synchronously while transitioning
         // no "builtin deferred" should actually throw an error since they are either safe
         // or the control flow is passed through the mailbox and errors should be caught by the `_process` used by the mailbox
-        this._deferred.length = 0;
+        table.clear(this._deferred);
         this._snapshot = {
-          ...(snapshot as any),
-          status: 'error',
-          error: err
-        };
+          ...(snapshot as object),
+          status: "error",
+          error: err,
+        } as never;
       }
     }
 
-    switch ((this._snapshot as any).status) {
-      case 'active':
+    switch (this._snapshot["status"]) {
+      case "active":
         for (const observer of this.observers) {
           try {
             observer.next?.(snapshot);
@@ -300,7 +304,7 @@ export class Actor<TLogic extends AnyActorLogic>
           }
         }
         break;
-      case 'done':
+      case "done":
         // next observers are meant to be notified about done snapshots
         // this can be seen as something that is different from how observable work
         // but with observables `complete` callback is called without any arguments
@@ -319,22 +323,22 @@ export class Actor<TLogic extends AnyActorLogic>
         this._complete();
         this._doneEvent = createDoneActorEvent(
           this.id,
-          (this._snapshot as any).output
+          this._snapshot["output"],
         );
         if (this._parent) {
           this.system._relay(this, this._parent, this._doneEvent);
         }
 
         break;
-      case 'error':
-        this._error((this._snapshot as any).error);
+      case "error":
+        this._error(this._snapshot["error"]);
         break;
     }
     this.system._sendInspectionEvent({
-      type: '@xstate.snapshot',
+      type: "@xstate.snapshot",
       actorRef: this,
       event,
-      snapshot
+      snapshot,
     });
   }
 
@@ -401,34 +405,34 @@ export class Actor<TLogic extends AnyActorLogic>
   public subscribe(
     nextListener?: (snapshot: SnapshotFrom<TLogic>) => void,
     errorListener?: (error: any) => void,
-    completeListener?: () => void
+    completeListener?: () => void,
   ): Subscription;
   public subscribe(
     nextListenerOrObserver?:
       | ((snapshot: SnapshotFrom<TLogic>) => void)
       | Observer<SnapshotFrom<TLogic>>,
     errorListener?: (error: any) => void,
-    completeListener?: () => void
+    completeListener?: () => void,
   ): Subscription {
     const observer = toObserver(
       nextListenerOrObserver,
       errorListener,
-      completeListener
+      completeListener,
     );
 
     if (this._processingStatus !== ProcessingStatus.Stopped) {
       this.observers.add(observer);
     } else {
-      switch ((this._snapshot as any).status) {
-        case 'done':
+      switch (this._snapshot["status"]) {
+        case "done":
           try {
             observer.complete?.();
           } catch (err) {
             reportUnhandledError(err);
           }
           break;
-        case 'error': {
-          const err = (this._snapshot as any).error;
+        case "error": {
+          const err = this._snapshot["error"];
           if (!observer.error) {
             reportUnhandledError(err);
           } else {
@@ -443,32 +447,33 @@ export class Actor<TLogic extends AnyActorLogic>
       }
     }
 
+    const observers = this.observers;
     return {
-      unsubscribe: () => {
-        this.observers.delete(observer);
-      }
+      unsubscribe() {
+        observers.delete(observer);
+      },
     };
   }
 
-  public on<TType extends EmittedFrom<TLogic>['type'] | '*'>(
-    type: TType,
+  public on<TType extends EmittedFrom<TLogic>["type"] | "*">(
+    kind: TType,
     handler: (
       emitted: EmittedFrom<TLogic> &
-        (TType extends '*' ? unknown : { type: TType })
-    ) => void
+        (TType extends "*" ? unknown : { type: TType }),
+    ) => void,
   ): Subscription {
-    let listeners = this.eventListeners.get(type);
+    let listeners = this.eventListeners.get(kind);
     if (!listeners) {
       listeners = new Set();
-      this.eventListeners.set(type, listeners);
+      this.eventListeners.set(kind, listeners);
     }
-    const wrappedHandler = handler.bind(undefined);
+    const wrappedHandler = bind(handler, undefined);
     listeners.add(wrappedHandler);
 
     return {
-      unsubscribe: () => {
+      unsubscribe() {
         listeners.delete(wrappedHandler);
-      }
+      },
     };
   }
 
@@ -482,14 +487,14 @@ export class Actor<TLogic extends AnyActorLogic>
     if (this._syncSnapshot) {
       this.subscribe({
         next: (snapshot: Snapshot<unknown>) => {
-          if (snapshot.status === 'active') {
+          if (snapshot.status === "active") {
             this.system._relay(this, this._parent!, {
               type: `xstate.snapshot.${this.id}`,
-              snapshot
+              snapshot,
             });
           }
         },
-        error: () => {}
+        error: () => {},
       });
     }
 
@@ -503,26 +508,26 @@ export class Actor<TLogic extends AnyActorLogic>
     const initEvent = createInitEvent(this.options.input);
 
     this.system._sendInspectionEvent({
-      type: '@xstate.event',
+      type: "@xstate.event",
       sourceRef: this._parent,
       actorRef: this,
-      event: initEvent
+      event: initEvent,
     });
 
-    const status = (this._snapshot as any).status;
+    const status = this._snapshot["status"];
 
     switch (status) {
-      case 'done':
+      case "done":
         // a state machine can be "done" upon initialization (it could reach a final state using initial microsteps)
         // we still need to complete observers, flush deferreds etc
         this.update(
           this._snapshot,
-          initEvent as unknown as EventFromLogic<TLogic>
+          initEvent as unknown as EventFromLogic<TLogic>,
         );
         // TODO: rethink cleanup of observers, mailbox, etc
         return this;
-      case 'error':
-        this._error((this._snapshot as any).error);
+      case "error":
+        this._error(this._snapshot["error"]);
         return this;
     }
 
@@ -530,15 +535,15 @@ export class Actor<TLogic extends AnyActorLogic>
       this.system.start();
     }
 
-    if (this.logic.start) {
+    if ("start" in this.logic) {
       try {
-        this.logic.start(this._snapshot, this._actorScope);
+        this.logic.start!(this._snapshot, this._actorScope);
       } catch (err) {
         this._snapshot = {
-          ...(this._snapshot as any),
-          status: 'error',
-          error: err
-        };
+          ...(this._snapshot as object),
+          status: "error",
+          error: err,
+        } as never;
         this._error(err);
         return this;
       }
@@ -550,7 +555,7 @@ export class Actor<TLogic extends AnyActorLogic>
     this.update(this._snapshot, initEvent as unknown as EventFromLogic<TLogic>);
 
     if (this.options.devTools) {
-      this.attachDevTools();
+      // this.attachDevTools();
     }
 
     this.mailbox.start();
@@ -565,7 +570,7 @@ export class Actor<TLogic extends AnyActorLogic>
       nextState = this.logic.transition(
         this._snapshot,
         event,
-        this._actorScope
+        this._actorScope,
       );
     } catch (err) {
       // we wrap it in a box so we can rethrow it later even if falsy value gets caught here
@@ -576,16 +581,16 @@ export class Actor<TLogic extends AnyActorLogic>
       const { err } = caughtError;
 
       this._snapshot = {
-        ...(this._snapshot as any),
-        status: 'error',
-        error: err
-      };
+        ...(this._snapshot as object),
+        status: "error",
+        error: err,
+      } as never;
       this._error(err);
       return;
     }
 
     this.update(nextState, event);
-    if (event.type === XSTATE_STOP) {
+    if ((event as object)["type" as never] === XSTATE_STOP) {
       this._stopProcedure();
       this._complete();
     }
@@ -600,7 +605,7 @@ export class Actor<TLogic extends AnyActorLogic>
       this._processingStatus = ProcessingStatus.Stopped;
       return this;
     }
-    this.mailbox.enqueue({ type: XSTATE_STOP } as any);
+    this.mailbox.enqueue({ type: XSTATE_STOP } as never);
 
     return this;
   }
@@ -608,7 +613,7 @@ export class Actor<TLogic extends AnyActorLogic>
   /** Stops the Actor and unsubscribe all listeners. */
   public stop(): this {
     if (this._parent) {
-      throw new Error('A non-root actor cannot be stopped directly.');
+      throw new Error("A non-root actor cannot be stopped directly.");
     }
     return this._stop();
   }
@@ -623,7 +628,7 @@ export class Actor<TLogic extends AnyActorLogic>
     this.observers.clear();
   }
   private _reportError(err: unknown): void {
-    if (!this.observers.size) {
+    if (!this.observers.size()) {
       if (!this._parent) {
         reportUnhandledError(err);
       }
@@ -652,7 +657,7 @@ export class Actor<TLogic extends AnyActorLogic>
       this.system._relay(
         this,
         this._parent,
-        createErrorActorEvent(this.id, err)
+        createErrorActorEvent(this.id, err),
       );
     }
   }
@@ -676,7 +681,7 @@ export class Actor<TLogic extends AnyActorLogic>
     // events sent *after* stop signal must be queued
     // it seems like this should be the common behavior for all of our consumers
     // so perhaps this should be unified somehow for all of them
-    this.mailbox = new Mailbox(this._process.bind(this));
+    this.mailbox = new Mailbox(bind(this["_process" as never], this));
 
     this._processingStatus = ProcessingStatus.Stopped;
     this.system._unregister(this);
@@ -689,10 +694,10 @@ export class Actor<TLogic extends AnyActorLogic>
     if (this._processingStatus === ProcessingStatus.Stopped) {
       // do nothing
       if (isDevelopment) {
-        const eventString = JSON.stringify(event);
+        const eventString = HttpService.JSONEncode(event);
 
-        console.warn(
-          `Event "${event.type}" was sent to stopped actor "${this.id} (${this.sessionId})". This actor has already reached its final state, and will not transition.\nEvent: ${eventString}`
+        warn(
+          `Event "${(event as object)["type" as never]}" was sent to stopped actor "${this.id} (${this.sessionId})". This actor has already reached its final state, and will not transition.\nEvent: ${eventString}`,
         );
       }
       return;
@@ -707,27 +712,18 @@ export class Actor<TLogic extends AnyActorLogic>
    * @param event The event to send
    */
   public send(event: EventFromLogic<TLogic>) {
-    if (isDevelopment && typeof event === 'string') {
+    if (isDevelopment && typeIs(event, "string")) {
       throw new Error(
-        `Only event objects may be sent to actors; use .send({ type: "${event}" }) instead`
+        `Only event objects may be sent to actors; use .send({ type: "${event}" }) instead`,
       );
     }
     this.system._relay(undefined, this, event);
   }
 
-  private attachDevTools(): void {
-    const { devTools } = this.options;
-    if (devTools) {
-      const resolvedDevToolsAdapter =
-        typeof devTools === 'function' ? devTools : devToolsAdapter;
-
-      resolvedDevToolsAdapter(this);
-    }
-  }
   public toJSON() {
     return {
-      xstate$$type: $$ACTOR_TYPE,
-      id: this.id
+      xstate$$type: __ACTOR_TYPE,
+      id: this.id,
     };
   }
 
@@ -770,7 +766,7 @@ export class Actor<TLogic extends AnyActorLogic>
   public getSnapshot(): SnapshotFrom<TLogic> {
     if (isDevelopment && !this._snapshot) {
       throw new Error(
-        `Snapshot can't be read while the actor initializes itself`
+        `Snapshot can't be read while the actor initializes itself`,
       );
     }
     return this._snapshot;
@@ -778,7 +774,7 @@ export class Actor<TLogic extends AnyActorLogic>
 }
 
 export type RequiredActorOptionsKeys<TLogic extends AnyActorLogic> =
-  undefined extends InputFrom<TLogic> ? never : 'input';
+  undefined extends InputFrom<TLogic> ? never : "input";
 
 /**
  * Creates a new actor instance for the given actor logic with the provided
@@ -793,7 +789,7 @@ export type RequiredActorOptionsKeys<TLogic extends AnyActorLogic> =
  *
  * ```ts
  * import { createActor } from 'xstate';
- * import { someActorLogic } from './someActorLogic.ts';
+ * import { someActorLogic } from './someActorLogic';
  *
  * // Creating the actor, which implicitly creates an actor system with itself as the root actor
  * const actor = createActor(someActorLogic);
@@ -824,7 +820,7 @@ export function createActor<TLogic extends AnyActorLogic>(
     [
       options?: ActorOptions<TLogic> & {
         [K in RequiredActorOptionsKeys<TLogic>]: unknown;
-      }
+      },
     ],
     IsNotNever<RequiredActorOptionsKeys<TLogic>>
   >

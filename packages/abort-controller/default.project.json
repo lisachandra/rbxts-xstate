@@ -1,0 +1,6 @@
+{
+  "name": "whatwg-abort-controller",
+  "tree": {
+    "$path": "out"
+  }
+}

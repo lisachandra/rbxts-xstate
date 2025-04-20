@@ -1,5 +1,5 @@
-import { XSTATE_STOP } from '../constants.ts';
-import { AnyActorSystem } from '../system.ts';
+import { XSTATE_STOP } from "../constants";
+import { AnyActorSystem } from "../system";
 import {
   ActorLogic,
   ActorRefFromLogic,
@@ -7,8 +7,8 @@ import {
   AnyEventObject,
   EventObject,
   NonReducibleUnknown,
-  Snapshot
-} from '../types';
+  Snapshot,
+} from "../types";
 
 interface CallbackInstanceState<TEvent extends EventObject> {
   receivers: Set<(e: TEvent) => void> | undefined;
@@ -27,7 +27,7 @@ export type CallbackSnapshot<TInput> = Snapshot<undefined> & {
 export type CallbackActorLogic<
   TEvent extends EventObject,
   TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 > = ActorLogic<
   CallbackSnapshot<TInput>,
   TEvent,
@@ -72,27 +72,27 @@ export type CallbackActorLogic<
  */
 export type CallbackActorRef<
   TEvent extends EventObject,
-  TInput = NonReducibleUnknown
+  TInput = NonReducibleUnknown,
 > = ActorRefFromLogic<CallbackActorLogic<TEvent, TInput>>;
 
 type Receiver<TEvent extends EventObject> = (
   listener: {
     bivarianceHack(event: TEvent): void;
-  }['bivarianceHack']
+  }["bivarianceHack"],
 ) => void;
 
 export type CallbackLogicFunction<
   TEvent extends EventObject = AnyEventObject,
   TSentEvent extends EventObject = AnyEventObject,
   TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 > = ({
   input,
   system,
   self,
   sendBack,
   receive,
-  emit
+  emit,
 }: {
   /**
    * Data that was provided to the callback actor
@@ -183,51 +183,52 @@ export type CallbackLogicFunction<
 export function fromCallback<
   TEvent extends EventObject,
   TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 >(
-  callback: CallbackLogicFunction<TEvent, AnyEventObject, TInput, TEmitted>
+  callback: CallbackLogicFunction<TEvent, AnyEventObject, TInput, TEmitted>,
 ): CallbackActorLogic<TEvent, TInput, TEmitted> {
   const logic: CallbackActorLogic<TEvent, TInput, TEmitted> = {
     config: callback,
-    start: (state, actorScope) => {
-      const { self, system, emit } = actorScope;
+    start(state, actorScope) {
+      const { system, emit } = actorScope;
+      const itself = actorScope.self;
 
       const callbackState: CallbackInstanceState<TEvent> = {
         receivers: undefined,
-        dispose: undefined
+        dispose: undefined,
       };
 
-      instanceStates.set(self, callbackState);
+      instanceStates.set(itself, callbackState);
 
       callbackState.dispose = callback({
         input: state.input,
         system,
-        self,
+        self: itself as never,
         sendBack: (event) => {
-          if (self.getSnapshot().status === 'stopped') {
+          if (itself.getSnapshot().status === "stopped") {
             return;
           }
-          if (self._parent) {
-            system._relay(self, self._parent, event);
+          if (itself._parent) {
+            system._relay(itself, itself._parent, event);
           }
         },
         receive: (listener) => {
           callbackState.receivers ??= new Set();
           callbackState.receivers.add(listener);
         },
-        emit
+        emit,
       });
     },
-    transition: (state, event, actorScope) => {
+    transition(state, event, actorScope) {
       const callbackState: CallbackInstanceState<TEvent> = instanceStates.get(
-        actorScope.self
+        actorScope.self,
       )!;
 
       if (event.type === XSTATE_STOP) {
         state = {
           ...state,
-          status: 'stopped',
-          error: undefined
+          status: "stopped",
+          error: undefined,
         };
 
         callbackState.dispose?.();
@@ -238,16 +239,20 @@ export function fromCallback<
 
       return state;
     },
-    getInitialSnapshot: (_, input) => {
+    getInitialSnapshot(_, input) {
       return {
-        status: 'active',
+        status: "active",
         output: undefined,
         error: undefined,
-        input
+        input,
       };
     },
-    getPersistedSnapshot: (snapshot) => snapshot,
-    restoreSnapshot: (snapshot: any) => snapshot
+    getPersistedSnapshot(snapshot) {
+      return snapshot;
+    },
+    restoreSnapshot(snapshot: any) {
+      return snapshot;
+    },
   };
 
   return logic;

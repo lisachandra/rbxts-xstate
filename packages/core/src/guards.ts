@@ -1,4 +1,4 @@
-import isDevelopment from '#is-development';
+import isDevelopment from "./isDevelopment";
 import type {
   EventObject,
   StateValue,
@@ -9,15 +9,16 @@ import type {
   WithDynamicParams,
   Identity,
   Elements,
-  DoNotInfer
-} from './types.ts';
-import { isStateId } from './stateUtils.ts';
+  DoNotInfer,
+} from "./types";
+import { isStateId } from "./stateUtils";
+import { Error } from "@rbxts/luau-polyfill";
 
 type SingleGuardArg<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TGuardArg
+  TParams extends ParameterizedObject["params"] | undefined,
+  TGuardArg,
 > = [TGuardArg] extends [{ type: string }]
   ? Identity<TGuardArg>
   : [TGuardArg] extends [string]
@@ -28,8 +29,8 @@ type NormalizeGuardArg<TGuardArg> = TGuardArg extends { type: string }
   ? Identity<TGuardArg> & { params: unknown }
   : TGuardArg extends string
     ? { type: TGuardArg; params: undefined }
-    : '_out_TGuard' extends keyof TGuardArg
-      ? TGuardArg['_out_TGuard'] & ParameterizedObject
+    : "_out_TGuard" extends keyof TGuardArg
+      ? TGuardArg["_out_TGuard"] & ParameterizedObject
       : never;
 
 type NormalizeGuardArgArray<TArg extends unknown[]> = Elements<{
@@ -39,8 +40,8 @@ type NormalizeGuardArgArray<TArg extends unknown[]> = Elements<{
 export type GuardPredicate<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TGuard extends ParameterizedObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TGuard extends ParameterizedObject,
 > = {
   (args: GuardArgs<TContext, TExpressionEvent>, params: TParams): boolean;
   _out_TGuard?: TGuard;
@@ -48,7 +49,7 @@ export type GuardPredicate<
 
 export interface GuardArgs<
   TContext extends MachineContext,
-  TExpressionEvent extends EventObject
+  TExpressionEvent extends EventObject,
 > {
   context: TContext;
   event: TExpressionEvent;
@@ -57,8 +58,8 @@ export interface GuardArgs<
 export type Guard<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TGuard extends ParameterizedObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TGuard extends ParameterizedObject,
 > =
   | NoRequiredParams<TGuard>
   | WithDynamicParams<TContext, TExpressionEvent, TGuard>
@@ -69,7 +70,7 @@ export type UnknownGuard = UnknownReferencedGuard | UnknownInlineGuard;
 type UnknownReferencedGuard = Guard<
   MachineContext,
   EventObject,
-  ParameterizedObject['params'],
+  ParameterizedObject["params"],
   ParameterizedObject
 >;
 
@@ -85,16 +86,16 @@ interface BuiltinGuard {
   check: (
     snapshot: AnyMachineSnapshot,
     guardArgs: GuardArgs<any, any>,
-    params: unknown
+    params: unknown,
   ) => boolean;
 }
 
 function checkStateIn(
   snapshot: AnyMachineSnapshot,
   _: GuardArgs<any, any>,
-  { stateValue }: { stateValue: StateValue }
+  { stateValue }: { stateValue: StateValue },
 ) {
-  if (typeof stateValue === 'string' && isStateId(stateValue)) {
+  if (typeIs(stateValue, "string") && isStateId(stateValue)) {
     const target = snapshot.machine.getStateNodeById(stateValue);
     return snapshot._nodes.some((sn) => sn === target);
   }
@@ -105,9 +106,9 @@ function checkStateIn(
 export function stateIn<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined
+  TParams extends ParameterizedObject["params"] | undefined,
 >(
-  stateValue: StateValue
+  stateValue: StateValue,
 ): GuardPredicate<
   TContext,
   TExpressionEvent,
@@ -130,7 +131,7 @@ export function stateIn<
 function checkNot(
   snapshot: AnyMachineSnapshot,
   { context, event }: GuardArgs<any, any>,
-  { guards }: { guards: readonly UnknownGuard[] }
+  { guards }: { guards: readonly UnknownGuard[] },
 ) {
   return !evaluateGuard(guards[0], context, event, snapshot);
 }
@@ -164,38 +165,41 @@ function checkNot(
  *
  * @returns A guard
  */
-export function not<
+export function notG<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TArg
+  TArg,
 >(
-  guard: SingleGuardArg<TContext, TExpressionEvent, unknown, TArg>
+  guard: SingleGuardArg<TContext, TExpressionEvent, unknown, TArg>,
 ): GuardPredicate<
   TContext,
   TExpressionEvent,
   unknown,
   NormalizeGuardArg<DoNotInfer<TArg>>
 > {
-  function not(_args: GuardArgs<TContext, TExpressionEvent>, _params: unknown) {
+  function notG(
+    _args: GuardArgs<TContext, TExpressionEvent>,
+    _params: unknown,
+  ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
     return false;
   }
 
-  not.check = checkNot;
-  not.guards = [guard];
+  notG.check = checkNot;
+  notG.guards = [guard];
 
-  return not;
+  return notG;
 }
 
 function checkAnd(
   snapshot: AnyMachineSnapshot,
   { context, event }: GuardArgs<any, any>,
-  { guards }: { guards: readonly UnknownGuard[] }
+  { guards }: { guards: readonly UnknownGuard[] },
 ) {
   return guards.every((guard) =>
-    evaluateGuard(guard, context, event, snapshot)
+    evaluateGuard(guard, context, event, snapshot),
   );
 }
 
@@ -228,10 +232,10 @@ function checkAnd(
  *
  * @returns A guard action object
  */
-export function and<
+export function andG<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TArg extends unknown[]
+  TArg extends unknown[],
 >(
   guards: readonly [
     ...{
@@ -241,31 +245,34 @@ export function and<
         unknown,
         TArg[K]
       >;
-    }
-  ]
+    },
+  ],
 ): GuardPredicate<
   TContext,
   TExpressionEvent,
   unknown,
   NormalizeGuardArgArray<DoNotInfer<TArg>>
 > {
-  function and(_args: GuardArgs<TContext, TExpressionEvent>, _params: unknown) {
+  function andG(
+    _args: GuardArgs<TContext, TExpressionEvent>,
+    _params: unknown,
+  ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
     return false;
   }
 
-  and.check = checkAnd;
-  and.guards = guards;
+  andG.check = checkAnd;
+  andG.guards = guards;
 
-  return and;
+  return andG;
 }
 
 function checkOr(
   snapshot: AnyMachineSnapshot,
   { context, event }: GuardArgs<any, any>,
-  { guards }: { guards: readonly UnknownGuard[] }
+  { guards }: { guards: readonly UnknownGuard[] },
 ) {
   return guards.some((guard) => evaluateGuard(guard, context, event, snapshot));
 }
@@ -299,10 +306,10 @@ function checkOr(
  *
  * @returns A guard action object
  */
-export function or<
+export function orG<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TArg extends unknown[]
+  TArg extends unknown[],
 >(
   guards: readonly [
     ...{
@@ -312,77 +319,77 @@ export function or<
         unknown,
         TArg[K]
       >;
-    }
-  ]
+    },
+  ],
 ): GuardPredicate<
   TContext,
   TExpressionEvent,
   unknown,
   NormalizeGuardArgArray<DoNotInfer<TArg>>
 > {
-  function or(_args: GuardArgs<TContext, TExpressionEvent>, _params: unknown) {
+  function orG(_args: GuardArgs<TContext, TExpressionEvent>, _params: unknown) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
     return false;
   }
 
-  or.check = checkOr;
-  or.guards = guards;
+  orG.check = checkOr;
+  orG.guards = guards;
 
-  return or;
+  return orG;
 }
 
 // TODO: throw on cycles (depth check should be enough)
 export function evaluateGuard<
   TContext extends MachineContext,
-  TExpressionEvent extends EventObject
+  TExpressionEvent extends EventObject,
 >(
   guard: UnknownGuard | UnknownInlineGuard,
   context: TContext,
   event: TExpressionEvent,
-  snapshot: AnyMachineSnapshot
+  snapshot: AnyMachineSnapshot,
 ): boolean {
   const { machine } = snapshot;
-  const isInline = typeof guard === 'function';
+  const isInline = typeIs(guard, "function");
 
   const resolved = isInline
     ? guard
     : machine.implementations.guards[
-        typeof guard === 'string' ? guard : guard.type
+        typeIs(guard, "string") ? guard : guard.type
       ];
 
   if (!isInline && !resolved) {
     throw new Error(
       `Guard '${
-        typeof guard === 'string' ? guard : guard.type
-      }' is not implemented.'.`
+        typeIs(guard, "string") ? guard : guard.type
+      }' is not implemented.'.`,
     );
   }
 
-  if (typeof resolved !== 'function') {
+  if (!typeIs(resolved, "function")) {
     return evaluateGuard(resolved!, context, event, snapshot);
   }
 
   const guardArgs = {
     context,
-    event
+    event,
   };
 
   const guardParams =
-    isInline || typeof guard === 'string'
+    isInline || typeIs(guard, "string")
       ? undefined
-      : 'params' in guard
-        ? typeof guard.params === 'function'
+      : "params" in guard
+        ? typeIs(guard.params, "function")
           ? guard.params({ context, event })
           : guard.params
         : undefined;
 
-  if (!('check' in resolved)) {
+  if (resolved !== undefined && !("check" in resolved)) {
     // the existing type of `.guards` assumes non-nullable `TExpressionGuard`
     // inline guards expect `TExpressionGuard` to be set to `undefined`
     // it's fine to cast this here, our logic makes sure that we call those 2 "variants" correctly
-    return resolved(guardArgs, guardParams as never);
+    return (resolved as Callback)(guardArgs, guardParams as never);
   }
 
   const builtinGuard = resolved as unknown as BuiltinGuard;
@@ -390,6 +397,6 @@ export function evaluateGuard<
   return builtinGuard.check(
     snapshot,
     guardArgs,
-    resolved // this holds all params
+    resolved, // this holds all params
   );
 }

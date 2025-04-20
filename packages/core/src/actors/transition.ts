@@ -1,12 +1,12 @@
-import { AnyActorSystem } from '../system.ts';
+import { AnyActorSystem } from "../system";
 import {
   ActorLogic,
   ActorRefFromLogic,
   ActorScope,
   EventObject,
   NonReducibleUnknown,
-  Snapshot
-} from '../types.ts';
+  Snapshot,
+} from "../types";
 
 export type TransitionSnapshot<TContext> = Snapshot<undefined> & {
   context: TContext;
@@ -16,7 +16,7 @@ export type TransitionActorLogic<
   TContext,
   TEvent extends EventObject,
   TInput extends NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 > = ActorLogic<
   TransitionSnapshot<TContext>,
   TEvent,
@@ -85,9 +85,13 @@ export type TransitionActorLogic<
  */
 export type TransitionActorRef<
   TContext,
-  TEvent extends EventObject
+  TEvent extends EventObject,
 > = ActorRefFromLogic<
-  TransitionActorLogic<TransitionSnapshot<TContext>, TEvent, unknown>
+  TransitionActorLogic<
+    TransitionSnapshot<TContext>,
+    TEvent,
+    NonReducibleUnknown
+  >
 >;
 
 /**
@@ -169,7 +173,7 @@ export function fromTransition<
   TEvent extends EventObject,
   TSystem extends AnyActorSystem,
   TInput extends NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 >(
   transition: (
     snapshot: TContext,
@@ -179,38 +183,41 @@ export function fromTransition<
       TEvent,
       TSystem,
       TEmitted
-    >
+    >,
   ) => TContext,
   initialContext:
     | TContext
     | (({
         input,
-        self
+        self,
       }: {
         input: TInput;
         self: TransitionActorRef<TContext, TEvent>;
-      }) => TContext) // TODO: type
+      }) => TContext), // TODO: type
 ): TransitionActorLogic<TContext, TEvent, TInput, TEmitted> {
   return {
     config: transition,
-    transition: (snapshot, event, actorScope) => {
+    transition(snapshot, event, actorScope) {
       return {
         ...snapshot,
-        context: transition(snapshot.context, event, actorScope as any)
+        context: transition(snapshot.context, event, actorScope as never),
       };
     },
-    getInitialSnapshot: (_, input) => {
+    getInitialSnapshot(_, input) {
       return {
-        status: 'active',
+        status: "active",
         output: undefined,
         error: undefined,
-        context:
-          typeof initialContext === 'function'
-            ? (initialContext as any)({ input })
-            : initialContext
+        context: typeIs(initialContext, "function")
+          ? (initialContext as Callback)({ input })
+          : initialContext,
       };
     },
-    getPersistedSnapshot: (snapshot) => snapshot,
-    restoreSnapshot: (snapshot: any) => snapshot
+    getPersistedSnapshot(snapshot) {
+      return snapshot;
+    },
+    restoreSnapshot(snapshot: any) {
+      return snapshot;
+    },
   };
 }

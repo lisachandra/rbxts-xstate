@@ -1,5 +1,5 @@
-import isDevelopment from '#is-development';
-import { Guard, evaluateGuard } from '../guards.ts';
+import isDevelopment from "../isDevelopment";
+import { Guard, evaluateGuard } from "../guards";
 import {
   Action,
   ActionArgs,
@@ -13,15 +13,17 @@ import {
   ParameterizedObject,
   ProvidedActor,
   BuiltinActionResolution,
-  UnifiedArg
-} from '../types.ts';
-import { assign } from './assign.ts';
-import { cancel } from './cancel.ts';
-import { emit } from './emit.ts';
-import { raise } from './raise.ts';
-import { sendParent, sendTo } from './send.ts';
-import { spawnChild } from './spawnChild.ts';
-import { stopChild } from './stopChild.ts';
+  UnifiedArg,
+  UnknownAction,
+} from "../types";
+import { assign } from "./assign";
+import { cancel } from "./cancel";
+import { emit } from "./emit";
+import { raise } from "./raise";
+import { sendParent, sendTo } from "./send";
+import { spawnChild } from "./spawnChild";
+import { stopChild } from "./stopChild";
+import { Error } from "@rbxts/luau-polyfill";
 
 interface ActionEnqueuer<
   TContext extends MachineContext,
@@ -31,7 +33,7 @@ interface ActionEnqueuer<
   TAction extends ParameterizedObject,
   TGuard extends ParameterizedObject,
   TDelay extends string,
-  TEmitted extends EventObject
+  TEmitted extends EventObject,
 > {
   (
     action: Action<
@@ -44,7 +46,7 @@ interface ActionEnqueuer<
       TGuard,
       TDelay,
       TEmitted
-    >
+    >,
   ): void;
   assign: (
     ...args: Parameters<
@@ -115,14 +117,14 @@ function resolveEnqueueActions(
   actorScope: AnyActorScope,
   snapshot: AnyMachineSnapshot,
   args: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject['params'] | undefined,
+  actionParams: ParameterizedObject["params"] | undefined,
   {
-    collect
+    collect,
   }: {
     collect: CollectActions<
       MachineContext,
       EventObject,
-      ParameterizedObject['params'] | undefined,
+      ParameterizedObject["params"] | undefined,
       EventObject,
       ProvidedActor,
       ParameterizedObject,
@@ -130,12 +132,10 @@ function resolveEnqueueActions(
       string,
       EventObject
     >;
-  }
+  },
 ): BuiltinActionResolution {
-  const actions: any[] = [];
-  const enqueue: Parameters<typeof collect>[0]['enqueue'] = function enqueue(
-    action
-  ) {
+  const actions: defined[] = [];
+  const enqueue: Parameters<typeof collect>[0]["enqueue"] = function (action) {
     actions.push(action);
   };
   enqueue.assign = (...args) => {
@@ -147,15 +147,15 @@ function resolveEnqueueActions(
   enqueue.raise = (...args) => {
     // for some reason it fails to infer `TDelay` from `...args` here and picks its default (`never`)
     // then it fails to typecheck that because `...args` use `string` in place of `TDelay`
-    actions.push((raise as typeof enqueue.raise)(...args));
+    actions.push((raise as typeof enqueue.raise)(...args) as never);
   };
   enqueue.sendTo = (...args) => {
     // for some reason it fails to infer `TDelay` from `...args` here and picks its default (`never`)
     // then it fails to typecheck that because `...args` use `string` in place of `TDelay
-    actions.push((sendTo as typeof enqueue.sendTo)(...args));
+    actions.push((sendTo as typeof enqueue.sendTo)(...args) as never);
   };
   enqueue.sendParent = (...args) => {
-    actions.push((sendParent as typeof enqueue.sendParent)(...args));
+    actions.push((sendParent as typeof enqueue.sendParent)(...args) as never);
   };
   enqueue.spawnChild = (...args) => {
     actions.push(spawnChild(...args));
@@ -175,23 +175,23 @@ function resolveEnqueueActions(
       check: (guard) =>
         evaluateGuard(guard, snapshot.context, args.event, snapshot),
       self: actorScope.self,
-      system: actorScope.system
+      system: actorScope.system,
     },
-    actionParams
+    actionParams,
   );
 
-  return [snapshot, undefined, actions];
+  return [snapshot, undefined, actions as UnknownAction[]];
 }
 
 export interface EnqueueActionsAction<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
+  TParams extends ParameterizedObject["params"] | undefined,
   TEvent extends EventObject,
   TActor extends ProvidedActor,
   TAction extends ParameterizedObject,
   TGuard extends ParameterizedObject,
-  TDelay extends string
+  TDelay extends string,
 > {
   (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
   _out_TEvent?: TEvent;
@@ -209,10 +209,10 @@ interface CollectActionsArg<
   TAction extends ParameterizedObject,
   TGuard extends ParameterizedObject,
   TDelay extends string,
-  TEmitted extends EventObject
+  TEmitted extends EventObject,
 > extends UnifiedArg<TContext, TExpressionEvent, TEvent> {
   check: (
-    guard: Guard<TContext, TExpressionEvent, undefined, TGuard>
+    guard: Guard<TContext, TExpressionEvent, undefined, TGuard>,
   ) => boolean;
   enqueue: ActionEnqueuer<
     TContext,
@@ -229,20 +229,20 @@ interface CollectActionsArg<
 type CollectActions<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
+  TParams extends ParameterizedObject["params"] | undefined,
   TEvent extends EventObject,
   TActor extends ProvidedActor,
   TAction extends ParameterizedObject,
   TGuard extends ParameterizedObject,
   TDelay extends string,
-  TEmitted extends EventObject
+  TEmitted extends EventObject,
 > = (
   {
     context,
     event,
     check,
     enqueue,
-    self
+    self,
   }: CollectActionsArg<
     TContext,
     TExpressionEvent,
@@ -253,7 +253,7 @@ type CollectActions<
     TDelay,
     TEmitted
   >,
-  params: TParams
+  params: TParams,
 ) => void;
 
 /**
@@ -281,13 +281,13 @@ type CollectActions<
 export function enqueueActions<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
+  TParams extends ParameterizedObject["params"] | undefined,
   TEvent extends EventObject = TExpressionEvent,
   TActor extends ProvidedActor = ProvidedActor,
   TAction extends ParameterizedObject = ParameterizedObject,
   TGuard extends ParameterizedObject = ParameterizedObject,
   TDelay extends string = never,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 >(
   collect: CollectActions<
     TContext,
@@ -299,7 +299,7 @@ export function enqueueActions<
     TGuard,
     TDelay,
     TEmitted
-  >
+  >,
 ): ActionFunction<
   TContext,
   TExpressionEvent,
@@ -313,14 +313,14 @@ export function enqueueActions<
 > {
   function enqueueActions(
     _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: unknown
+    _params: unknown,
   ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
   }
 
-  enqueueActions.type = 'xstate.enqueueActions';
+  enqueueActions.type = "xstate.enqueueActions";
   enqueueActions.collect = collect;
   enqueueActions.resolve = resolveEnqueueActions;
 

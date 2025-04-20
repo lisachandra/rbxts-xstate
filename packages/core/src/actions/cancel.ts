@@ -1,4 +1,5 @@
-import isDevelopment from '#is-development';
+import { Error } from "@rbxts/luau-polyfill";
+import isDevelopment from "../isDevelopment";
 import {
   AnyActorScope,
   AnyMachineSnapshot,
@@ -6,30 +7,31 @@ import {
   MachineContext,
   ActionArgs,
   ParameterizedObject,
-  BuiltinActionResolution
-} from '../types.ts';
+  BuiltinActionResolution,
+} from "../types";
 
 type ResolvableSendId<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 > =
   | string
   | ((
       args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-      params: TParams
+      params: TParams,
     ) => string);
 
 function resolveCancel(
   _: AnyActorScope,
   snapshot: AnyMachineSnapshot,
   actionArgs: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject['params'] | undefined,
-  { sendId }: { sendId: ResolvableSendId<any, any, any, any> }
+  actionParams: ParameterizedObject["params"] | undefined,
+  { sendId }: { sendId: ResolvableSendId<any, any, any, any> },
 ): BuiltinActionResolution {
-  const resolvedSendId =
-    typeof sendId === 'function' ? sendId(actionArgs, actionParams) : sendId;
+  const resolvedSendId = typeIs(sendId, "function")
+    ? sendId(actionArgs, actionParams)
+    : sendId;
   return [snapshot, { sendId: resolvedSendId }, undefined];
 }
 
@@ -42,8 +44,8 @@ function executeCancel(actorScope: AnyActorScope, params: { sendId: string }) {
 export interface CancelAction<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 > {
   (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
 }
@@ -83,21 +85,21 @@ export interface CancelAction<
 export function cancel<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 >(
-  sendId: ResolvableSendId<TContext, TExpressionEvent, TParams, TEvent>
+  sendId: ResolvableSendId<TContext, TExpressionEvent, TParams, TEvent>,
 ): CancelAction<TContext, TExpressionEvent, TParams, TEvent> {
   function cancel(
     _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: TParams
+    _params: TParams,
   ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
   }
 
-  cancel.type = 'xstate.cancel';
+  cancel.type = "xstate.cancel";
   cancel.sendId = sendId;
 
   cancel.resolve = resolveCancel;

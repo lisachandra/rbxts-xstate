@@ -1,12 +1,14 @@
-import isDevelopment from '#is-development';
-import { AnyActorRef, SnapshotFrom, Subscription } from './types.ts';
+import { clearTimeout, Error, setTimeout } from "@rbxts/luau-polyfill";
+import isDevelopment from "./isDevelopment";
+import { AnyActorRef, SnapshotFrom, Subscription } from "./types";
+import type { AbortSignal } from "@rbxts/whatwg-abort-controller";
 
 interface WaitForOptions {
   /**
    * How long to wait before rejecting, if no emitted state satisfies the
    * predicate.
    *
-   * @defaultValue Infinity
+   * @defaultValue math.huge
    */
   timeout: number;
 
@@ -15,13 +17,13 @@ interface WaitForOptions {
 }
 
 const defaultWaitForOptions: WaitForOptions = {
-  timeout: Infinity // much more than 10 seconds
+  timeout: math.huge, // much more than 10 seconds
 };
 
 /**
  * Subscribes to an actor ref and waits for its emitted value to satisfy a
  * predicate, and then resolves with that value. Will throw if the desired state
- * is not reached after an optional timeout. (defaults to Infinity).
+ * is not reached after an optional timeout. (defaults to math.huge).
  *
  * @example
  *
@@ -42,27 +44,26 @@ const defaultWaitForOptions: WaitForOptions = {
 export function waitFor<TActorRef extends AnyActorRef>(
   actorRef: TActorRef,
   predicate: (emitted: SnapshotFrom<TActorRef>) => boolean,
-  options?: Partial<WaitForOptions>
+  options?: Partial<WaitForOptions>,
 ): Promise<SnapshotFrom<TActorRef>> {
   const resolvedOptions: WaitForOptions = {
     ...defaultWaitForOptions,
-    ...options
+    ...options,
   };
   return new Promise((res, rej) => {
     const { signal } = resolvedOptions;
-    if (signal?.aborted) {
-      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-      rej(signal.reason);
+    if (signal?.getAborted()) {
+      rej();
       return;
     }
     let done = false;
     if (isDevelopment && resolvedOptions.timeout < 0) {
-      console.error(
-        '`timeout` passed to `waitFor` is negative and it will reject its internal promise immediately.'
+      error(
+        "`timeout` passed to `waitFor` is negative and it will reject its internal promise immediately.",
       );
     }
     const handle =
-      resolvedOptions.timeout === Infinity
+      resolvedOptions.timeout === math.huge
         ? undefined
         : setTimeout(() => {
             dispose();
@@ -70,11 +71,14 @@ export function waitFor<TActorRef extends AnyActorRef>(
           }, resolvedOptions.timeout);
 
     const dispose = () => {
-      clearTimeout(handle);
+      if (handle !== undefined) {
+        clearTimeout(handle);
+      }
+
       done = true;
       sub?.unsubscribe();
       if (abortListener) {
-        signal!.removeEventListener('abort', abortListener);
+        signal!.removeEventListener("abort", abortListener);
       }
     };
 
@@ -104,23 +108,21 @@ export function waitFor<TActorRef extends AnyActorRef>(
       abortListener = () => {
         dispose();
         // XState does not "own" the signal, so we should reject with its reason (if any)
-        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-        rej(signal.reason);
+        rej();
       };
-      signal.addEventListener('abort', abortListener);
+      signal.addEventListener("abort", abortListener);
     }
 
     sub = actorRef.subscribe({
       next: checkEmitted,
       error: (err) => {
         dispose();
-        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         rej(err);
       },
       complete: () => {
         dispose();
         rej(new Error(`Actor terminated without satisfying predicate`));
-      }
+      },
     });
     if (done) {
       sub.unsubscribe();

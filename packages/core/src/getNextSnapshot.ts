@@ -1,4 +1,4 @@
-import { createActor } from './createActor.ts';
+import { createActor } from "./createActor";
 import {
   ActorScope,
   AnyActorLogic,
@@ -6,29 +6,29 @@ import {
   EmittedFrom,
   EventFromLogic,
   InputFrom,
-  SnapshotFrom
-} from './types.ts';
+  SnapshotFrom,
+} from "./types";
 
 /** @internal */
 export function createInertActorScope<T extends AnyActorLogic>(
-  actorLogic: T
+  actorLogic: T,
 ): AnyActorScope {
-  const self = createActor(actorLogic as AnyActorLogic);
+  const itself = createActor(actorLogic as AnyActorLogic);
   const inertActorScope: ActorScope<
     SnapshotFrom<T>,
     EventFromLogic<T>,
     any,
     EmittedFrom<T>
   > = {
-    self,
+    self: itself,
     defer: () => {},
-    id: '',
+    id: "",
     logger: () => {},
-    sessionId: '',
+    sessionId: "",
     stopChild: () => {},
-    system: self.system,
+    system: itself.system,
     emit: () => {},
-    actionExecutor: () => {}
+    actionExecutor: () => {},
   };
 
   return inertActorScope;
@@ -57,7 +57,7 @@ export function getInitialSnapshot<T extends AnyActorLogic>(
  *
  * ```ts
  * import { getNextSnapshot } from 'xstate';
- * import { trafficLightMachine } from './trafficLightMachine.ts';
+ * import { trafficLightMachine } from './trafficLightMachine';
  *
  * const nextSnapshot = getNextSnapshot(
  *   trafficLightMachine, // actor logic
@@ -81,9 +81,9 @@ export function getInitialSnapshot<T extends AnyActorLogic>(
 export function getNextSnapshot<T extends AnyActorLogic>(
   actorLogic: T,
   snapshot: SnapshotFrom<T>,
-  event: EventFromLogic<T>
+  event: EventFromLogic<T>,
 ): SnapshotFrom<T> {
   const inertActorScope = createInertActorScope(actorLogic);
-  (inertActorScope.self as any)._snapshot = snapshot;
+  (inertActorScope.self as never)["_snapshot"] = snapshot;
   return actorLogic.transition(snapshot, event, inertActorScope);
 }

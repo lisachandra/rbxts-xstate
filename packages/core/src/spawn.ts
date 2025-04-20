@@ -1,4 +1,5 @@
-import { ProcessingStatus, createActor } from './createActor.ts';
+import { Error } from "@rbxts/luau-polyfill";
+import { ProcessingStatus, createActor } from "./createActor";
 import {
   ActorRefFromLogic,
   AnyActorLogic,
@@ -14,36 +15,36 @@ import {
   ProvidedActor,
   RequiredActorOptions,
   TODO,
-  type RequiredLogicInput
-} from './types.ts';
-import { resolveReferencedActor } from './utils.ts';
+  type RequiredLogicInput,
+} from "./types";
+import { resolveReferencedActor } from "./utils";
 
 type SpawnOptions<
   TActor extends ProvidedActor,
-  TSrc extends TActor['src']
+  TSrc extends TActor["src"],
 > = TActor extends {
   src: TSrc;
 }
   ? ConditionalRequired<
       [
         options?: {
-          id?: TActor['id'];
+          id?: TActor["id"];
           systemId?: string;
-          input?: InputFrom<TActor['logic']>;
+          input?: InputFrom<TActor["logic"]>;
           syncSnapshot?: boolean;
-        } & { [K in RequiredActorOptions<TActor>]: unknown }
+        } & { [K in RequiredActorOptions<TActor>]: unknown },
       ],
       IsNotNever<RequiredActorOptions<TActor>>
     >
   : never;
 
 export type Spawner<TActor extends ProvidedActor> =
-  IsLiteralString<TActor['src']> extends true
+  IsLiteralString<TActor["src"]> extends true
     ? {
-        <TSrc extends TActor['src']>(
+        <TSrc extends TActor["src"]>(
           logic: TSrc,
           ...[options]: SpawnOptions<TActor, TSrc>
-        ): ActorRefFromLogic<GetConcreteByKey<TActor, 'src', TSrc>['logic']>;
+        ): ActorRefFromLogic<GetConcreteByKey<TActor, "src", TSrc>["logic"]>;
         <TLogic extends AnyActorLogic>(
           src: TLogic,
           ...[options]: ConditionalRequired<
@@ -53,7 +54,7 @@ export type Spawner<TActor extends ProvidedActor> =
                 systemId?: string;
                 input?: InputFrom<TLogic>;
                 syncSnapshot?: boolean;
-              } & { [K in RequiredLogicInput<TLogic>]: unknown }
+              } & { [K in RequiredLogicInput<TLogic>]: unknown },
             ],
             IsNotNever<RequiredLogicInput<TLogic>>
           >
@@ -70,7 +71,7 @@ export type Spawner<TActor extends ProvidedActor> =
               syncSnapshot?: boolean;
             } & (TLogic extends AnyActorLogic
               ? { [K in RequiredLogicInput<TLogic>]: unknown }
-              : {})
+              : {}),
           ],
           IsNotNever<
             TLogic extends AnyActorLogic ? RequiredLogicInput<TLogic> : never
@@ -84,35 +85,34 @@ export function createSpawner(
   actorScope: AnyActorScope,
   { machine, context }: AnyMachineSnapshot,
   event: AnyEventObject,
-  spawnedChildren: Record<string, AnyActorRef>
+  spawnedChildren: Record<string, AnyActorRef>,
 ): Spawner<any> {
   const spawn: Spawner<any> = ((src, options) => {
-    if (typeof src === 'string') {
+    if (typeIs(src, "string")) {
       const logic = resolveReferencedActor(machine, src);
 
       if (!logic) {
         throw new Error(
-          `Actor logic '${src}' not implemented in machine '${machine.id}'`
+          `Actor logic '${src}' not implemented in machine '${machine.id}'`,
         );
       }
 
-      const actorRef = createActor(logic, {
+      const actorRef = createActor(logic as AnyActorLogic, {
         id: options?.id,
         parent: actorScope.self,
         syncSnapshot: options?.syncSnapshot,
-        input:
-          typeof options?.input === 'function'
-            ? options.input({
-                context,
-                event,
-                self: actorScope.self
-              })
-            : options?.input,
+        input: typeIs(options?.input, "function")
+          ? (options.input as Callback)({
+              context,
+              event,
+              self: actorScope.self,
+            } as never)
+          : options?.input,
         src,
-        systemId: options?.systemId
-      }) as any;
+        systemId: options?.systemId,
+      }) as never;
 
-      spawnedChildren[actorRef.id] = actorRef;
+      spawnedChildren[actorRef["id"]] = actorRef;
 
       return actorRef;
     } else {
@@ -122,7 +122,7 @@ export function createSpawner(
         syncSnapshot: options?.syncSnapshot,
         input: options?.input,
         src,
-        systemId: options?.systemId
+        systemId: options?.systemId,
       });
 
       return actorRef;
@@ -130,12 +130,15 @@ export function createSpawner(
   }) as Spawner<any>;
   return ((src, options) => {
     const actorRef = spawn(src, options) as TODO; // TODO: fix types
-    spawnedChildren[actorRef.id] = actorRef;
+    spawnedChildren[(actorRef as object)["id" as never]] = actorRef;
     actorScope.defer(() => {
-      if (actorRef._processingStatus === ProcessingStatus.Stopped) {
+      if (
+        (actorRef as object)["_processingStatus" as never] ===
+        ProcessingStatus.Stopped
+      ) {
         return;
       }
-      actorRef.start();
+      ((actorRef as object)["start" as never] as Callback)();
     });
     return actorRef;
   }) as Spawner<any>;

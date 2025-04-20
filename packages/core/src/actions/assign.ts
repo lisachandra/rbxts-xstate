@@ -1,7 +1,7 @@
-import isDevelopment from '#is-development';
-import { cloneMachineSnapshot } from '../State.ts';
-import { executingCustomAction } from '../createActor.ts';
-import { Spawner, createSpawner } from '../spawn.ts';
+import isDevelopment from "../isDevelopment";
+import { cloneMachineSnapshot } from "../State";
+import { executingCustomAction } from "../createActor";
+import { Spawner, createSpawner } from "../spawn";
 import type {
   ActionArgs,
   AnyActorScope,
@@ -16,14 +16,15 @@ import type {
   PropertyAssigner,
   ProvidedActor,
   ActionFunction,
-  BuiltinActionResolution
-} from '../types.ts';
+  BuiltinActionResolution,
+} from "../types";
+import { Error, Object } from "@rbxts/luau-polyfill";
 
 export interface AssignArgs<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
   TEvent extends EventObject,
-  TActor extends ProvidedActor
+  TActor extends ProvidedActor,
 > extends ActionArgs<TContext, TExpressionEvent, TEvent> {
   spawn: Spawner<TActor>;
 }
@@ -32,18 +33,18 @@ function resolveAssign(
   actorScope: AnyActorScope,
   snapshot: AnyMachineSnapshot,
   actionArgs: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject['params'] | undefined,
+  actionParams: ParameterizedObject["params"] | undefined,
   {
-    assignment
+    assignment,
   }: {
     assignment:
       | Assigner<any, any, any, any, any>
       | PropertyAssigner<any, any, any, any, any>;
-  }
+  },
 ): BuiltinActionResolution {
-  if (!snapshot.context) {
+  if (!(snapshot as object)["context" as never]) {
     throw new Error(
-      'Cannot assign to undefined `context`. Ensure that `context` is defined in the machine config.'
+      "Cannot assign to undefined `context`. Ensure that `context` is defined in the machine config.",
     );
   }
   const spawnedChildren: Record<string, AnyActorRef> = {};
@@ -55,21 +56,20 @@ function resolveAssign(
       actorScope,
       snapshot,
       actionArgs.event,
-      spawnedChildren
+      spawnedChildren,
     ),
     self: actorScope.self,
-    system: actorScope.system
+    system: actorScope.system,
   };
   let partialUpdate: Record<string, unknown> = {};
-  if (typeof assignment === 'function') {
+  if (typeIs(assignment, "function")) {
     partialUpdate = assignment(assignArgs, actionParams);
   } else {
     for (const key of Object.keys(assignment)) {
-      const propAssignment = assignment[key];
-      partialUpdate[key] =
-        typeof propAssignment === 'function'
-          ? propAssignment(assignArgs, actionParams)
-          : propAssignment;
+      const propAssignment = assignment[key as never];
+      partialUpdate[key as never] = typeIs(propAssignment, "function")
+        ? propAssignment(assignArgs, actionParams)
+        : propAssignment;
     }
   }
 
@@ -78,24 +78,24 @@ function resolveAssign(
   return [
     cloneMachineSnapshot(snapshot, {
       context: updatedContext,
-      children: Object.keys(spawnedChildren).length
+      children: Object.keys(spawnedChildren).size()
         ? {
             ...snapshot.children,
-            ...spawnedChildren
+            ...spawnedChildren,
           }
-        : snapshot.children
+        : snapshot.children,
     }),
     undefined,
-    undefined
+    undefined,
   ];
 }
 
 export interface AssignAction<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
+  TParams extends ParameterizedObject["params"] | undefined,
   TEvent extends EventObject,
-  TActor extends ProvidedActor
+  TActor extends ProvidedActor,
 > {
   (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
   _out_TActor?: TActor;
@@ -138,9 +138,9 @@ export interface AssignAction<
 export function assign<
   TContext extends MachineContext,
   TExpressionEvent extends AnyEventObject, // TODO: consider using a stricter `EventObject` here
-  TParams extends ParameterizedObject['params'] | undefined,
+  TParams extends ParameterizedObject["params"] | undefined,
   TEvent extends EventObject,
-  TActor extends ProvidedActor
+  TActor extends ProvidedActor,
 >(
   assignment:
     | Assigner<LowInfer<TContext>, TExpressionEvent, TParams, TEvent, TActor>
@@ -150,7 +150,7 @@ export function assign<
         TParams,
         TEvent,
         TActor
-      >
+      >,
 ): ActionFunction<
   TContext,
   TExpressionEvent,
@@ -163,21 +163,21 @@ export function assign<
   never
 > {
   if (isDevelopment && executingCustomAction) {
-    console.warn(
-      'Custom actions should not call `assign()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.'
+    warn(
+      "Custom actions should not call `assign()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
     );
   }
 
   function assign(
     _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: TParams
+    _params: TParams,
   ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
   }
 
-  assign.type = 'xstate.assign';
+  assign.type = "xstate.assign";
   assign.assignment = assignment;
 
   assign.resolve = resolveAssign;

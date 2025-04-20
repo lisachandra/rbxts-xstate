@@ -1,3 +1,5 @@
-export const symbolObservable: typeof Symbol.observable = (() =>
-  (typeof Symbol === 'function' && Symbol.observable) ||
-  '@@observable')() as any;
+import { Symbol } from "@rbxts/luau-polyfill";
+
+export const symbolObservable: unique symbol = (() =>
+  (typeIs(Symbol, "function") && Symbol.observable) ||
+  "@@observable")() as never;

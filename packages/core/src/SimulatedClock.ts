@@ -1,4 +1,5 @@
-import { Clock } from './system.ts';
+import { Array, Error } from "@rbxts/luau-polyfill";
+import { Clock } from "./system";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface SimulatedClock extends Clock {
@@ -32,7 +33,7 @@ export class SimulatedClock implements SimulatedClock {
     this.timeouts.set(id, {
       start: this.now(),
       timeout,
-      fn
+      fn,
     });
     return id;
   }
@@ -42,7 +43,7 @@ export class SimulatedClock implements SimulatedClock {
   }
   public set(time: number) {
     if (this._now > time) {
-      throw new Error('Unable to travel back in time');
+      throw new Error("Unable to travel back in time");
     }
 
     this._now = time;
@@ -55,12 +56,13 @@ export class SimulatedClock implements SimulatedClock {
     }
     this._flushing = true;
 
-    const sorted = [...this.timeouts].sort(
+    const sorted = Array.sort(
+      [...this.timeouts],
       ([_idA, timeoutA], [_idB, timeoutB]) => {
         const endA = timeoutA.start + timeoutA.timeout;
         const endB = timeoutB.start + timeoutB.timeout;
         return endB > endA ? -1 : 1;
-      }
+      },
     );
 
     for (const [id, timeout] of sorted) {
@@ -72,7 +74,7 @@ export class SimulatedClock implements SimulatedClock {
       }
       if (this.now() - timeout.start >= timeout.timeout) {
         this.timeouts.delete(id);
-        timeout.fn.call(null);
+        (timeout["fn"] as Callback)();
       }
     }
 

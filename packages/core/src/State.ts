@@ -1,8 +1,8 @@
-import isDevelopment from '#is-development';
-import { $$ACTOR_TYPE } from './createActor.ts';
-import type { StateNode } from './StateNode.ts';
-import type { StateMachine } from './StateMachine.ts';
-import { getStateValue } from './stateUtils.ts';
+import isDevelopment from "./isDevelopment";
+import { __ACTOR_TYPE } from "./createActor";
+import type { StateNode } from "./StateNode";
+import type { StateMachine } from "./StateMachine";
+import { getStateValue } from "./stateUtils";
 import type {
   ProvidedActor,
   AnyMachineSnapshot,
@@ -19,9 +19,11 @@ import type {
   MetaObject,
   StateSchema,
   StateId,
-  SnapshotStatus
-} from './types.ts';
-import { matchesState } from './utils.ts';
+  SnapshotStatus,
+  AnyObject,
+} from "./types";
+import { matchesState, omit } from "./utils";
+import { Array, Error } from "@rbxts/luau-polyfill";
 
 type ToTestStateValue<TStateValue extends StateValue> =
   TStateValue extends string
@@ -38,10 +40,7 @@ type ToTestStateValue<TStateValue extends StateValue> =
 
 export function isMachineSnapshot(value: unknown): value is AnyMachineSnapshot {
   return (
-    !!value &&
-    typeof value === 'object' &&
-    'machine' in value &&
-    'value' in value
+    !!value && typeIs(value, "table") && "machine" in value && "value" in value
   );
 }
 
@@ -53,7 +52,7 @@ interface MachineSnapshotBase<
   TTag extends string,
   TOutput,
   TMeta,
-  TStateSchema extends StateSchema = StateSchema
+  TStateSchema extends StateSchema = StateSchema,
 > {
   /** The state machine that produced this state snapshot. */
   machine: StateMachine<
@@ -113,14 +112,14 @@ interface MachineSnapshotBase<
    *
    * @param partialStateValue
    */
-  matches: (partialStateValue: ToTestStateValue<TStateValue>) => boolean;
+  matches(partialStateValue: ToTestStateValue<TStateValue>): boolean;
 
   /**
    * Whether the current state nodes has a state node with the specified `tag`.
    *
    * @param tag
    */
-  hasTag: (tag: TTag) => boolean;
+  hasTag(tag: TTag): boolean;
 
   /**
    * Determines whether sending the `event` will cause a non-forbidden
@@ -130,14 +129,14 @@ interface MachineSnapshotBase<
    * @param event The event to test
    * @returns Whether the event will cause a transition
    */
-  can: (event: TEvent) => boolean;
+  can(event: TEvent): boolean;
 
-  getMeta: () => Record<
+  getMeta(): Record<
     StateId<TStateSchema> & string,
     TMeta | undefined // States might not have meta defined
   >;
 
-  toJSON: () => unknown;
+  toJSON(): unknown;
 }
 
 interface ActiveMachineSnapshot<
@@ -148,7 +147,7 @@ interface ActiveMachineSnapshot<
   TTag extends string,
   TOutput,
   TMeta extends MetaObject,
-  TConfig extends StateSchema
+  TConfig extends StateSchema,
 > extends MachineSnapshotBase<
     TContext,
     TEvent,
@@ -159,7 +158,7 @@ interface ActiveMachineSnapshot<
     TMeta,
     TConfig
   > {
-  status: 'active';
+  status: "active";
   output: undefined;
   error: undefined;
 }
@@ -172,7 +171,7 @@ interface DoneMachineSnapshot<
   TTag extends string,
   TOutput,
   TMeta extends MetaObject,
-  TConfig extends StateSchema
+  TConfig extends StateSchema,
 > extends MachineSnapshotBase<
     TContext,
     TEvent,
@@ -183,7 +182,7 @@ interface DoneMachineSnapshot<
     TMeta,
     TConfig
   > {
-  status: 'done';
+  status: "done";
   output: TOutput;
   error: undefined;
 }
@@ -196,7 +195,7 @@ interface ErrorMachineSnapshot<
   TTag extends string,
   TOutput,
   TMeta extends MetaObject,
-  TConfig extends StateSchema
+  TConfig extends StateSchema,
 > extends MachineSnapshotBase<
     TContext,
     TEvent,
@@ -207,7 +206,7 @@ interface ErrorMachineSnapshot<
     TMeta,
     TConfig
   > {
-  status: 'error';
+  status: "error";
   output: undefined;
   error: unknown;
 }
@@ -220,7 +219,7 @@ interface StoppedMachineSnapshot<
   TTag extends string,
   TOutput,
   TMeta extends MetaObject,
-  TConfig extends StateSchema
+  TConfig extends StateSchema,
 > extends MachineSnapshotBase<
     TContext,
     TEvent,
@@ -231,7 +230,7 @@ interface StoppedMachineSnapshot<
     TMeta,
     TConfig
   > {
-  status: 'stopped';
+  status: "stopped";
   output: undefined;
   error: undefined;
 }
@@ -244,7 +243,7 @@ export type MachineSnapshot<
   TTag extends string,
   TOutput,
   TMeta extends MetaObject,
-  TConfig extends StateSchema
+  TConfig extends StateSchema,
 > =
   | ActiveMachineSnapshot<
       TContext,
@@ -287,63 +286,61 @@ export type MachineSnapshot<
       TConfig
     >;
 
-const machineSnapshotMatches = function matches(
+const machineSnapshotMatches = function (
   this: AnyMachineSnapshot,
-  testValue: StateValue
+  testValue: StateValue,
 ) {
   return matchesState(testValue, this.value);
 };
 
-const machineSnapshotHasTag = function hasTag(
-  this: AnyMachineSnapshot,
-  tag: string
-) {
+const machineSnapshotHasTag = function (this: AnyMachineSnapshot, tag: string) {
   return this.tags.has(tag);
 };
 
-const machineSnapshotCan = function can(
+const machineSnapshotCan = function (
   this: AnyMachineSnapshot,
-  event: EventObject
+  event: EventObject,
 ) {
   if (isDevelopment && !this.machine) {
-    console.warn(
-      `state.can(...) used outside of a machine-created State object; this will always return false.`
+    warn(
+      `state.can(...) used outside of a machine-created State object; this will always return false.`,
     );
   }
 
   const transitionData = this.machine.getTransitionData(this, event);
 
   return (
-    !!transitionData?.length &&
+    !!transitionData?.size() &&
     // Check that at least one transition is not forbidden
-    transitionData.some((t) => t.target !== undefined || t.actions.length)
+    transitionData.some((t) => !!(t.target !== undefined || t.actions.size()))
   );
 };
 
-const machineSnapshotToJSON = function toJSON(this: AnyMachineSnapshot) {
-  const {
-    _nodes: nodes,
-    tags,
-    machine,
-    getMeta,
-    toJSON,
-    can,
-    hasTag,
-    matches,
-    ...jsonValues
-  } = this;
-  return { ...jsonValues, tags: Array.from(tags) };
+const machineSnapshotToJSON = function (this: AnyMachineSnapshot) {
+  const jsonValues = omit(this, [
+    "_nodes",
+    "tags",
+    "machine",
+    "children",
+    "context",
+    "can",
+    "hasTag",
+    "matches",
+    "getMeta",
+    "toJSON",
+  ]);
+  return { ...jsonValues, tags: [...this.tags] };
 };
 
-const machineSnapshotGetMeta = function getMeta(this: AnyMachineSnapshot) {
+const machineSnapshotGetMeta = function (this: AnyMachineSnapshot) {
   return this._nodes.reduce(
     (acc, stateNode) => {
-      if (stateNode.meta !== undefined) {
+      if ((stateNode as never as AnyObject).meta !== undefined) {
         acc[stateNode.id] = stateNode.meta;
       }
       return acc;
     },
-    {} as Record<string, any>
+    {} as Record<string, any>,
   );
 };
 
@@ -354,10 +351,10 @@ export function createMachineSnapshot<
   TStateValue extends StateValue,
   TTag extends string,
   TMeta extends MetaObject,
-  TStateSchema extends StateSchema
+  TStateSchema extends StateSchema,
 >(
   config: StateConfig<TContext, TEvent>,
-  machine: AnyStateMachine
+  machine: AnyStateMachine,
 ): MachineSnapshot<
   TContext,
   TEvent,
@@ -376,24 +373,24 @@ export function createMachineSnapshot<
     context: config.context,
     _nodes: config._nodes,
     value: getStateValue(machine.root, config._nodes) as never,
-    tags: new Set(config._nodes.flatMap((sn) => sn.tags)),
-    children: config.children as any,
+    tags: new Set(Array.flatMap(config._nodes, (sn) => sn.tags)),
+    children: config.children as never,
     historyValue: config.historyValue || {},
     matches: machineSnapshotMatches as never,
     hasTag: machineSnapshotHasTag,
     can: machineSnapshotCan,
     getMeta: machineSnapshotGetMeta,
-    toJSON: machineSnapshotToJSON
+    toJSON: machineSnapshotToJSON,
   };
 }
 
 export function cloneMachineSnapshot<TState extends AnyMachineSnapshot>(
   snapshot: TState,
-  config: Partial<StateConfig<any, any>> = {}
+  config: Partial<StateConfig<any, any>> = {},
 ): TState {
   return createMachineSnapshot(
     { ...snapshot, ...config } as StateConfig<any, any>,
-    snapshot.machine
+    snapshot.machine,
   ) as TState;
 }
 
@@ -404,7 +401,7 @@ export function getPersistedSnapshot<
   TStateValue extends StateValue,
   TTag extends string,
   TOutput,
-  TMeta extends MetaObject
+  TMeta extends MetaObject,
 >(
   snapshot: MachineSnapshot<
     TContext,
@@ -416,70 +413,70 @@ export function getPersistedSnapshot<
     TMeta,
     any // state schema
   >,
-  options?: unknown
+  options?: unknown,
 ): Snapshot<unknown> {
-  const {
-    _nodes: nodes,
-    tags,
-    machine,
-    children,
-    context,
-    can,
-    hasTag,
-    matches,
-    getMeta,
-    toJSON,
-    ...jsonValues
-  } = snapshot;
+  const { children, context } = snapshot;
+  const jsonValues = omit(snapshot, [
+    "_nodes",
+    "tags",
+    "machine",
+    "children",
+    "context",
+    "can",
+    "hasTag",
+    "matches",
+    "getMeta",
+    "toJSON",
+  ]);
 
   const childrenJson: Record<string, unknown> = {};
 
-  for (const id in children) {
-    const child = children[id] as any;
+  for (const [_, id] of pairs(children)) {
+    const child = children[id as never] as object;
     if (
       isDevelopment &&
-      typeof child.src !== 'string' &&
-      (!options || !('__unsafeAllowInlineActors' in (options as object)))
+      !typeIs(child["src" as never], "string") &&
+      (!options || !("__unsafeAllowInlineActors" in (options as object)))
     ) {
-      throw new Error('An inline child actor cannot be persisted.');
+      throw new Error("An inline child actor cannot be persisted.");
     }
     childrenJson[id as keyof typeof childrenJson] = {
-      snapshot: child.getPersistedSnapshot(options),
-      src: child.src,
-      systemId: child._systemId,
-      syncSnapshot: child._syncSnapshot
+      snapshot: (child["getPersistedSnapshot" as never] as Callback)(options),
+      src: child["src" as never],
+      systemId: child["_systemId" as never],
+      syncSnapshot: child["_syncSnapshot" as never],
     };
   }
 
   const persisted = {
     ...jsonValues,
-    context: persistContext(context) as any,
-    children: childrenJson
+    context: persistContext(context) as never,
+    children: childrenJson,
   };
 
-  return persisted;
+  return persisted as never;
 }
 
 function persistContext(contextPart: Record<string, unknown>) {
   let copy: typeof contextPart | undefined;
-  for (const key in contextPart) {
-    const value = contextPart[key];
-    if (value && typeof value === 'object') {
-      if ('sessionId' in value && 'send' in value && 'ref' in value) {
+  for (const [_, key] of pairs(contextPart)) {
+    const value = contextPart[key as never];
+    if (value && typeIs(value, "table")) {
+      if ("sessionId" in value && "send" in value && "ref" in value) {
         copy ??= Array.isArray(contextPart)
-          ? (contextPart.slice() as typeof contextPart)
+          ? (Array.slice(contextPart) as typeof contextPart)
           : { ...contextPart };
-        copy[key] = {
-          xstate$$type: $$ACTOR_TYPE,
-          id: (value as any as AnyActorRef).id
+        copy[key as never] = {
+          xstate$$type: __ACTOR_TYPE,
+          id: (value as never as AnyActorRef).id,
         };
       } else {
         const result = persistContext(value as typeof contextPart);
         if (result !== value) {
           copy ??= Array.isArray(contextPart)
-            ? (contextPart.slice() as typeof contextPart)
+            ? (Array.slice(contextPart) as typeof contextPart)
             : { ...contextPart };
-          copy[key] = result;
+          copy[key as never] = result;
         }
       }
     }

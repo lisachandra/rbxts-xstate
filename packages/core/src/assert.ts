@@ -1,5 +1,7 @@
-import { EventObject } from './types.ts';
-import { toArray } from './utils.ts';
+import { Error } from "@rbxts/luau-polyfill";
+import { EventObject } from "./types";
+import { toArray } from "./utils";
+import { HttpService } from "@rbxts/services";
 
 /**
  * Asserts that the given event object is of the specified type or types. Throws
@@ -26,19 +28,19 @@ import { toArray } from './utils.ts';
  */
 export function assertEvent<
   TEvent extends EventObject,
-  TAssertedType extends TEvent['type']
+  TAssertedType extends TEvent["type"],
 >(
   event: TEvent,
-  type: TAssertedType | TAssertedType[]
+  kind: TAssertedType | TAssertedType[],
 ): asserts event is TEvent & { type: TAssertedType } {
-  const types = toArray(type);
-  if (!types.includes(event.type as any)) {
+  const types = toArray(kind);
+  if (!types.includes(event.type as never)) {
     const typesText =
-      types.length === 1
+      types.size() === 1
         ? `type "${types[0]}"`
         : `one of types "${types.join('", "')}"`;
     throw new Error(
-      `Expected event ${JSON.stringify(event)} to have ${typesText}`
+      `Expected event ${HttpService.JSONEncode(event)} to have ${typesText}`,
     );
   }
 }

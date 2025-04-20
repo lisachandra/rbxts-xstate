@@ -1,32 +1,31 @@
-import { createActor } from '../createActor.ts';
-import type { ActorRef, AnyEventObject, Snapshot } from '../types.ts';
-import { fromTransition } from './transition.ts';
+import { createActor } from "../createActor";
+import type { ActorRef, AnyEventObject, Snapshot } from "../types";
+import { fromTransition } from "./transition";
 export {
   fromCallback,
   type CallbackActorLogic,
   type CallbackActorRef,
   type CallbackSnapshot,
-  type CallbackLogicFunction
-} from './callback.ts';
+  type CallbackLogicFunction,
+} from "./callback";
 export {
   fromEventObservable,
   fromObservable,
   type ObservableActorLogic,
   type ObservableActorRef,
-  type ObservableSnapshot
-} from './observable.ts';
+  type ObservableSnapshot,
+} from "./observable";
 export {
-  fromPromise,
   type PromiseActorLogic,
   type PromiseActorRef,
-  type PromiseSnapshot
-} from './promise.ts';
+  type PromiseSnapshot,
+} from "./promise";
 export {
   fromTransition,
   type TransitionActorLogic,
   type TransitionActorRef,
-  type TransitionSnapshot
-} from './transition.ts';
+  type TransitionSnapshot,
+} from "./transition";
 
 const emptyLogic = fromTransition((_) => undefined, undefined);
 

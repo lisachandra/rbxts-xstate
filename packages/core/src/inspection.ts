@@ -2,8 +2,8 @@ import {
   ActorRefLike,
   AnyEventObject,
   AnyTransitionDefinition,
-  Snapshot
-} from './types.ts';
+  Snapshot,
+} from "./types";
 
 export type InspectionEvent =
   | InspectedSnapshotEvent
@@ -25,20 +25,20 @@ interface BaseInspectionEventProperties {
 }
 
 export interface InspectedSnapshotEvent extends BaseInspectionEventProperties {
-  type: '@xstate.snapshot';
+  type: "@xstate.snapshot";
   event: AnyEventObject; // { type: string, ... }
   snapshot: Snapshot<unknown>;
 }
 
 interface InspectedMicrostepEvent extends BaseInspectionEventProperties {
-  type: '@xstate.microstep';
+  type: "@xstate.microstep";
   event: AnyEventObject; // { type: string, ... }
   snapshot: Snapshot<unknown>;
   _transitions: AnyTransitionDefinition[];
 }
 
 export interface InspectedActionEvent extends BaseInspectionEventProperties {
-  type: '@xstate.action';
+  type: "@xstate.action";
   action: {
     type: string;
     params: unknown;
@@ -46,7 +46,7 @@ export interface InspectedActionEvent extends BaseInspectionEventProperties {
 }
 
 export interface InspectedEventEvent extends BaseInspectionEventProperties {
-  type: '@xstate.event';
+  type: "@xstate.event";
   // The source might not exist, e.g. when:
   // - root init events
   // - events sent from external (non-actor) sources
@@ -55,5 +55,5 @@ export interface InspectedEventEvent extends BaseInspectionEventProperties {
 }
 
 export interface InspectedActorEvent extends BaseInspectionEventProperties {
-  type: '@xstate.actor';
+  type: "@xstate.actor";
 }

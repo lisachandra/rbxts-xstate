@@ -1,7 +1,7 @@
-import isDevelopment from '#is-development';
-import { isMachineSnapshot } from './State.ts';
-import type { StateNode } from './StateNode.ts';
-import { TARGETLESS_KEY } from './constants.ts';
+import isDevelopment from "./isDevelopment";
+import { isMachineSnapshot } from "./State";
+import type { StateNode } from "./StateNode";
+import { TARGETLESS_KEY } from "./constants";
 import type {
   AnyActorRef,
   AnyEventObject,
@@ -18,18 +18,45 @@ import type {
   SingleOrArray,
   StateLike,
   StateValue,
-  TransitionConfigTarget
-} from './types.ts';
+  TransitionConfigTarget,
+} from "./types";
+import { Array, Object, String } from "@rbxts/luau-polyfill";
+import RegExp from "@rbxts/regexp";
+import { bind } from "bind";
+
+export function stringMatch(stringValue: string, regex: RegExp) {
+  let currentMatches = regex.exec(stringValue);
+  const matches = [];
+
+  while (currentMatches) {
+    const match = currentMatches[1];
+    matches.push(match);
+    const nextInput = currentMatches.input!.sub(
+      currentMatches.index! + match.size(),
+    );
+    currentMatches = regex.exec(nextInput);
+  }
+
+  return matches;
+}
+
+export function is<T>(kind: unknown): kind is T {
+  return true;
+}
+
+export function indexString(str: string, index: number) {
+  return utf8.char(utf8.codepoint(str, utf8.offset(str, index + 1))[0]);
+}
 
 export function matchesState(
   parentStateId: StateValue,
-  childStateId: StateValue
+  childStateId: StateValue,
 ): boolean {
   const parentStateValue = toStateValue(parentStateId);
   const childStateValue = toStateValue(childStateId);
 
-  if (typeof childStateValue === 'string') {
-    if (typeof parentStateValue === 'string') {
+  if (typeIs(childStateValue, "string")) {
+    if (typeIs(parentStateValue, "string")) {
       return childStateValue === parentStateValue;
     }
 
@@ -37,7 +64,7 @@ export function matchesState(
     return false;
   }
 
-  if (typeof parentStateValue === 'string') {
+  if (typeIs(parentStateValue, "string")) {
     return parentStateValue in childStateValue;
   }
 
@@ -56,25 +83,25 @@ export function toStatePath(stateId: string | string[]): string[] {
   }
 
   const result: string[] = [];
-  let segment = '';
+  let segment = "";
 
-  for (let i = 0; i < stateId.length; i++) {
-    const char = stateId.charCodeAt(i);
+  for (let i = 0; i < stateId.size(); i++) {
+    const char = String.charCodeAt(stateId, i);
     switch (char) {
       // \
       case 92:
         // consume the next character
-        segment += stateId[i + 1];
+        segment += indexString(stateId, i + 1);
         // and skip over it
         i++;
         continue;
       // .
       case 46:
         result.push(segment);
-        segment = '';
+        segment = "";
         continue;
     }
-    segment += stateId[i];
+    segment += indexString(stateId, i);
   }
 
   result.push(segment);
@@ -87,25 +114,24 @@ function toStateValue(stateValue: StateLike<any> | StateValue): StateValue {
     return stateValue.value;
   }
 
-  if (typeof stateValue !== 'string') {
+  if (typeIs(stateValue, "string")) {
     return stateValue as StateValue;
   }
 
-  const statePath = toStatePath(stateValue);
-
+  const statePath = toStatePath(stateValue as never);
   return pathToStateValue(statePath);
 }
 
 export function pathToStateValue(statePath: string[]): StateValue {
-  if (statePath.length === 1) {
+  if (statePath.size() === 1) {
     return statePath[0];
   }
 
   const value: StateValue = {};
   let marker = value;
 
-  for (let i = 0; i < statePath.length - 1; i++) {
-    if (i === statePath.length - 2) {
+  for (let i = 0; i < statePath.size() - 1; i++) {
+    if (i === statePath.size() - 2) {
       marker[statePath[i]] = statePath[i + 1];
     } else {
       const previous = marker;
@@ -119,7 +145,7 @@ export function pathToStateValue(statePath: string[]): StateValue {
 
 export function mapValues<P, O extends Record<string, unknown>>(
   collection: O,
-  iteratee: (item: O[keyof O], key: keyof O, collection: O, i: number) => P
+  iteratee: (item: O[keyof O], key: keyof O, collection: O, i: number) => P,
 ): { [key in keyof O]: P };
 export function mapValues(
   collection: Record<string, unknown>,
@@ -127,13 +153,13 @@ export function mapValues(
     item: unknown,
     key: string,
     collection: Record<string, unknown>,
-    i: number
-  ) => unknown
+    i: number,
+  ) => unknown,
 ) {
   const result: Record<string, unknown> = {};
 
   const collectionKeys = Object.keys(collection);
-  for (let i = 0; i < collectionKeys.length; i++) {
+  for (let i = 0; i < collectionKeys.size(); i++) {
     const key = collectionKeys[i];
     result[key] = iteratee(collection[key], key, collection, i);
   }
@@ -157,37 +183,32 @@ export function toArray<T>(value: readonly T[] | T | undefined): readonly T[] {
 
 export function resolveOutput<
   TContext extends MachineContext,
-  TExpressionEvent extends EventObject
+  TExpressionEvent extends EventObject,
 >(
   mapper:
     | Mapper<TContext, TExpressionEvent, unknown, EventObject>
     | NonReducibleUnknown,
   context: TContext,
   event: TExpressionEvent,
-  self: AnyActorRef
+  itself: AnyActorRef,
 ): unknown {
-  if (typeof mapper === 'function') {
-    return mapper({ context, event, self });
+  if (typeIs(mapper, "function")) {
+    return mapper({ context, event, self: itself });
   }
 
   if (
     isDevelopment &&
     !!mapper &&
-    typeof mapper === 'object' &&
-    Object.values(mapper).some((val) => typeof val === 'function')
+    typeIs(mapper, "table") &&
+    (Object.values(mapper) as defined[]).some((val) => typeIs(val, "function"))
   ) {
-    console.warn(
+    warn(
       `Dynamically mapping values to individual properties is deprecated. Use a single function that returns the mapped object instead.\nFound object containing properties whose values are possibly mapping functions: ${Object.entries(
-        mapper
+        mapper,
       )
-        .filter(([, value]) => typeof value === 'function')
-        .map(
-          ([key, value]) =>
-            `\n - ${key}: ${(value as () => any)
-              .toString()
-              .replace(/\n\s*/g, '')}`
-        )
-        .join('')}`
+        .filter(([, value]) => typeIs(value, "function"))
+        .map(([key, value]) => `\n - ${key}: ${value}`)
+        .join("")}`,
     );
   }
 
@@ -199,19 +220,16 @@ function isArray(value: any): value is readonly any[] {
 }
 
 export function isErrorActorEvent(
-  event: AnyEventObject
+  event: AnyEventObject,
 ): event is ErrorActorEvent {
-  return event.type.startsWith('xstate.error.actor');
+  return String.startsWith(event.type, "xstate.error.actor");
 }
 
 export function toTransitionConfigArray(
-  configLike: SingleOrArray<AnyTransitionConfig | TransitionConfigTarget>
+  configLike: SingleOrArray<AnyTransitionConfig | TransitionConfigTarget>,
 ): Array<AnyTransitionConfig> {
-  return toArrayStrict(configLike).map((transitionLike) => {
-    if (
-      typeof transitionLike === 'undefined' ||
-      typeof transitionLike === 'string'
-    ) {
+  return toArrayStrict(configLike as defined).map((transitionLike) => {
+    if (transitionLike === undefined || typeIs(transitionLike, "string")) {
       return { target: transitionLike };
     }
 
@@ -221,9 +239,9 @@ export function toTransitionConfigArray(
 
 export function normalizeTarget<
   TContext extends MachineContext,
-  TEvent extends EventObject
+  TEvent extends EventObject,
 >(
-  target: SingleOrArray<string | StateNode<TContext, TEvent>> | undefined
+  target: SingleOrArray<string | StateNode<TContext, TEvent>> | undefined,
 ): ReadonlyArray<string | StateNode<TContext, TEvent>> | undefined {
   if (target === undefined || target === TARGETLESS_KEY) {
     return undefined;
@@ -234,17 +252,19 @@ export function normalizeTarget<
 export function toObserver<T>(
   nextHandler?: Observer<T> | ((value: T) => void),
   errorHandler?: (error: any) => void,
-  completionHandler?: () => void
+  completionHandler?: () => void,
 ): Observer<T> {
-  const isObserver = typeof nextHandler === 'object';
-  const self = isObserver ? nextHandler : undefined;
+  const isObserver =
+    typeIs(nextHandler, "table") && is<Observer<T>>(nextHandler);
+  const itself = isObserver ? nextHandler : undefined;
 
   return {
-    next: (isObserver ? nextHandler.next : nextHandler)?.bind(self),
-    error: (isObserver ? nextHandler.error : errorHandler)?.bind(self),
-    complete: (isObserver ? nextHandler.complete : completionHandler)?.bind(
-      self
-    )
+    next: bind((isObserver ? nextHandler.next : nextHandler)!, itself),
+    error: bind((isObserver ? nextHandler.error : errorHandler)!, itself),
+    complete: bind(
+      (isObserver ? nextHandler.complete : completionHandler)!,
+      itself,
+    ),
   };
 }
 
@@ -253,29 +273,44 @@ export function createInvokeId(stateNodeId: string, index: number): string {
 }
 
 export function resolveReferencedActor(machine: AnyStateMachine, src: string) {
-  const match = src.match(/^xstate\.invoke\.(\d+)\.(.*)/)!;
-  if (!match) {
+  const match = stringMatch(src, RegExp("^xstate\\.invoke\\.(\\d+)\\.(.*)"));
+  if (!match[0]) {
     return machine.implementations.actors[src];
   }
   const [, indexStr, nodeId] = match;
   const node = machine.getStateNodeById(nodeId);
   const invokeConfig = node.config.invoke!;
   return (
-    Array.isArray(invokeConfig)
-      ? invokeConfig[indexStr as any]
-      : (invokeConfig as InvokeConfig<
-          any,
-          any,
-          any,
-          any,
-          any,
-          any,
-          any, // TEmitted
-          any // TMeta
-        >)
+    (Array.isArray(invokeConfig)
+      ? invokeConfig[indexStr as never]
+      : invokeConfig) as InvokeConfig<
+      any,
+      any,
+      any,
+      any,
+      any,
+      any,
+      any, // TEmitted
+      any // TMeta
+    >
   ).src;
 }
 
 export function getAllOwnEventDescriptors(snapshot: AnyMachineSnapshot) {
-  return [...new Set([...snapshot._nodes.flatMap((sn) => sn.ownEvents)])];
+  return [
+    ...new Set([...Array.flatMap(snapshot._nodes, (sn) => sn.getOwnEvents())]),
+  ];
+}
+
+export function omit<T extends object, K extends (keyof T)[]>(
+  t: T,
+  keys: K,
+): Omit<T, K[number]> {
+  const acc = {};
+  for (const [k, v] of pairs(t)) {
+    if (!keys.includes(k as keyof T)) {
+      acc[k as never] = v as never;
+    }
+  }
+  return acc as Omit<T, K[number]>;
 }

@@ -2,7 +2,7 @@
   "name": "@rbxts/xstate",
   "version": "5.19.2",
   "description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
-  "main": "out/init.lua",
+  "main": "out/init.luau",
   "types": "out/index.d.ts",
   "files": [
     "out",
@@ -36,9 +36,10 @@
   },
   "homepage": "https://github.com/lisachandra/rbxts-xstate/tree/main/packages/core#readme",
   "dependencies": {
-    "@rbxts/lemon-signal": "^1.2.0",
-    "@rbxts/luau-polyfill": "1.1.3",
-    "@rbxts/services": "^1.5.5"
+    "@rbxts/luau-polyfill": "^1.1.3",
+    "@rbxts/regexp": "^0.2.1-ts.4",
+    "@rbxts/services": "^1.5.5",
+    "@rbxts/whatwg-abort-controller": "workspace:*"
   },
   "devDependencies": {
     "@rbxts/compiler-types": "^3.0.0-types.0",

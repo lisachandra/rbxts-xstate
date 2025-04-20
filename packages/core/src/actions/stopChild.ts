@@ -1,6 +1,6 @@
-import isDevelopment from '#is-development';
-import { cloneMachineSnapshot } from '../State.ts';
-import { ProcessingStatus } from '../createActor.ts';
+import isDevelopment from "../isDevelopment";
+import { cloneMachineSnapshot } from "../State";
+import { ProcessingStatus } from "../createActor";
 import {
   ActionArgs,
   AnyActorRef,
@@ -9,52 +9,57 @@ import {
   EventObject,
   MachineContext,
   ParameterizedObject,
-  BuiltinActionResolution
-} from '../types.ts';
+  BuiltinActionResolution,
+  AnyObject,
+} from "../types";
+import { Error } from "@rbxts/luau-polyfill";
 
 type ResolvableActorRef<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 > =
   | string
   | AnyActorRef
   | ((
       args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-      params: TParams
+      params: TParams,
     ) => AnyActorRef | string);
 
 function resolveStop(
   _: AnyActorScope,
   snapshot: AnyMachineSnapshot,
   args: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject['params'] | undefined,
-  { actorRef }: { actorRef: ResolvableActorRef<any, any, any, any> }
+  actionParams: ParameterizedObject["params"] | undefined,
+  { actorRef }: { actorRef: ResolvableActorRef<any, any, any, any> },
 ): BuiltinActionResolution {
-  const actorRefOrString =
-    typeof actorRef === 'function' ? actorRef(args, actionParams) : actorRef;
-  const resolvedActorRef: AnyActorRef | undefined =
-    typeof actorRefOrString === 'string'
-      ? snapshot.children[actorRefOrString]
-      : actorRefOrString;
+  const actorRefOrString = typeIs(actorRef, "function")
+    ? actorRef(args, actionParams)
+    : actorRef;
+  const resolvedActorRef: AnyActorRef | undefined = typeIs(
+    actorRefOrString,
+    "string",
+  )
+    ? ((snapshot.children as AnyObject)[actorRefOrString] as never)
+    : actorRefOrString;
 
   let children = snapshot.children;
   if (resolvedActorRef) {
     children = { ...children };
-    delete children[resolvedActorRef.id];
+    delete (children as AnyObject)[resolvedActorRef.id];
   }
   return [
     cloneMachineSnapshot(snapshot, {
-      children
+      children,
     }),
     resolvedActorRef,
-    undefined
+    undefined,
   ];
 }
 function executeStop(
   actorScope: AnyActorScope,
-  actorRef: AnyActorRef | undefined
+  actorRef: AnyActorRef | undefined,
 ) {
   if (!actorRef) {
     return;
@@ -83,8 +88,8 @@ function executeStop(
 export interface StopAction<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 > {
   (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
 }
@@ -97,21 +102,21 @@ export interface StopAction<
 export function stopChild<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 >(
-  actorRef: ResolvableActorRef<TContext, TExpressionEvent, TParams, TEvent>
+  actorRef: ResolvableActorRef<TContext, TExpressionEvent, TParams, TEvent>,
 ): StopAction<TContext, TExpressionEvent, TParams, TEvent> {
   function stop(
     _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: TParams
+    _params: TParams,
   ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
   }
 
-  stop.type = 'xstate.stopChild';
+  stop.type = "xstate.stopChild";
   stop.actorRef = actorRef;
 
   stop.resolve = resolveStop;

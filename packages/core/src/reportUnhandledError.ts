@@ -1,3 +1,5 @@
+import { setTimeout } from "@rbxts/luau-polyfill";
+
 /**
  * This function makes sure that unhandled errors are thrown in a separate
  * macrotask. It allows those errors to be detected by global error handlers and

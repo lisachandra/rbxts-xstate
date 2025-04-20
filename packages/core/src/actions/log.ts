@@ -1,4 +1,5 @@
-import isDevelopment from '#is-development';
+import { Error } from "@rbxts/luau-polyfill";
+import isDevelopment from "../isDevelopment";
 import {
   ActionArgs,
   AnyActorScope,
@@ -7,43 +8,44 @@ import {
   LogExpr,
   MachineContext,
   ParameterizedObject,
-  BuiltinActionResolution
-} from '../types.ts';
+  BuiltinActionResolution,
+} from "../types";
 
 type ResolvableLogValue<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 > = string | LogExpr<TContext, TExpressionEvent, TParams, TEvent>;
 
 function resolveLog(
   _: AnyActorScope,
   snapshot: AnyMachineSnapshot,
   actionArgs: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject['params'] | undefined,
+  actionParams: ParameterizedObject["params"] | undefined,
   {
     value,
-    label
+    label,
   }: {
     value: ResolvableLogValue<any, any, any, any>;
     label: string | undefined;
-  }
+  },
 ): BuiltinActionResolution {
   return [
     snapshot,
     {
-      value:
-        typeof value === 'function' ? value(actionArgs, actionParams) : value,
-      label
+      value: typeIs(value, "function")
+        ? value(actionArgs, actionParams)
+        : value,
+      label,
     },
-    undefined
+    undefined,
   ];
 }
 
 function executeLog(
   { logger }: AnyActorScope,
-  { value, label }: { value: unknown; label: string | undefined }
+  { value, label }: { value: unknown; label: string | undefined },
 ) {
   if (label) {
     logger(label, value);
@@ -55,8 +57,8 @@ function executeLog(
 export interface LogAction<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 > {
   (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
 }
@@ -73,25 +75,25 @@ export interface LogAction<
 export function log<
   TContext extends MachineContext,
   TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject['params'] | undefined,
-  TEvent extends EventObject
+  TParams extends ParameterizedObject["params"] | undefined,
+  TEvent extends EventObject,
 >(
   value: ResolvableLogValue<TContext, TExpressionEvent, TParams, TEvent> = ({
     context,
-    event
+    event,
   }) => ({ context, event }),
-  label?: string
+  label?: string,
 ): LogAction<TContext, TExpressionEvent, TParams, TEvent> {
   function log(
     _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: TParams
+    _params: TParams,
   ) {
     if (isDevelopment) {
       throw new Error(`This isn't supposed to be called`);
     }
   }
 
-  log.type = 'xstate.log';
+  log.type = "xstate.log";
   log.value = value;
   log.label = label;
 

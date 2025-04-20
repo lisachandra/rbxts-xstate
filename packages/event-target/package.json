@@ -1,0 +1,50 @@
+{
+  "name": "@rbxts/whatwg-event-target",
+  "version": "6.0.2",
+  "description": "An implementation of WHATWG EventTarget interface. (Ported to Roblox-TS)",
+  "main": "out/init.luau",
+  "types": "out/index.d.ts",
+  "files": [
+    "out",
+    "!**/*.tsbuildinfo",
+    "!**/__tests__"
+  ],
+  "scripts": {
+    "build": "shx rm -rf out && rbxtsc --verbose",
+    "dev": "shx rm -rf out && rbxtsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lisachandra/rbxts-xstate.git"
+  },
+  "keywords": [
+    "w3c",
+    "whatwg",
+    "eventtarget",
+    "event",
+    "events",
+    "shim"
+  ],
+  "author": "Toru Nagashima",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lisachandra/rbxts-xstate/issues"
+  },
+  "homepage": "https://github.com/mysticatea/event-target-shim",
+  "contributors": [
+    "lisachandra <lisachandra@proton.me>"
+  ],
+  "dependencies": {
+    "@rbxts/lemon-signal": "^1.2.0",
+    "@rbxts/luau-polyfill": "^1.1.3",
+    "@rbxts/services": "^1.5.5"
+  },
+  "devDependencies": {
+    "@rbxts/compiler-types": "^3.0.0-types.0",
+    "@rbxts/types": "^1.0.844",
+    "ajv": "^8.12.0",
+    "pkg-up": "^3.1.0",
+    "roblox-ts": "^3.0.0",
+    "shx": "^0.3.4"
+  }
+}

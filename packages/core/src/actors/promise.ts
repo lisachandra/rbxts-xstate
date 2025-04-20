@@ -1,25 +1,26 @@
-import { XSTATE_STOP } from '../constants.ts';
-import { AnyActorSystem } from '../system.ts';
+import { XSTATE_STOP } from "../constants";
+import { AnyActorSystem } from "../system";
 import {
   ActorLogic,
   ActorRefFromLogic,
   AnyActorRef,
   EventObject,
   NonReducibleUnknown,
-  Snapshot
-} from '../types.ts';
+  Snapshot,
+} from "../types";
+import { AbortController, AbortSignal } from "@rbxts/whatwg-abort-controller";
 
 export type PromiseSnapshot<TOutput, TInput> = Snapshot<TOutput> & {
   input: TInput | undefined;
 };
 
-const XSTATE_PROMISE_RESOLVE = 'xstate.promise.resolve';
-const XSTATE_PROMISE_REJECT = 'xstate.promise.reject';
+const XSTATE_PROMISE_RESOLVE = "xstate.promise.resolve";
+const XSTATE_PROMISE_REJECT = "xstate.promise.reject";
 
 export type PromiseActorLogic<
   TOutput,
   TInput = unknown,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 > = ActorLogic<
   PromiseSnapshot<TOutput, TInput>,
   { type: string; [k: string]: unknown },
@@ -120,14 +121,14 @@ const controllerMap = new WeakMap<AnyActorRef, AbortController>();
 export function fromPromise<
   TOutput,
   TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject
+  TEmitted extends EventObject = EventObject,
 >(
   promiseCreator: ({
     input,
     system,
     self,
     signal,
-    emit
+    emit,
   }: {
     /** Data that was provided to the promise actor */
     input: TInput;
@@ -137,95 +138,102 @@ export function fromPromise<
     self: PromiseActorRef<TOutput>;
     signal: AbortSignal;
     emit: (emitted: TEmitted) => void;
-  }) => PromiseLike<TOutput>
+  }) => PromiseLike<TOutput>,
 ): PromiseActorLogic<TOutput, TInput, TEmitted> {
   const logic: PromiseActorLogic<TOutput, TInput, TEmitted> = {
     config: promiseCreator,
-    transition: (state, event, scope) => {
-      if (state.status !== 'active') {
+    transition(state, event, scope) {
+      if (state.status !== "active") {
         return state;
       }
 
       switch (event.type) {
         case XSTATE_PROMISE_RESOLVE: {
-          const resolvedValue = (event as any).data;
+          const resolvedValue = event["data"] as never;
           return {
             ...state,
-            status: 'done',
+            status: "done",
             output: resolvedValue,
-            input: undefined
+            input: undefined,
           };
         }
         case XSTATE_PROMISE_REJECT:
           return {
             ...state,
-            status: 'error',
-            error: (event as any).data,
-            input: undefined
+            status: "error",
+            error: event["data"] as never,
+            input: undefined,
           };
         case XSTATE_STOP: {
           controllerMap.get(scope.self)?.abort();
           return {
             ...state,
-            status: 'stopped',
-            input: undefined
+            status: "stopped",
+            input: undefined,
           };
         }
         default:
           return state;
       }
     },
-    start: (state, { self, system, emit }) => {
+    start(state, actorScope) {
+      const { system, emit } = actorScope;
+      const itself = actorScope.self;
+
       // TODO: determine how to allow customizing this so that promises
       // can be restarted if necessary
-      if (state.status !== 'active') {
+      if (state.status !== "active") {
         return;
       }
       const controller = new AbortController();
-      controllerMap.set(self, controller);
+      controllerMap.set(itself, controller);
       const resolvedPromise = Promise.resolve(
         promiseCreator({
           input: state.input!,
           system,
-          self,
-          signal: controller.signal,
-          emit
-        })
+          self: itself,
+          signal: controller.getSignal(),
+          emit,
+        }),
       );
 
       resolvedPromise.then(
         (response) => {
-          if (self.getSnapshot().status !== 'active') {
+          if (itself.getSnapshot().status !== "active") {
             return;
           }
-          controllerMap.delete(self);
-          system._relay(self, self, {
+          controllerMap.delete(itself);
+          system._relay(itself, itself, {
             type: XSTATE_PROMISE_RESOLVE,
-            data: response
+            data: response,
           });
         },
         (errorData) => {
-          if (self.getSnapshot().status !== 'active') {
+          if (itself.getSnapshot().status !== "active") {
             return;
           }
-          controllerMap.delete(self);
-          system._relay(self, self, {
+          controllerMap.delete(itself);
+          system._relay(itself, itself, {
             type: XSTATE_PROMISE_REJECT,
-            data: errorData
+            data: errorData,
           });
-        }
+        },
       );
     },
-    getInitialSnapshot: (_, input) => {
+    getInitialSnapshot(_, input) {
       return {
-        status: 'active',
+        status: "active",
         output: undefined,
         error: undefined,
-        input
+        input,
       };
     },
-    getPersistedSnapshot: (snapshot) => snapshot,
-    restoreSnapshot: (snapshot: any) => snapshot
+    getPersistedSnapshot(snapshot) {
+      return snapshot;
+    },
+    restoreSnapshot(snapshot: any) {
+      return snapshot;
+    },
   };
 
   return logic;

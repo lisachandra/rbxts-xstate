@@ -1,5 +1,5 @@
-import { XSTATE_INIT } from './constants.ts';
-import { DoneActorEvent, DoneStateEvent, ErrorActorEvent } from './types.ts';
+import { XSTATE_INIT } from "./constants";
+import { DoneActorEvent, DoneStateEvent, ErrorActorEvent } from "./types";
 
 /**
  * Returns an event that represents an implicit event that is sent after the
@@ -21,11 +21,11 @@ export function createAfterEvent(delayRef: number | string, id: string) {
  */
 export function createDoneStateEvent(
   id: string,
-  output?: unknown
+  output?: unknown,
 ): DoneStateEvent {
   return {
     type: `xstate.done.state.${id}`,
-    output
+    output,
   };
 }
 
@@ -40,20 +40,20 @@ export function createDoneStateEvent(
  */
 export function createDoneActorEvent(
   invokeId: string,
-  output?: unknown
+  output?: unknown,
 ): DoneActorEvent {
   return {
     type: `xstate.done.actor.${invokeId}`,
     output,
-    actorId: invokeId
+    actorId: invokeId,
   };
 }
 
 export function createErrorActorEvent(
   id: string,
-  error?: unknown
+  err?: unknown,
 ): ErrorActorEvent {
-  return { type: `xstate.error.actor.${id}`, error, actorId: id };
+  return { type: `xstate.error.actor.${id}`, error: err, actorId: id };
 }
 
 export function createInitEvent(input: unknown) {
