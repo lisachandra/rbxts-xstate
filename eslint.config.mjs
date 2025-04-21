@@ -6,6 +6,14 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import eslintPluginRoblox from 'isentinel-eslint-plugin-roblox-ts';
 
 export default tseslint.config(
+  {
+    ignores: [
+      '**/out/**',
+      '**/*.spec.*',
+      'pnpm-lock.yaml',
+      'eslint.config.mjs',
+    ],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
@@ -22,8 +30,8 @@ export default tseslint.config(
   {
     rules: {
       'prettier/prettier': ['warn', {
-        'printWidth': 80,
-        'tabWidth': 2,
+        'printWidth': 100,
+        'tabWidth': 4,
         'useTabs': false,
         'semi': true,
         'singleQuote': true,
@@ -77,14 +85,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: [
-      '{docs,examples,templates}/',
-      '**/out',
-      '**/dist',
-      '**/*.test.*',
-      'scripts/jest-utils/',
-      'pnpm-lock.yaml',
-    ],
     languageOptions: {
       parserOptions: {
         projectService: true,

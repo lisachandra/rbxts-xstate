@@ -1,31 +1,27 @@
+export {};
 declare global {
-  type Table = Record<number | string | symbol, unknown>;
+    type Table = Record<number | string | symbol, unknown>;
 
-  /** A general type for a value that may be nil (undefined). */
-  // eslint-disable-next-line no-restricted-syntax -- N<T> definition
-  type N<T> = T | undefined;
+    /** A general type for a value that may be nil (undefined). */
 
-  /**
-   * Converts a type T into a Map where keys are the type's keys and values
-   * are the type's values.
-   */
-  type Mapify<T> = Map<keyof T, T[keyof T]>;
+    type N<T> = T | undefined;
 
-  interface LuaGlobals {
-    /** Type signature for the Lua unpack function. */
-    unpack: <T extends Array<unknown>>(...args: T) => LuaTuple<T>;
+    /** Converts a type T into a Map where keys are the type's keys and values are the type's values. */
+    type Mapify<T> = Map<keyof T, T[keyof T]>;
 
-    /** Type signature for the Lua setfenv function. */
-    setfenv: (func: Callback, fenv: Table) => void;
-  }
+    interface LuaGlobals {
+        /** Type signature for the Lua unpack function. */
+        unpack: <T extends Array<unknown>>(...args: T) => LuaTuple<T>;
 
-  /* eslint-disable ts/naming-convention -- _G override */
-  interface _G extends Table {
-    __COMPAT_WARNINGS__?: boolean;
-    __DEV__?: boolean;
-    __TEST__?: boolean;
-    __VERSION__?: `${number}.${number}.${number}`;
-    NOCOLOR?: boolean;
-  }
-  /* eslint-enable ts/naming-convention */
+        /** Type signature for the Lua setfenv function. */
+        setfenv: (func: Callback, fenv: Table) => void;
+    }
+
+    interface _G extends Table {
+        __COMPAT_WARNINGS__?: boolean;
+        __DEV__?: boolean;
+        __TEST__?: boolean;
+        __VERSION__?: `${number}.${number}.${number}`;
+        NOCOLOR?: boolean;
+    }
 }

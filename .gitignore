@@ -26,7 +26,6 @@ asphalt.lock.toml
 
 # Build output
 include/
-!**/src/include
 out/
 dist/
 build/
