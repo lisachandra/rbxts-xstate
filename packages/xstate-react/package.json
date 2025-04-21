@@ -1,7 +1,7 @@
 {
-  "name": "@rbxts/xstate",
-  "version": "5.19.2-rc.1",
-  "description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
+  "name": "@rbxts/xstate-react",
+  "version": "5.0.3-rc.1",
+  "description": "XState tools for React. (Ported to Roblox-TS)",
   "main": "out/init.luau",
   "types": "out/index.d.ts",
   "files": [
@@ -10,13 +10,14 @@
     "!**/__tests__"
   ],
   "keywords": [
+    "state",
+    "machine",
     "statechart",
-    "state machine",
-    "finite state machine",
-    "finite automata",
     "scxml",
     "state",
-    "interpreter"
+    "graph",
+    "react",
+    "hook"
   ],
   "scripts": {
     "build": "shx rm -rf out && rbxtsc --verbose",
@@ -34,16 +35,26 @@
   "bugs": {
     "url": "https://github.com/lisachandra/rbxts-xstate/issues"
   },
-  "homepage": "https://github.com/lisachandra/rbxts-xstate/tree/main/packages/xstate-core#readme",
+  "homepage": "https://github.com/lisachandra/rbxts-xstate/tree/main/packages/xstate-react#readme",
+  "peerDependenciesMeta": {
+    "xstate": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@rbxts/luau-polyfill": "^1.0.0",
-    "@rbxts/regexp": "^0.2.1-ts.4",
     "@rbxts/services": "^1.0.0",
-    "@rbxts/whatwg-abort-controller": "workspace:^"
+    "@rbxts/use-sync-external-store": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@rbxts/react": "^17.0.0",
+    "@rbxts/xstate": "workspace:^"
   },
   "devDependencies": {
     "@rbxts/compiler-types": "^3.0.0-types.0",
+    "@rbxts/react": "^17.2.3",
     "@rbxts/types": "^1.0.844",
+    "@rbxts/xstate": "workspace:*",
     "ajv": "^8.12.0",
     "pkg-up": "^3.1.0",
     "roblox-ts": "^3.0.0",
