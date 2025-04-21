@@ -1,32 +1,32 @@
 import { XSTATE_STOP } from "../constants";
 import { AnyActorSystem } from "../system";
 import {
-  ActorLogic,
-  ActorRefFromLogic,
-  AnyActorRef,
-  EventObject,
-  NonReducibleUnknown,
-  Snapshot,
+	ActorLogic,
+	ActorRefFromLogic,
+	AnyActorRef,
+	EventObject,
+	NonReducibleUnknown,
+	Snapshot,
 } from "../types";
 import { AbortController, AbortSignal } from "@rbxts/whatwg-abort-controller";
 
 export type PromiseSnapshot<TOutput, TInput> = Snapshot<TOutput> & {
-  input: TInput | undefined;
+	input: TInput | undefined;
 };
 
 const XSTATE_PROMISE_RESOLVE = "xstate.promise.resolve";
 const XSTATE_PROMISE_REJECT = "xstate.promise.reject";
 
 export type PromiseActorLogic<
-  TOutput,
-  TInput = unknown,
-  TEmitted extends EventObject = EventObject,
+	TOutput,
+	TInput = unknown,
+	TEmitted extends EventObject = EventObject,
 > = ActorLogic<
-  PromiseSnapshot<TOutput, TInput>,
-  { type: string; [k: string]: unknown },
-  TInput, // input
-  AnyActorSystem,
-  TEmitted // TEmitted
+	PromiseSnapshot<TOutput, TInput>,
+	{ type: string; [k: string]: unknown },
+	TInput, // input
+	AnyActorSystem,
+	TEmitted // TEmitted
 >;
 
 /**
@@ -37,7 +37,7 @@ export type PromiseActorLogic<
  * @example
  *
  * ```ts
- * import { fromPromise, createActor } from 'xstate';
+ * import { fromPromise, createActor } from "xstate";
  *
  * // The actor's resolved output
  * type Output = string;
@@ -46,25 +46,23 @@ export type PromiseActorLogic<
  *
  * // Actor logic that fetches the url of an image of a cat saying `input.message`.
  * const logic = fromPromise<Output, Input>(async ({ input, self }) => {
- *   self;
- *   // ^? PromiseActorRef<Output, Input>
+ * 	self;
+ * 	// ^? PromiseActorRef<Output, Input>
  *
- *   const data = await fetch(
- *     `https://cataas.com/cat/says/${input.message}`
- *   );
- *   const url = await data.json();
- *   return url;
+ * 	const data = await fetch(
+ * 		`https://cataas.com/cat/says/${input.message}`,
+ * 	);
+ * 	const url = await data.json();
+ * 	return url;
  * });
  *
- * const actor = createActor(logic, { input: { message: 'hello world' } });
+ * const actor = createActor(logic, { input: { message: "hello world" } });
  * //    ^? PromiseActorRef<Output, Input>
  * ```
  *
  * @see {@link fromPromise}
  */
-export type PromiseActorRef<TOutput> = ActorRefFromLogic<
-  PromiseActorLogic<TOutput, unknown>
->;
+export type PromiseActorRef<TOutput> = ActorRefFromLogic<PromiseActorLogic<TOutput, unknown>>;
 
 const controllerMap = new WeakMap<AnyActorRef, AbortController>();
 
@@ -83,16 +81,16 @@ const controllerMap = new WeakMap<AnyActorRef, AbortController>();
  *
  * ```ts
  * const promiseLogic = fromPromise(async () => {
- *   const result = await fetch('https://example.com/...').then((data) =>
- *     data.json()
- *   );
+ * 	const result = await fetch("https://example.com/...").then(data =>
+ * 		data.json(),
+ * 	);
  *
- *   return result;
+ * 	return result;
  * });
  *
  * const promiseActor = createActor(promiseLogic);
- * promiseActor.subscribe((snapshot) => {
- *   console.log(snapshot);
+ * promiseActor.subscribe(snapshot => {
+ * 	console.log(snapshot);
  * });
  * promiseActor.start();
  * // => {
@@ -119,122 +117,122 @@ const controllerMap = new WeakMap<AnyActorRef, AbortController>();
  * @see {@link https://stately.ai/docs/input | Input docs} for more information about how input is passed
  */
 export function fromPromise<
-  TOutput,
-  TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject,
+	TOutput,
+	TInput = NonReducibleUnknown,
+	TEmitted extends EventObject = EventObject,
 >(
-  promiseCreator: ({
-    input,
-    system,
-    self,
-    signal,
-    emit,
-  }: {
-    /** Data that was provided to the promise actor */
-    input: TInput;
-    /** The actor system to which the promise actor belongs */
-    system: AnyActorSystem;
-    /** The parent actor of the promise actor */
-    self: PromiseActorRef<TOutput>;
-    signal: AbortSignal;
-    emit: (emitted: TEmitted) => void;
-  }) => PromiseLike<TOutput>,
+	promiseCreator: ({
+		input,
+		system,
+		self,
+		signal,
+		emit,
+	}: {
+		/** Data that was provided to the promise actor */
+		input: TInput;
+		/** The actor system to which the promise actor belongs */
+		system: AnyActorSystem;
+		/** The parent actor of the promise actor */
+		self: PromiseActorRef<TOutput>;
+		signal: AbortSignal;
+		emit: (emitted: TEmitted) => void;
+	}) => PromiseLike<TOutput>,
 ): PromiseActorLogic<TOutput, TInput, TEmitted> {
-  const logic: PromiseActorLogic<TOutput, TInput, TEmitted> = {
-    config: promiseCreator,
-    transition(state, event, scope) {
-      if (state.status !== "active") {
-        return state;
-      }
+	const logic: PromiseActorLogic<TOutput, TInput, TEmitted> = {
+		config: promiseCreator,
+		transition(state, event, scope) {
+			if (state.status !== "active") {
+				return state;
+			}
 
-      switch (event.type) {
-        case XSTATE_PROMISE_RESOLVE: {
-          const resolvedValue = event["data"] as never;
-          return {
-            ...state,
-            status: "done",
-            output: resolvedValue,
-            input: undefined,
-          };
-        }
-        case XSTATE_PROMISE_REJECT:
-          return {
-            ...state,
-            status: "error",
-            error: event["data"] as never,
-            input: undefined,
-          };
-        case XSTATE_STOP: {
-          controllerMap.get(scope.self)?.abort();
-          return {
-            ...state,
-            status: "stopped",
-            input: undefined,
-          };
-        }
-        default:
-          return state;
-      }
-    },
-    start(state, actorScope) {
-      const { system, emit } = actorScope;
-      const itself = actorScope.self;
+			switch (event.type) {
+				case XSTATE_PROMISE_RESOLVE: {
+					const resolvedValue = event["data"] as never;
+					return {
+						...state,
+						status: "done",
+						output: resolvedValue,
+						input: undefined,
+					};
+				}
+				case XSTATE_PROMISE_REJECT:
+					return {
+						...state,
+						status: "error",
+						error: event["data"] as never,
+						input: undefined,
+					};
+				case XSTATE_STOP: {
+					controllerMap.get(scope.self)?.abort();
+					return {
+						...state,
+						status: "stopped",
+						input: undefined,
+					};
+				}
+				default:
+					return state;
+			}
+		},
+		start(state, actorScope) {
+			const { system, emit } = actorScope;
+			const itself = actorScope.self;
 
-      // TODO: determine how to allow customizing this so that promises
-      // can be restarted if necessary
-      if (state.status !== "active") {
-        return;
-      }
-      const controller = new AbortController();
-      controllerMap.set(itself, controller);
-      const resolvedPromise = Promise.resolve(
-        promiseCreator({
-          input: state.input!,
-          system,
-          self: itself,
-          signal: controller.getSignal(),
-          emit,
-        }),
-      );
+			// TODO: determine how to allow customizing this so that promises
+			// can be restarted if necessary
+			if (state.status !== "active") {
+				return;
+			}
+			const controller = new AbortController();
+			controllerMap.set(itself, controller);
+			const resolvedPromise = Promise.resolve(
+				promiseCreator({
+					input: state.input!,
+					system,
+					self: itself,
+					signal: controller.getSignal(),
+					emit,
+				}),
+			);
 
-      resolvedPromise.then(
-        (response) => {
-          if (itself.getSnapshot().status !== "active") {
-            return;
-          }
-          controllerMap.delete(itself);
-          system._relay(itself, itself, {
-            type: XSTATE_PROMISE_RESOLVE,
-            data: response,
-          });
-        },
-        (errorData) => {
-          if (itself.getSnapshot().status !== "active") {
-            return;
-          }
-          controllerMap.delete(itself);
-          system._relay(itself, itself, {
-            type: XSTATE_PROMISE_REJECT,
-            data: errorData,
-          });
-        },
-      );
-    },
-    getInitialSnapshot(_, input) {
-      return {
-        status: "active",
-        output: undefined,
-        error: undefined,
-        input,
-      };
-    },
-    getPersistedSnapshot(snapshot) {
-      return snapshot;
-    },
-    restoreSnapshot(snapshot: any) {
-      return snapshot;
-    },
-  };
+			resolvedPromise.then(
+				response => {
+					if (itself.getSnapshot().status !== "active") {
+						return;
+					}
+					controllerMap.delete(itself);
+					system._relay(itself, itself, {
+						type: XSTATE_PROMISE_RESOLVE,
+						data: response,
+					});
+				},
+				errorData => {
+					if (itself.getSnapshot().status !== "active") {
+						return;
+					}
+					controllerMap.delete(itself);
+					system._relay(itself, itself, {
+						type: XSTATE_PROMISE_REJECT,
+						data: errorData,
+					});
+				},
+			);
+		},
+		getInitialSnapshot(_, input) {
+			return {
+				status: "active",
+				output: undefined,
+				error: undefined,
+				input,
+			};
+		},
+		getPersistedSnapshot(snapshot) {
+			return snapshot;
+		},
+		restoreSnapshot(snapshot: any) {
+			return snapshot;
+		},
+	};
 
-  return logic;
+	return logic;
 }

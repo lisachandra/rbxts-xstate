@@ -9,7 +9,7 @@ import { setTimeout } from "@rbxts/luau-polyfill";
  * @param err Error to be thrown
  */
 export function reportUnhandledError(err: unknown) {
-  setTimeout(() => {
-    throw err;
-  });
+	setTimeout(() => {
+		throw err;
+	});
 }

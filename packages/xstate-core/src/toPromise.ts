@@ -7,10 +7,10 @@ import { AnyActorRef, AnyObject, OutputFrom } from "./types";
  *
  * ```ts
  * const machine = createMachine({
- *   // ...
- *   output: {
- *     count: 42
- *   }
+ * 	// ...
+ * 	output: {
+ * 		count: 42,
+ * 	},
  * });
  *
  * const actor = createActor(machine);
@@ -23,15 +23,13 @@ import { AnyActorRef, AnyObject, OutputFrom } from "./types";
  * // logs { count: 42 }
  * ```
  */
-export function toPromise<T extends AnyActorRef>(
-  actor: T,
-): Promise<OutputFrom<T>> {
-  return new Promise((resolve, reject) => {
-    actor.subscribe({
-      complete: () => {
-        resolve((actor.getSnapshot() as AnyObject).output as never);
-      },
-      error: reject,
-    });
-  });
+export function toPromise<T extends AnyActorRef>(actor: T): Promise<OutputFrom<T>> {
+	return new Promise((resolve, reject) => {
+		actor.subscribe({
+			complete: () => {
+				resolve((actor.getSnapshot() as AnyObject).output as never);
+			},
+			error: reject,
+		});
+	});
 }

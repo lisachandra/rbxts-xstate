@@ -1,52 +1,52 @@
 {
-  "name": "@rbxts/xstate",
-  "version": "5.19.2-rc.1",
-  "description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
-  "main": "out/init.luau",
-  "types": "out/index.d.ts",
-  "files": [
-    "out",
-    "!**/*.tsbuildinfo",
-    "!**/__tests__"
-  ],
-  "keywords": [
-    "statechart",
-    "state machine",
-    "finite state machine",
-    "finite automata",
-    "scxml",
-    "state",
-    "interpreter"
-  ],
-  "scripts": {
-    "build": "shx rm -rf out && rbxtsc --verbose",
-    "dev": "shx rm -rf out && rbxtsc -w"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lisachandra/rbxts-xstate.git"
-  },
-  "author": "David Khourshid <davidkpiano@gmail.com>",
-  "contributors": [
-    "lisachandra <lisachandra@proton.me>"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lisachandra/rbxts-xstate/issues"
-  },
-  "homepage": "https://github.com/lisachandra/rbxts-xstate/tree/main/packages/xstate-core#readme",
-  "dependencies": {
-    "@rbxts/luau-polyfill": "^1.0.0",
-    "@rbxts/regexp": "^0.2.1-ts.4",
-    "@rbxts/services": "^1.0.0",
-    "@rbxts/whatwg-abort-controller": "workspace:^"
-  },
-  "devDependencies": {
-    "@rbxts/compiler-types": "^3.0.0-types.0",
-    "@rbxts/types": "^1.0.844",
-    "ajv": "^8.12.0",
-    "pkg-up": "^3.1.0",
-    "roblox-ts": "^3.0.0",
-    "shx": "^0.3.4"
-  }
+	"name": "@rbxts/xstate",
+	"version": "5.19.2-rc.1",
+	"description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
+	"main": "out/init.luau",
+	"types": "out/index.d.ts",
+	"files": [
+		"out",
+		"!**/*.tsbuildinfo",
+		"!**/__tests__"
+	],
+	"keywords": [
+		"statechart",
+		"state machine",
+		"finite state machine",
+		"finite automata",
+		"scxml",
+		"state",
+		"interpreter"
+	],
+	"scripts": {
+		"build": "shx rm -rf out && rbxtsc --verbose",
+		"dev": "shx rm -rf out && rbxtsc -w"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lisachandra/rbxts-xstate.git"
+	},
+	"author": "David Khourshid <davidkpiano@gmail.com>",
+	"contributors": [
+		"lisachandra <lisachandra@proton.me>"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/lisachandra/rbxts-xstate/issues"
+	},
+	"homepage": "https://github.com/lisachandra/rbxts-xstate/tree/main/packages/xstate-core#readme",
+	"dependencies": {
+		"@rbxts/luau-polyfill": "^1.0.0",
+		"@rbxts/regexp": "^0.2.1-ts.4",
+		"@rbxts/services": "^1.0.0",
+		"@rbxts/whatwg-abort-controller": "workspace:^"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.844",
+		"ajv": "^8.12.0",
+		"pkg-up": "^3.1.0",
+		"roblox-ts": "^3.0.0",
+		"shx": "^0.3.4"
+	}
 }

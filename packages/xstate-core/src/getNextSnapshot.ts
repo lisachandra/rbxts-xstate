@@ -1,48 +1,39 @@
 import { createActor } from "./createActor";
 import {
-  ActorScope,
-  AnyActorLogic,
-  AnyActorScope,
-  EmittedFrom,
-  EventFromLogic,
-  InputFrom,
-  SnapshotFrom,
+	ActorScope,
+	AnyActorLogic,
+	AnyActorScope,
+	EmittedFrom,
+	EventFromLogic,
+	InputFrom,
+	SnapshotFrom,
 } from "./types";
 
 /** @internal */
-export function createInertActorScope<T extends AnyActorLogic>(
-  actorLogic: T,
-): AnyActorScope {
-  const itself = createActor(actorLogic as AnyActorLogic);
-  const inertActorScope: ActorScope<
-    SnapshotFrom<T>,
-    EventFromLogic<T>,
-    any,
-    EmittedFrom<T>
-  > = {
-    self: itself,
-    defer: () => {},
-    id: "",
-    logger: () => {},
-    sessionId: "",
-    stopChild: () => {},
-    system: itself.system,
-    emit: () => {},
-    actionExecutor: () => {},
-  };
+export function createInertActorScope<T extends AnyActorLogic>(actorLogic: T): AnyActorScope {
+	const itself = createActor(actorLogic as AnyActorLogic);
+	const inertActorScope: ActorScope<SnapshotFrom<T>, EventFromLogic<T>, any, EmittedFrom<T>> = {
+		self: itself,
+		defer: () => {},
+		id: "",
+		logger: () => {},
+		sessionId: "",
+		stopChild: () => {},
+		system: itself.system,
+		emit: () => {},
+		actionExecutor: () => {},
+	};
 
-  return inertActorScope;
+	return inertActorScope;
 }
 
 /** @deprecated Use `initialTransition(…)` instead. */
 export function getInitialSnapshot<T extends AnyActorLogic>(
-  actorLogic: T,
-  ...[input]: undefined extends InputFrom<T>
-    ? [input?: InputFrom<T>]
-    : [input: InputFrom<T>]
+	actorLogic: T,
+	...[input]: undefined extends InputFrom<T> ? [input?: InputFrom<T>] : [input: InputFrom<T>]
 ): SnapshotFrom<T> {
-  const actorScope = createInertActorScope(actorLogic);
-  return actorLogic.getInitialSnapshot(actorScope, input);
+	const actorScope = createInertActorScope(actorLogic);
+	return actorLogic.getInitialSnapshot(actorScope, input);
 }
 
 /**
@@ -56,22 +47,22 @@ export function getInitialSnapshot<T extends AnyActorLogic>(
  * @example
  *
  * ```ts
- * import { getNextSnapshot } from 'xstate';
- * import { trafficLightMachine } from './trafficLightMachine';
+ * import { getNextSnapshot } from "xstate";
+ * import { trafficLightMachine } from "./trafficLightMachine";
  *
  * const nextSnapshot = getNextSnapshot(
- *   trafficLightMachine, // actor logic
- *   undefined, // snapshot (or initial state if undefined)
- *   { type: 'TIMER' }
+ * 	trafficLightMachine, // actor logic
+ * 	undefined, // snapshot (or initial state if undefined)
+ * 	{ type: "TIMER" },
  * ); // event object
  *
  * console.log(nextSnapshot.value);
  * // => 'yellow'
  *
  * const nextSnapshot2 = getNextSnapshot(
- *   trafficLightMachine, // actor logic
- *   nextSnapshot, // snapshot
- *   { type: 'TIMER' }
+ * 	trafficLightMachine, // actor logic
+ * 	nextSnapshot, // snapshot
+ * 	{ type: "TIMER" },
  * ); // event object
  *
  * console.log(nextSnapshot2.value);
@@ -79,11 +70,11 @@ export function getInitialSnapshot<T extends AnyActorLogic>(
  * ```
  */
 export function getNextSnapshot<T extends AnyActorLogic>(
-  actorLogic: T,
-  snapshot: SnapshotFrom<T>,
-  event: EventFromLogic<T>,
+	actorLogic: T,
+	snapshot: SnapshotFrom<T>,
+	event: EventFromLogic<T>,
 ): SnapshotFrom<T> {
-  const inertActorScope = createInertActorScope(actorLogic);
-  (inertActorScope.self as never)["_snapshot"] = snapshot;
-  return actorLogic.transition(snapshot, event, inertActorScope);
+	const inertActorScope = createInertActorScope(actorLogic);
+	(inertActorScope.self as never)["_snapshot"] = snapshot;
+	return actorLogic.transition(snapshot, event, inertActorScope);
 }

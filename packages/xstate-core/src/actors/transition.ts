@@ -1,29 +1,23 @@
 import { AnyActorSystem } from "../system";
 import {
-  ActorLogic,
-  ActorRefFromLogic,
-  ActorScope,
-  EventObject,
-  NonReducibleUnknown,
-  Snapshot,
+	ActorLogic,
+	ActorRefFromLogic,
+	ActorScope,
+	EventObject,
+	NonReducibleUnknown,
+	Snapshot,
 } from "../types";
 
 export type TransitionSnapshot<TContext> = Snapshot<undefined> & {
-  context: TContext;
+	context: TContext;
 };
 
 export type TransitionActorLogic<
-  TContext,
-  TEvent extends EventObject,
-  TInput extends NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject,
-> = ActorLogic<
-  TransitionSnapshot<TContext>,
-  TEvent,
-  TInput,
-  AnyActorSystem,
-  TEmitted
->;
+	TContext,
+	TEvent extends EventObject,
+	TInput extends NonReducibleUnknown,
+	TEmitted extends EventObject = EventObject,
+> = ActorLogic<TransitionSnapshot<TContext>, TEvent, TInput, AnyActorSystem, TEmitted>;
 
 /**
  * Represents an actor created by `fromTransition`.
@@ -34,47 +28,47 @@ export type TransitionActorLogic<
  *
  * ```ts
  * import {
- *   fromTransition,
- *   createActor,
- *   type AnyActorSystem
- * } from 'xstate';
+ * 	fromTransition,
+ * 	createActor,
+ * 	type AnyActorSystem,
+ * } from "xstate";
  *
  * //* The actor's stored context.
  * type Context = {
- *   // The current count.
- *   count: number;
- *   // The amount to increase `count` by.
- *   step: number;
+ * 	// The current count.
+ * 	count: number;
+ * 	// The amount to increase `count` by.
+ * 	step: number;
  * };
  * // The events the actor receives.
- * type Event = { type: 'increment' };
+ * type Event = { type: "increment" };
  * // The actor's input.
  * type Input = { step?: number };
  *
  * // Actor logic that increments `count` by `step` when it receives an event of
  * // type `increment`.
  * const logic = fromTransition<Context, Event, AnyActorSystem, Input>(
- *   (state, event, actorScope) => {
- *     actorScope.self;
- *     //         ^? TransitionActorRef<Context, Event>
+ * 	(state, event, actorScope) => {
+ * 		actorScope.self;
+ * 		//         ^? TransitionActorRef<Context, Event>
  *
- *     if (event.type === 'increment') {
- *       return {
- *         ...state,
- *         count: state.count + state.step
- *       };
- *     }
- *     return state;
- *   },
- *   ({ input, self }) => {
- *     self;
- *     // ^? TransitionActorRef<Context, Event>
+ * 		if (event.type === "increment") {
+ * 			return {
+ * 				...state,
+ * 				count: state.count + state.step,
+ * 			};
+ * 		}
+ * 		return state;
+ * 	},
+ * 	({ input, self }) => {
+ * 		self;
+ * 		// ^? TransitionActorRef<Context, Event>
  *
- *     return {
- *       count: 0,
- *       step: input.step ?? 1
- *     };
- *   }
+ * 		return {
+ * 			count: 0,
+ * 			step: input.step ?? 1,
+ * 		};
+ * 	},
  * );
  *
  * const actor = createActor(logic, { input: { step: 10 } });
@@ -83,15 +77,8 @@ export type TransitionActorLogic<
  *
  * @see {@link fromTransition}
  */
-export type TransitionActorRef<
-  TContext,
-  TEvent extends EventObject,
-> = ActorRefFromLogic<
-  TransitionActorLogic<
-    TransitionSnapshot<TContext>,
-    TEvent,
-    NonReducibleUnknown
-  >
+export type TransitionActorRef<TContext, TEvent extends EventObject> = ActorRefFromLogic<
+	TransitionActorLogic<TransitionSnapshot<TContext>, TEvent, NonReducibleUnknown>
 >;
 
 /**
@@ -117,21 +104,21 @@ export type TransitionActorRef<
  *
  * ```ts
  * const transitionLogic = fromTransition(
- *   (state, event) => {
- *     if (event.type === 'increment') {
- *       return {
- *         ...state,
- *         count: state.count + 1
- *       };
- *     }
- *     return state;
- *   },
- *   { count: 0 }
+ * 	(state, event) => {
+ * 		if (event.type === "increment") {
+ * 			return {
+ * 				...state,
+ * 				count: state.count + 1,
+ * 			};
+ * 		}
+ * 		return state;
+ * 	},
+ * 	{ count: 0 },
  * );
  *
  * const transitionActor = createActor(transitionLogic);
- * transitionActor.subscribe((snapshot) => {
- *   console.log(snapshot);
+ * transitionActor.subscribe(snapshot => {
+ * 	console.log(snapshot);
  * });
  * transitionActor.start();
  * // => {
@@ -140,7 +127,7 @@ export type TransitionActorRef<
  * //   ...
  * // }
  *
- * transitionActor.send({ type: 'increment' });
+ * transitionActor.send({ type: "increment" });
  * // => {
  * //   status: 'active',
  * //   context: { count: 1 },
@@ -169,55 +156,50 @@ export type TransitionActorRef<
  * @see {@link https://stately.ai/docs/input | Input docs} for more information about how input is passed
  */
 export function fromTransition<
-  TContext,
-  TEvent extends EventObject,
-  TSystem extends AnyActorSystem,
-  TInput extends NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject,
+	TContext,
+	TEvent extends EventObject,
+	TSystem extends AnyActorSystem,
+	TInput extends NonReducibleUnknown,
+	TEmitted extends EventObject = EventObject,
 >(
-  transition: (
-    snapshot: TContext,
-    event: TEvent,
-    actorScope: ActorScope<
-      TransitionSnapshot<TContext>,
-      TEvent,
-      TSystem,
-      TEmitted
-    >,
-  ) => TContext,
-  initialContext:
-    | TContext
-    | (({
-        input,
-        self,
-      }: {
-        input: TInput;
-        self: TransitionActorRef<TContext, TEvent>;
-      }) => TContext), // TODO: type
+	transition: (
+		snapshot: TContext,
+		event: TEvent,
+		actorScope: ActorScope<TransitionSnapshot<TContext>, TEvent, TSystem, TEmitted>,
+	) => TContext,
+	initialContext:
+		| TContext
+		| (({
+				input,
+				self,
+		  }: {
+				input: TInput;
+				self: TransitionActorRef<TContext, TEvent>;
+		  }) => TContext), // TODO: type
 ): TransitionActorLogic<TContext, TEvent, TInput, TEmitted> {
-  return {
-    config: transition,
-    transition(snapshot, event, actorScope) {
-      return {
-        ...snapshot,
-        context: transition(snapshot.context, event, actorScope as never),
-      };
-    },
-    getInitialSnapshot(_, input) {
-      return {
-        status: "active",
-        output: undefined,
-        error: undefined,
-        context: typeIs(initialContext, "function")
-          ? (initialContext as Callback)({ input })
-          : initialContext,
-      };
-    },
-    getPersistedSnapshot(snapshot) {
-      return snapshot;
-    },
-    restoreSnapshot(snapshot: any) {
-      return snapshot;
-    },
-  };
+	return {
+		config: transition,
+		transition(snapshot, event, actorScope) {
+			return {
+				...snapshot,
+				context: transition(snapshot.context, event, actorScope as never),
+			};
+		},
+		getInitialSnapshot(_, input) {
+			return {
+				status: "active",
+				output: undefined,
+				error: undefined,
+				context: typeIs(initialContext, "function")
+					? (initialContext as Callback)({ input })
+					: initialContext,
+			};
+		},
+		getPersistedSnapshot(snapshot) {
+			return snapshot;
+		},
+		restoreSnapshot(snapshot: any) {
+			return snapshot;
+		},
+	};
 }

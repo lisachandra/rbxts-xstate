@@ -1,17 +1,17 @@
-name: 'CI setup'
+name: "CI setup"
 runs:
-  using: 'composite'
-  steps:
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
+    using: "composite"
+    steps:
+        - name: Install pnpm
+          uses: pnpm/action-setup@v4
 
-    - name: Use Node.js 22.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 22.x
-        cache: 'pnpm'
-        registry-url: 'https://registry.npmjs.org'
+        - name: Use Node.js 22.x
+          uses: actions/setup-node@v4
+          with:
+              node-version: 22.x
+              cache: "pnpm"
+              registry-url: "https://registry.npmjs.org"
 
-    - name: Install Dependencies
-      run: pnpm install
-      shell: bash
+        - name: Install Dependencies
+          run: pnpm install
+          shell: bash

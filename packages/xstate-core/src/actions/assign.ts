@@ -3,102 +3,95 @@ import { cloneMachineSnapshot } from "../State";
 import { executingCustomAction } from "../createActor";
 import { Spawner, createSpawner } from "../spawn";
 import type {
-  ActionArgs,
-  AnyActorScope,
-  AnyActorRef,
-  AnyEventObject,
-  AnyMachineSnapshot,
-  Assigner,
-  EventObject,
-  LowInfer,
-  MachineContext,
-  ParameterizedObject,
-  PropertyAssigner,
-  ProvidedActor,
-  ActionFunction,
-  BuiltinActionResolution,
+	ActionArgs,
+	AnyActorScope,
+	AnyActorRef,
+	AnyEventObject,
+	AnyMachineSnapshot,
+	Assigner,
+	EventObject,
+	LowInfer,
+	MachineContext,
+	ParameterizedObject,
+	PropertyAssigner,
+	ProvidedActor,
+	ActionFunction,
+	BuiltinActionResolution,
 } from "../types";
 import { Error, Object } from "@rbxts/luau-polyfill";
 
 export interface AssignArgs<
-  TContext extends MachineContext,
-  TExpressionEvent extends EventObject,
-  TEvent extends EventObject,
-  TActor extends ProvidedActor,
+	TContext extends MachineContext,
+	TExpressionEvent extends EventObject,
+	TEvent extends EventObject,
+	TActor extends ProvidedActor,
 > extends ActionArgs<TContext, TExpressionEvent, TEvent> {
-  spawn: Spawner<TActor>;
+	spawn: Spawner<TActor>;
 }
 
 function resolveAssign(
-  actorScope: AnyActorScope,
-  snapshot: AnyMachineSnapshot,
-  actionArgs: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject["params"] | undefined,
-  {
-    assignment,
-  }: {
-    assignment:
-      | Assigner<any, any, any, any, any>
-      | PropertyAssigner<any, any, any, any, any>;
-  },
+	actorScope: AnyActorScope,
+	snapshot: AnyMachineSnapshot,
+	actionArgs: ActionArgs<any, any, any>,
+	actionParams: ParameterizedObject["params"] | undefined,
+	{
+		assignment,
+	}: {
+		assignment: Assigner<any, any, any, any, any> | PropertyAssigner<any, any, any, any, any>;
+	},
 ): BuiltinActionResolution {
-  if (!(snapshot as object)["context" as never]) {
-    throw new Error(
-      "Cannot assign to undefined `context`. Ensure that `context` is defined in the machine config.",
-    );
-  }
-  const spawnedChildren: Record<string, AnyActorRef> = {};
+	if (!(snapshot as object)["context" as never]) {
+		throw new Error(
+			"Cannot assign to undefined `context`. Ensure that `context` is defined in the machine config.",
+		);
+	}
+	const spawnedChildren: Record<string, AnyActorRef> = {};
 
-  const assignArgs: AssignArgs<any, any, any, any> = {
-    context: snapshot.context,
-    event: actionArgs.event,
-    spawn: createSpawner(
-      actorScope,
-      snapshot,
-      actionArgs.event,
-      spawnedChildren,
-    ),
-    self: actorScope.self,
-    system: actorScope.system,
-  };
-  let partialUpdate: Record<string, unknown> = {};
-  if (typeIs(assignment, "function")) {
-    partialUpdate = assignment(assignArgs, actionParams);
-  } else {
-    for (const key of Object.keys(assignment)) {
-      const propAssignment = assignment[key as never];
-      partialUpdate[key as never] = typeIs(propAssignment, "function")
-        ? propAssignment(assignArgs, actionParams)
-        : propAssignment;
-    }
-  }
+	const assignArgs: AssignArgs<any, any, any, any> = {
+		context: snapshot.context,
+		event: actionArgs.event,
+		spawn: createSpawner(actorScope, snapshot, actionArgs.event, spawnedChildren),
+		self: actorScope.self,
+		system: actorScope.system,
+	};
+	let partialUpdate: Record<string, unknown> = {};
+	if (typeIs(assignment, "function")) {
+		partialUpdate = assignment(assignArgs, actionParams);
+	} else {
+		for (const key of Object.keys(assignment)) {
+			const propAssignment = assignment[key as never];
+			partialUpdate[key as never] = typeIs(propAssignment, "function")
+				? propAssignment(assignArgs, actionParams)
+				: propAssignment;
+		}
+	}
 
-  const updatedContext = Object.assign({}, snapshot.context, partialUpdate);
+	const updatedContext = Object.assign({}, snapshot.context, partialUpdate);
 
-  return [
-    cloneMachineSnapshot(snapshot, {
-      context: updatedContext,
-      children: Object.keys(spawnedChildren).size()
-        ? {
-            ...snapshot.children,
-            ...spawnedChildren,
-          }
-        : snapshot.children,
-    }),
-    undefined,
-    undefined,
-  ];
+	return [
+		cloneMachineSnapshot(snapshot, {
+			context: updatedContext,
+			children: Object.keys(spawnedChildren).size()
+				? {
+						...snapshot.children,
+						...spawnedChildren,
+					}
+				: snapshot.children,
+		}),
+		undefined,
+		undefined,
+	];
 }
 
 export interface AssignAction<
-  TContext extends MachineContext,
-  TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject["params"] | undefined,
-  TEvent extends EventObject,
-  TActor extends ProvidedActor,
+	TContext extends MachineContext,
+	TExpressionEvent extends EventObject,
+	TParams extends ParameterizedObject["params"] | undefined,
+	TEvent extends EventObject,
+	TActor extends ProvidedActor,
 > {
-  (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
-  _out_TActor?: TActor;
+	(args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
+	_out_TActor?: TActor;
 }
 
 /**
@@ -107,27 +100,27 @@ export interface AssignAction<
  * @example
  *
  * ```ts
- * import { createMachine, assign } from 'xstate';
+ * import { createMachine, assign } from "xstate";
  *
  * const countMachine = createMachine({
- *   context: {
- *     count: 0,
- *     message: ''
- *   },
- *   on: {
- *     inc: {
- *       actions: assign({
- *         count: ({ context }) => context.count + 1
- *       })
- *     },
- *     updateMessage: {
- *       actions: assign(({ context, event }) => {
- *         return {
- *           message: event.message.trim()
- *         };
- *       })
- *     }
- *   }
+ * 	context: {
+ * 		count: 0,
+ * 		message: "",
+ * 	},
+ * 	on: {
+ * 		inc: {
+ * 			actions: assign({
+ * 				count: ({ context }) => context.count + 1,
+ * 			}),
+ * 		},
+ * 		updateMessage: {
+ * 			actions: assign(({ context, event }) => {
+ * 				return {
+ * 					message: event.message.trim(),
+ * 				};
+ * 			}),
+ * 		},
+ * 	},
  * });
  * ```
  *
@@ -136,51 +129,32 @@ export interface AssignAction<
  *   update.
  */
 export function assign<
-  TContext extends MachineContext,
-  TExpressionEvent extends AnyEventObject, // TODO: consider using a stricter `EventObject` here
-  TParams extends ParameterizedObject["params"] | undefined,
-  TEvent extends EventObject,
-  TActor extends ProvidedActor,
+	TContext extends MachineContext,
+	TExpressionEvent extends AnyEventObject, // TODO: consider using a stricter `EventObject` here
+	TParams extends ParameterizedObject["params"] | undefined,
+	TEvent extends EventObject,
+	TActor extends ProvidedActor,
 >(
-  assignment:
-    | Assigner<LowInfer<TContext>, TExpressionEvent, TParams, TEvent, TActor>
-    | PropertyAssigner<
-        LowInfer<TContext>,
-        TExpressionEvent,
-        TParams,
-        TEvent,
-        TActor
-      >,
-): ActionFunction<
-  TContext,
-  TExpressionEvent,
-  TEvent,
-  TParams,
-  TActor,
-  never,
-  never,
-  never,
-  never
-> {
-  if (isDevelopment && executingCustomAction) {
-    warn(
-      "Custom actions should not call `assign()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
-    );
-  }
+	assignment:
+		| Assigner<LowInfer<TContext>, TExpressionEvent, TParams, TEvent, TActor>
+		| PropertyAssigner<LowInfer<TContext>, TExpressionEvent, TParams, TEvent, TActor>,
+): ActionFunction<TContext, TExpressionEvent, TEvent, TParams, TActor, never, never, never, never> {
+	if (isDevelopment && executingCustomAction) {
+		warn(
+			"Custom actions should not call `assign()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+		);
+	}
 
-  function assign(
-    _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: TParams,
-  ) {
-    if (isDevelopment) {
-      throw new Error(`This isn't supposed to be called`);
-    }
-  }
+	function assign(_args: ActionArgs<TContext, TExpressionEvent, TEvent>, _params: TParams) {
+		if (isDevelopment) {
+			throw new Error(`This isn't supposed to be called`);
+		}
+	}
 
-  assign.type = "xstate.assign";
-  assign.assignment = assignment;
+	assign.type = "xstate.assign";
+	assign.assignment = assignment;
 
-  assign.resolve = resolveAssign;
+	assign.resolve = resolveAssign;
 
-  return assign;
+	return assign;
 }

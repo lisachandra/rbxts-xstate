@@ -1,6 +1,6 @@
-import { Config } from '@rbxts/jest';
+import { Config } from "@rbxts/jest";
 
 export = {
-  displayName: 'xstate-react',
-  testMatch: ['**/*.spec']
+	displayName: "xstate-react",
+	testMatch: ["**/*.spec"],
 } satisfies Config;

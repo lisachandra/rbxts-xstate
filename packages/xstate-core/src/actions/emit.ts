@@ -1,65 +1,65 @@
 import isDevelopment from "../isDevelopment";
 import { executingCustomAction } from "../createActor";
 import {
-  ActionArgs,
-  ActionFunction,
-  AnyActorScope,
-  AnyEventObject,
-  AnyMachineSnapshot,
-  DoNotInfer,
-  EventObject,
-  MachineContext,
-  ParameterizedObject,
-  SendExpr,
-  BuiltinActionResolution,
+	ActionArgs,
+	ActionFunction,
+	AnyActorScope,
+	AnyEventObject,
+	AnyMachineSnapshot,
+	DoNotInfer,
+	EventObject,
+	MachineContext,
+	ParameterizedObject,
+	SendExpr,
+	BuiltinActionResolution,
 } from "../types";
 import { Error } from "@rbxts/luau-polyfill";
 
 function resolveEmit(
-  _: AnyActorScope,
-  snapshot: AnyMachineSnapshot,
-  args: ActionArgs<any, any, any>,
-  actionParams: ParameterizedObject["params"] | undefined,
-  {
-    event: eventOrExpr,
-  }: {
-    event:
-      | EventObject
-      | SendExpr<
-          MachineContext,
-          EventObject,
-          ParameterizedObject["params"] | undefined,
-          EventObject,
-          EventObject
-        >;
-  },
+	_: AnyActorScope,
+	snapshot: AnyMachineSnapshot,
+	args: ActionArgs<any, any, any>,
+	actionParams: ParameterizedObject["params"] | undefined,
+	{
+		event: eventOrExpr,
+	}: {
+		event:
+			| EventObject
+			| SendExpr<
+					MachineContext,
+					EventObject,
+					ParameterizedObject["params"] | undefined,
+					EventObject,
+					EventObject
+			  >;
+	},
 ): BuiltinActionResolution {
-  const resolvedEvent = typeIs(eventOrExpr, "function")
-    ? eventOrExpr(args, actionParams)
-    : eventOrExpr;
-  return [snapshot, { event: resolvedEvent }, undefined];
+	const resolvedEvent = typeIs(eventOrExpr, "function")
+		? eventOrExpr(args, actionParams)
+		: eventOrExpr;
+	return [snapshot, { event: resolvedEvent }, undefined];
 }
 
 function executeEmit(
-  actorScope: AnyActorScope,
-  {
-    event,
-  }: {
-    event: EventObject;
-  },
+	actorScope: AnyActorScope,
+	{
+		event,
+	}: {
+		event: EventObject;
+	},
 ) {
-  actorScope.defer(() => actorScope.emit(event));
+	actorScope.defer(() => actorScope.emit(event));
 }
 
 export interface EmitAction<
-  TContext extends MachineContext,
-  TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject["params"] | undefined,
-  TEvent extends EventObject,
-  TEmitted extends EventObject,
+	TContext extends MachineContext,
+	TExpressionEvent extends EventObject,
+	TParams extends ParameterizedObject["params"] | undefined,
+	TEvent extends EventObject,
+	TEmitted extends EventObject,
 > {
-  (args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
-  _out_TEmitted?: TEmitted;
+	(args: ActionArgs<TContext, TExpressionEvent, TEvent>, params: TParams): void;
+	_out_TEmitted?: TEmitted;
 }
 
 /**
@@ -69,28 +69,28 @@ export interface EmitAction<
  * @example
  *
  * ```ts
- * import { emit } from 'xstate';
+ * import { emit } from "xstate";
  *
  * const machine = createMachine({
- *   // ...
- *   on: {
- *     something: {
- *       actions: emit({
- *         type: 'emitted',
- *         some: 'data'
- *       })
- *     }
- *   }
- *   // ...
+ * 	// ...
+ * 	on: {
+ * 		something: {
+ * 			actions: emit({
+ * 				type: "emitted",
+ * 				some: "data",
+ * 			}),
+ * 		},
+ * 	},
+ * 	// ...
  * });
  *
  * const actor = createActor(machine).start();
  *
- * actor.on('emitted', (event) => {
- *   console.log(event);
+ * actor.on("emitted", event => {
+ * 	console.log(event);
  * });
  *
- * actor.send({ type: 'something' });
+ * actor.send({ type: "something" });
  * // logs:
  * // {
  * //   type: 'emitted',
@@ -99,53 +99,44 @@ export interface EmitAction<
  * ```
  */
 export function emit<
-  TContext extends MachineContext,
-  TExpressionEvent extends EventObject,
-  TParams extends ParameterizedObject["params"] | undefined,
-  TEvent extends EventObject,
-  TEmitted extends AnyEventObject,
+	TContext extends MachineContext,
+	TExpressionEvent extends EventObject,
+	TParams extends ParameterizedObject["params"] | undefined,
+	TEvent extends EventObject,
+	TEmitted extends AnyEventObject,
 >(
-  /** The event to emit, or an expression that returns an event to emit. */
-  eventOrExpr:
-    | DoNotInfer<TEmitted>
-    | SendExpr<
-        TContext,
-        TExpressionEvent,
-        TParams,
-        DoNotInfer<TEmitted>,
-        TEvent
-      >,
+	/** The event to emit, or an expression that returns an event to emit. */
+	eventOrExpr:
+		| DoNotInfer<TEmitted>
+		| SendExpr<TContext, TExpressionEvent, TParams, DoNotInfer<TEmitted>, TEvent>,
 ): ActionFunction<
-  TContext,
-  TExpressionEvent,
-  TEvent,
-  TParams,
-  never,
-  never,
-  never,
-  never,
-  TEmitted
+	TContext,
+	TExpressionEvent,
+	TEvent,
+	TParams,
+	never,
+	never,
+	never,
+	never,
+	TEmitted
 > {
-  if (isDevelopment && executingCustomAction) {
-    warn(
-      "Custom actions should not call `emit()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
-    );
-  }
+	if (isDevelopment && executingCustomAction) {
+		warn(
+			"Custom actions should not call `emit()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+		);
+	}
 
-  function emit(
-    _args: ActionArgs<TContext, TExpressionEvent, TEvent>,
-    _params: TParams,
-  ) {
-    if (isDevelopment) {
-      throw new Error(`This isn't supposed to be called`);
-    }
-  }
+	function emit(_args: ActionArgs<TContext, TExpressionEvent, TEvent>, _params: TParams) {
+		if (isDevelopment) {
+			throw new Error(`This isn't supposed to be called`);
+		}
+	}
 
-  emit.type = "xstate.emit";
-  emit.event = eventOrExpr;
+	emit.type = "xstate.emit";
+	emit.event = eventOrExpr;
 
-  emit.resolve = resolveEmit;
-  emit.execute = executeEmit;
+	emit.resolve = resolveEmit;
+	emit.execute = executeEmit;
 
-  return emit;
+	return emit;
 }

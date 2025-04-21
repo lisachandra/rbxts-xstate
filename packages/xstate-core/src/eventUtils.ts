@@ -9,7 +9,7 @@ import { DoneActorEvent, DoneStateEvent, ErrorActorEvent } from "./types";
  * @param id The state node ID where this event is handled
  */
 export function createAfterEvent(delayRef: number | string, id: string) {
-  return { type: `xstate.after.${delayRef}.${id}` } as const;
+	return { type: `xstate.after.${delayRef}.${id}` } as const;
 }
 
 /**
@@ -19,14 +19,11 @@ export function createAfterEvent(delayRef: number | string, id: string) {
  * @param id The final state node's parent state node `id`
  * @param output The data to pass into the event
  */
-export function createDoneStateEvent(
-  id: string,
-  output?: unknown,
-): DoneStateEvent {
-  return {
-    type: `xstate.done.state.${id}`,
-    output,
-  };
+export function createDoneStateEvent(id: string, output?: unknown): DoneStateEvent {
+	return {
+		type: `xstate.done.state.${id}`,
+		output,
+	};
 }
 
 /**
@@ -38,24 +35,18 @@ export function createDoneStateEvent(
  * @param invokeId The invoked service ID
  * @param output The data to pass into the event
  */
-export function createDoneActorEvent(
-  invokeId: string,
-  output?: unknown,
-): DoneActorEvent {
-  return {
-    type: `xstate.done.actor.${invokeId}`,
-    output,
-    actorId: invokeId,
-  };
+export function createDoneActorEvent(invokeId: string, output?: unknown): DoneActorEvent {
+	return {
+		type: `xstate.done.actor.${invokeId}`,
+		output,
+		actorId: invokeId,
+	};
 }
 
-export function createErrorActorEvent(
-  id: string,
-  err?: unknown,
-): ErrorActorEvent {
-  return { type: `xstate.error.actor.${id}`, error: err, actorId: id };
+export function createErrorActorEvent(id: string, err?: unknown): ErrorActorEvent {
+	return { type: `xstate.error.actor.${id}`, error: err, actorId: id };
 }
 
 export function createInitEvent(input: unknown) {
-  return { type: XSTATE_INIT, input } as const;
+	return { type: XSTATE_INIT, input } as const;
 }

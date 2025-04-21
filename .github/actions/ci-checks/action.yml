@@ -1,11 +1,11 @@
-name: 'CI checks'
+name: "CI checks"
 runs:
-  using: 'composite'
-  steps:
-    - name: Build
-      run: pnpm build
-      shell: bash
+    using: "composite"
+    steps:
+        - name: Build
+          run: pnpm build
+          shell: bash
 
-    - name: ESLint
-      run: pnpm lint --no-cache
-      shell: bash
+        - name: ESLint
+          run: pnpm lint --no-cache
+          shell: bash

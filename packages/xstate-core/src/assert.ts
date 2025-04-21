@@ -26,21 +26,14 @@ import { HttpService } from "@rbxts/services";
  * },
  * ```
  */
-export function assertEvent<
-  TEvent extends EventObject,
-  TAssertedType extends TEvent["type"],
->(
-  event: TEvent,
-  kind: TAssertedType | TAssertedType[],
+export function assertEvent<TEvent extends EventObject, TAssertedType extends TEvent["type"]>(
+	event: TEvent,
+	kind: TAssertedType | TAssertedType[],
 ): asserts event is TEvent & { type: TAssertedType } {
-  const types = toArray(kind);
-  if (!types.includes(event.type as never)) {
-    const typesText =
-      types.size() === 1
-        ? `type "${types[0]}"`
-        : `one of types "${types.join('", "')}"`;
-    throw new Error(
-      `Expected event ${HttpService.JSONEncode(event)} to have ${typesText}`,
-    );
-  }
+	const types = toArray(kind);
+	if (!types.includes(event.type as never)) {
+		const typesText =
+			types.size() === 1 ? `type "${types[0]}"` : `one of types "${types.join('", "')}"`;
+		throw new Error(`Expected event ${HttpService.JSONEncode(event)} to have ${typesText}`);
+	}
 }

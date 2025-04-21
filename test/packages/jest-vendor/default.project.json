@@ -1,6 +1,6 @@
 {
-  "name": "JestLua",
-  "tree": {
-    "$path": "jest-lua.rbxm"
-  }
+	"name": "JestLua",
+	"tree": {
+		"$path": "jest-lua.rbxm"
+	}
 }

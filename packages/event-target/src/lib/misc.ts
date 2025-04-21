@@ -7,14 +7,10 @@ import { Error } from "@rbxts/luau-polyfill";
  * @param message The error message.
  * @param args The arguments for replacing placeholders in the message.
  */
-export function assertType(
-  condition: boolean,
-  message: string,
-  ...args: any[]
-): asserts condition {
-  if (!condition) {
-    throw new Error(format(message, args));
-  }
+export function assertType(condition: boolean, message: string, ...args: any[]): asserts condition {
+	if (!condition) {
+		throw new Error(format(message, args));
+	}
 }
 
 /**
@@ -24,12 +20,12 @@ export function assertType(
  * @param args The arguments.
  */
 export function format(message: string, args: unknown[]): string {
-  let i = 0;
-  return message.gsub("%%[os]", () => {
-    const currentArg = args[i];
-    i++;
-    return tostring(currentArg);
-  })[0];
+	let i = 0;
+	return message.gsub("%%[os]", () => {
+		const currentArg = args[i];
+		i++;
+		return tostring(currentArg);
+	})[0];
 }
 
 /**
@@ -38,5 +34,5 @@ export function format(message: string, args: unknown[]): string {
  * @param x The value to get the string representation.
  */
 export function anyToString(x: any): string {
-  return tostring(x);
+	return tostring(x);
 }

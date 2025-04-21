@@ -1,44 +1,44 @@
 {
-  "name": "@rbxts/dom-testing-library",
-  "version": "8.14.0-rc.1",
-  "main": "out/init.luau",
-  "types": "out/index.d.ts",
-  "files": [
-    "out",
-    "!**/*.tsbuildinfo",
-    "!**/__tests__"
-  ],
-  "scripts": {
-    "build": "shx rm -rf out && rbxtsc --verbose",
-    "dev": "shx rm -rf out && rbxtsc -w"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lisachandra/rbxts-testing-library.git"
-  },
-  "contributors": [
-    "Ignacio Falk <flakolefluk@gmail.com>",
-    "Allan Jeremy <dev@allanjeremy.com>",
-    "Paul Doyle <pdoyle@roblox.com>",
-    "lisachandra <lisachandra@proton.me>"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lisachandra/rbxts-testing-library/issues"
-  },
-  "homepage": "https://github.com/lisachandra/rbxts-testing-library/tree/main/packages/dom-testing-library#readme",
-  "peerDependencies": {
-    "@rbxts/jest-vendor": "*",
-    "@rbxts/react-vendor": "*"
-  },
-  "devDependencies": {
-    "@rbxts/compiler-types": "^3.0.0-types.0",
-    "@rbxts/jest-vendor": "*",
-    "@rbxts/react-vendor": "*",
-    "@rbxts/types": "^1.0.844",
-    "ajv": "^8.12.0",
-    "pkg-up": "^3.1.0",
-    "roblox-ts": "^3.0.0",
-    "shx": "^0.3.4"
-  }
+	"name": "@rbxts/dom-testing-library",
+	"version": "8.14.0-rc.1",
+	"main": "out/init.luau",
+	"types": "out/index.d.ts",
+	"files": [
+		"out",
+		"!**/*.tsbuildinfo",
+		"!**/__tests__"
+	],
+	"scripts": {
+		"build": "shx rm -rf out && rbxtsc --verbose",
+		"dev": "shx rm -rf out && rbxtsc -w"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lisachandra/rbxts-testing-library.git"
+	},
+	"contributors": [
+		"Ignacio Falk <flakolefluk@gmail.com>",
+		"Allan Jeremy <dev@allanjeremy.com>",
+		"Paul Doyle <pdoyle@roblox.com>",
+		"lisachandra <lisachandra@proton.me>"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/lisachandra/rbxts-testing-library/issues"
+	},
+	"homepage": "https://github.com/lisachandra/rbxts-testing-library/tree/main/packages/dom-testing-library#readme",
+	"peerDependencies": {
+		"@rbxts/jest-vendor": "*",
+		"@rbxts/react-vendor": "*"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/jest-vendor": "*",
+		"@rbxts/react-vendor": "*",
+		"@rbxts/types": "^1.0.844",
+		"ajv": "^8.12.0",
+		"pkg-up": "^3.1.0",
+		"roblox-ts": "^3.0.0",
+		"shx": "^0.3.4"
+	}
 }

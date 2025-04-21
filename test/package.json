@@ -1,30 +1,30 @@
 {
-  "name": "test",
-  "version": "0.1.0",
-  "private": true,
-  "license": "MIT",
-  "scripts": {
-    "build": "shx rm -rf out && rbxtsc --includePath out/include --noInclude --verbose",
-    "dev": "shx rm -rf out && rbxtsc --includePath out/include --noInclude -w"
-  },
-  "dependencies": {
-    "@rbxts/jest": "^0.1.0",
-    "@rbxts/jest-globals": "^0.1.0",
-    "@rbxts/jest-vendor": "workspace:^",
-    "@rbxts/luau-polyfill": "^1.0.0",
-    "@rbxts/react": "^17.2.3",
-    "@rbxts/services": "^1.0.0",
-    "@rbxts/whatwg-abort-controller": "workspace:^",
-    "@rbxts/whatwg-event-target": "workspace:^",
-    "@rbxts/xstate": "workspace:^",
-    "@rbxts/react-testing-library": "^12.1.5"
-  },
-  "devDependencies": {
-    "@rbxts/compiler-types": "^3.0.0-types.0",
-    "@rbxts/types": "^1.0.844",
-    "ajv": "^8.12.0",
-    "pkg-up": "^3.1.0",
-    "roblox-ts": "^3.0.0",
-    "shx": "^0.3.4"
-  }
+	"name": "test",
+	"version": "0.1.0",
+	"private": true,
+	"license": "MIT",
+	"scripts": {
+		"build": "shx rm -rf out && rbxtsc --includePath out/include --noInclude --verbose",
+		"dev": "shx rm -rf out && rbxtsc --includePath out/include --noInclude -w"
+	},
+	"dependencies": {
+		"@rbxts/jest": "^0.1.0",
+		"@rbxts/jest-globals": "^0.1.0",
+		"@rbxts/jest-vendor": "workspace:^",
+		"@rbxts/luau-polyfill": "^1.0.0",
+		"@rbxts/react": "^17.2.3",
+		"@rbxts/services": "^1.0.0",
+		"@rbxts/whatwg-abort-controller": "workspace:^",
+		"@rbxts/whatwg-event-target": "workspace:^",
+		"@rbxts/xstate": "workspace:^",
+		"@rbxts/react-testing-library": "^12.1.5"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.844",
+		"ajv": "^8.12.0",
+		"pkg-up": "^3.1.0",
+		"roblox-ts": "^3.0.0",
+		"shx": "^0.3.4"
+	}
 }

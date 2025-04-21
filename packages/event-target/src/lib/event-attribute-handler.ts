@@ -1,9 +1,5 @@
 import { Event } from "./event";
-import {
-  EventTarget,
-  getEventTargetInternalData,
-  SignalData,
-} from "./event-target";
+import { EventTarget, getEventTargetInternalData, SignalData } from "./event-target";
 import { createListener, invokeCallback, setRemoved } from "./listener";
 import { InvalidAttributeHandler } from "./warnings";
 
@@ -14,14 +10,14 @@ import { InvalidAttributeHandler } from "./warnings";
  * @param kind The event type.
  */
 export function getEventAttributeValue<
-  TEventTarget extends EventTarget<any, any>,
-  TEvent extends Event,
+	TEventTarget extends EventTarget<any, any>,
+	TEvent extends Event,
 >(
-  target: TEventTarget,
-  kind: string,
+	target: TEventTarget,
+	kind: string,
 ): EventTarget.CallbackFunction<TEventTarget, TEvent> | undefined {
-  const listMap = getEventTargetInternalData(target, "target");
-  return listMap.get(kind)?.attrCallback ?? undefined;
+	const listMap = getEventTargetInternalData(target, "target");
+	return listMap.get(kind)?.attrCallback ?? undefined;
 }
 
 /**
@@ -32,22 +28,19 @@ export function getEventAttributeValue<
  * @param callback The event listener.
  */
 export function setEventAttributeValue(
-  target: EventTarget<any, any>,
-  kind: string,
-  callback: EventTarget.CallbackFunction<any, any> | undefined,
+	target: EventTarget<any, any>,
+	kind: string,
+	callback: EventTarget.CallbackFunction<any, any> | undefined,
 ): void {
-  if (callback !== undefined && typeIs(callback, "function")) {
-    InvalidAttributeHandler.warn(callback);
-  }
+	if (callback !== undefined && typeIs(callback, "function")) {
+		InvalidAttributeHandler.warn(callback);
+	}
 
-  if (
-    typeIs(callback, "function") ||
-    (typeIs(callback, "table") && callback !== undefined)
-  ) {
-    upsertEventAttributeListener(target, kind, callback);
-  } else {
-    removeEventAttributeListener(target, kind);
-  }
+	if (typeIs(callback, "function") || (typeIs(callback, "table") && callback !== undefined)) {
+		upsertEventAttributeListener(target, kind, callback);
+	} else {
+		removeEventAttributeListener(target, kind);
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -61,37 +54,35 @@ export function setEventAttributeValue(
  * @param kind The event type.
  * @param callback The event listener.
  */
-function upsertEventAttributeListener<
-  TEventTarget extends EventTarget<any, any>,
->(
-  target: TEventTarget,
-  kind: string,
-  callback: EventTarget.CallbackFunction<TEventTarget, any>,
+function upsertEventAttributeListener<TEventTarget extends EventTarget<any, any>>(
+	target: TEventTarget,
+	kind: string,
+	callback: EventTarget.CallbackFunction<TEventTarget, any>,
 ): void {
-  const listenerMap = getEventTargetInternalData(target, "target");
-  const typeString = string.lower(kind);
-  const signalData = listenerMap.get(typeString);
+	const listenerMap = getEventTargetInternalData(target, "target");
+	const typeString = string.lower(kind);
+	const signalData = listenerMap.get(typeString);
 
-  if (!signalData) {
-    // should not happen, but handle it anyway
-    return;
-  }
-  signalData.attrCallback = callback;
-  if (signalData.attrListener) {
-    return;
-  }
-  const connection = signalData.signal.Connect((event: Event) => {
-    invokeCallback({ callback } as never, target, event);
-  });
-  signalData.attrListener = createListener(
-    defineEventAttributeCallback(signalData),
-    false,
-    false,
-    false,
-    connection,
-    undefined,
-    undefined,
-  );
+	if (!signalData) {
+		// should not happen, but handle it anyway
+		return;
+	}
+	signalData.attrCallback = callback;
+	if (signalData.attrListener) {
+		return;
+	}
+	const connection = signalData.signal.Connect((event: Event) => {
+		invokeCallback({ callback } as never, target, event);
+	});
+	signalData.attrListener = createListener(
+		defineEventAttributeCallback(signalData),
+		false,
+		false,
+		false,
+		connection,
+		undefined,
+		undefined,
+	);
 }
 /**
  * Remove the given event attribute handler.
@@ -100,26 +91,23 @@ function upsertEventAttributeListener<
  * @param kind The event type.
  * @param callback The event listener.
  */
-function removeEventAttributeListener(
-  target: EventTarget<any, any>,
-  kind: string,
-): void {
-  const listenerMap = getEventTargetInternalData(target, "target");
-  const typeString = string.lower(kind);
-  const signalData = listenerMap.get(typeString);
+function removeEventAttributeListener(target: EventTarget<any, any>, kind: string): void {
+	const listenerMap = getEventTargetInternalData(target, "target");
+	const typeString = string.lower(kind);
+	const signalData = listenerMap.get(typeString);
 
-  const entry = signalData?.attrListener;
-  const list = signalData?.listeners;
-  if (!signalData || !entry || !list) {
-    // should not happen, but handle it anyway
-    return;
-  }
+	const entry = signalData?.attrListener;
+	const list = signalData?.listeners;
+	if (!signalData || !entry || !list) {
+		// should not happen, but handle it anyway
+		return;
+	}
 
-  entry.connection.Disconnect();
-  setRemoved(entry);
-  entry.signal?.removeEventListener("abort", entry.signalListener!);
-  list.remove(list.indexOf(entry));
-  signalData.attrCallback = signalData.attrListener = undefined;
+	entry.connection.Disconnect();
+	setRemoved(entry);
+	entry.signal?.removeEventListener("abort", entry.signalListener!);
+	list.remove(list.indexOf(entry));
+	signalData.attrCallback = signalData.attrListener = undefined;
 }
 
 /**
@@ -129,12 +117,12 @@ function removeEventAttributeListener(
  * @param signalData The `ListenerList` object.
  */
 function defineEventAttributeCallback(
-  signalData: SignalData,
+	signalData: SignalData,
 ): EventTarget.CallbackFunction<any, any> {
-  return (itself, event) => {
-    const callback = signalData.attrCallback;
-    if (typeIs(callback, "function")) {
-      callback(itself, event);
-    }
-  };
+	return (itself, event) => {
+		const callback = signalData.attrCallback;
+		if (typeIs(callback, "function")) {
+			callback(itself, event);
+		}
+	};
 }

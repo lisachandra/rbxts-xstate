@@ -1,8 +1,5 @@
 import { Event } from "./event";
-import {
-  getEventAttributeValue,
-  setEventAttributeValue,
-} from "./event-attribute-handler";
+import { getEventAttributeValue, setEventAttributeValue } from "./event-attribute-handler";
 import { EventTarget } from "./event-target";
 import { defineProperty } from "./getset";
 
@@ -14,40 +11,37 @@ import { defineProperty } from "./getset";
  * @param types The types to define event attributes.
  */
 export function defineCustomEventTarget<
-  TEventMap extends Record<string, Event>,
-  TMode extends "standard" | "strict" = "standard",
+	TEventMap extends Record<string, Event>,
+	TMode extends "standard" | "strict" = "standard",
 >(
-  ...types: (string & keyof TEventMap)[]
+	...types: (string & keyof TEventMap)[]
 ): defineCustomEventTarget.CustomEventTargetConstructor<TEventMap, TMode> {
-  class CustomEventTarget extends EventTarget {}
-  const prototype = (getmetatable(CustomEventTarget) as never)[
-    "__index"
-  ] as CustomEventTarget;
-  for (let i = 0; i < types.size(); ++i) {
-    defineEventAttribute(prototype, types[i]);
-  }
+	class CustomEventTarget extends EventTarget {}
+	const prototype = (getmetatable(CustomEventTarget) as never)["__index"] as CustomEventTarget;
+	for (let i = 0; i < types.size(); ++i) {
+		defineEventAttribute(prototype, types[i]);
+	}
 
-  return CustomEventTarget as any;
+	return CustomEventTarget as any;
 }
 
 export namespace defineCustomEventTarget {
-  /** The interface of CustomEventTarget constructor. */
-  export type CustomEventTargetConstructor<
-    TEventMap extends Record<string, Event>,
-    TMode extends "standard" | "strict",
-  > = {
-    /** Create a new instance. */
-    new (): CustomEventTarget<TEventMap, TMode>;
-    /** Prototype object. */
-    prototype: CustomEventTarget<TEventMap, TMode>;
-  };
+	/** The interface of CustomEventTarget constructor. */
+	export type CustomEventTargetConstructor<
+		TEventMap extends Record<string, Event>,
+		TMode extends "standard" | "strict",
+	> = {
+		/** Create a new instance. */
+		new (): CustomEventTarget<TEventMap, TMode>;
+		/** Prototype object. */
+		prototype: CustomEventTarget<TEventMap, TMode>;
+	};
 
-  /** The interface of CustomEventTarget. */
-  export type CustomEventTarget<
-    TEventMap extends Record<string, Event>,
-    TMode extends "standard" | "strict",
-  > = EventTarget<TEventMap, TMode> &
-    defineEventAttribute.EventAttributes<any, TEventMap>;
+	/** The interface of CustomEventTarget. */
+	export type CustomEventTarget<
+		TEventMap extends Record<string, Event>,
+		TMode extends "standard" | "strict",
+	> = EventTarget<TEventMap, TMode> & defineEventAttribute.EventAttributes<any, TEventMap>;
 }
 
 /**
@@ -60,37 +54,37 @@ export namespace defineCustomEventTarget {
  * @param _eventClass Unused, but to infer `Event` class type.
  */
 export function defineEventAttribute<
-  TEventTarget extends EventTarget,
-  TEventType extends string,
-  TEventConstrucor extends typeof Event,
+	TEventTarget extends EventTarget,
+	TEventType extends string,
+	TEventConstrucor extends typeof Event,
 >(
-  target: TEventTarget,
-  kind: TEventType,
-  _eventClass?: TEventConstrucor,
+	target: TEventTarget,
+	kind: TEventType,
+	_eventClass?: TEventConstrucor,
 ): asserts target is TEventTarget &
-  defineEventAttribute.EventAttributes<
-    TEventTarget,
-    Record<TEventType, InstanceType<TEventConstrucor>>
-  > {
-  defineProperty(target, `on${kind}`, {
-    get() {
-      return (getEventAttributeValue as Callback)(this, kind);
-    },
-    set(value) {
-      (setEventAttributeValue as Callback)(this, kind, value);
-    },
-  });
+	defineEventAttribute.EventAttributes<
+		TEventTarget,
+		Record<TEventType, InstanceType<TEventConstrucor>>
+	> {
+	defineProperty(target, `on${kind}`, {
+		get() {
+			return (getEventAttributeValue as Callback)(this, kind);
+		},
+		set(value) {
+			(setEventAttributeValue as Callback)(this, kind, value);
+		},
+	});
 }
 
 export namespace defineEventAttribute {
-  /** Definition of event attributes. */
-  export type EventAttributes<
-    TEventTarget extends EventTarget<any, any>,
-    TEventMap extends Record<string, Event>,
-  > = {
-    [P in string & keyof TEventMap as `on${P}`]: EventTarget.CallbackFunction<
-      TEventTarget,
-      TEventMap[P]
-    > | null;
-  };
+	/** Definition of event attributes. */
+	export type EventAttributes<
+		TEventTarget extends EventTarget<any, any>,
+		TEventMap extends Record<string, Event>,
+	> = {
+		[P in string & keyof TEventMap as `on${P}`]: EventTarget.CallbackFunction<
+			TEventTarget,
+			TEventMap[P]
+		> | null;
+	};
 }

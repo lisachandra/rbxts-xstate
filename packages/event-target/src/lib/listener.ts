@@ -9,42 +9,41 @@ import { EventTarget } from "./event-target"; // Used as only type, so no circul
  * @see https://dom.spec.whatwg.org/#concept-event-listener
  */
 export interface Listener {
-  /** The callback function. */
-  readonly callback: Listener.Callback<any, any>;
-  /** The flags of this listener. This is writable to add the removed flag. */
-  flags: ListenerFlags;
-  /** The `AbortSignal` to remove this listener. */
-  readonly signal: Listener.AbortSignal | undefined;
-  /**
-   * The `abort` event listener for the `signal`. To remove it from the
-   * `signal`.
-   */
-  readonly signalListener: (() => void) | undefined;
-  /** The connection. */
-  readonly connection: Connection;
+	/** The callback function. */
+	readonly callback: Listener.Callback<any, any>;
+	/** The flags of this listener. This is writable to add the removed flag. */
+	flags: ListenerFlags;
+	/** The `AbortSignal` to remove this listener. */
+	readonly signal: Listener.AbortSignal | undefined;
+	/**
+	 * The `abort` event listener for the `signal`. To remove it from the
+	 * `signal`.
+	 */
+	readonly signalListener: (() => void) | undefined;
+	/** The connection. */
+	readonly connection: Connection;
 }
 
 export namespace Listener {
-  export type Callback<
-    TEventTarget extends EventTarget<any, any>,
-    TEvent extends Event,
-  > = CallbackFunction<TEventTarget, TEvent> | CallbackObject<TEvent>;
+	export type Callback<TEventTarget extends EventTarget<any, any>, TEvent extends Event> =
+		| CallbackFunction<TEventTarget, TEvent>
+		| CallbackObject<TEvent>;
 
-  export interface CallbackFunction<
-    TEventTarget extends EventTarget<any, any>,
-    TEvent extends Event,
-  > {
-    (self: TEventTarget, event?: TEvent): void;
-  }
+	export interface CallbackFunction<
+		TEventTarget extends EventTarget<any, any>,
+		TEvent extends Event,
+	> {
+		(self: TEventTarget, event?: TEvent): void;
+	}
 
-  export interface CallbackObject<TEvent extends Event> {
-    handleEvent(event: TEvent): void;
-  }
+	export interface CallbackObject<TEvent extends Event> {
+		handleEvent(event: TEvent): void;
+	}
 
-  export interface AbortSignal {
-    addEventListener(type: string, callback: Callback<any, Event>): void;
-    removeEventListener(type: string, callback: Callback<any, Event>): void;
-  }
+	export interface AbortSignal {
+		addEventListener(type: string, callback: Callback<any, Event>): void;
+		removeEventListener(type: string, callback: Callback<any, Event>): void;
+	}
 }
 
 /**
@@ -58,24 +57,24 @@ export namespace Listener {
  * @param signalListener The abort event listener for the abort signal.
  */
 export function createListener(
-  callback: Listener.Callback<any, any>,
-  capture: boolean,
-  passive: boolean,
-  once: boolean,
-  connection: Connection,
-  signal: Listener.AbortSignal | undefined,
-  signalListener: (() => void) | undefined,
+	callback: Listener.Callback<any, any>,
+	capture: boolean,
+	passive: boolean,
+	once: boolean,
+	connection: Connection,
+	signal: Listener.AbortSignal | undefined,
+	signalListener: (() => void) | undefined,
 ): Listener {
-  return {
-    callback,
-    flags:
-      (capture ? ListenerFlags.Capture : 0) |
-      (passive ? ListenerFlags.Passive : 0) |
-      (once ? ListenerFlags.Once : 0),
-    connection,
-    signal,
-    signalListener,
-  };
+	return {
+		callback,
+		flags:
+			(capture ? ListenerFlags.Capture : 0) |
+			(passive ? ListenerFlags.Passive : 0) |
+			(once ? ListenerFlags.Once : 0),
+		connection,
+		signal,
+		signalListener,
+	};
 }
 
 /**
@@ -84,7 +83,7 @@ export function createListener(
  * @param listener The listener to check.
  */
 export function setRemoved(listener: Listener): void {
-  listener.flags |= ListenerFlags.Removed;
+	listener.flags |= ListenerFlags.Removed;
 }
 
 /**
@@ -93,7 +92,7 @@ export function setRemoved(listener: Listener): void {
  * @param listener The listener to check.
  */
 export function isCapture(listener: Listener): boolean {
-  return (listener.flags & ListenerFlags.Capture) === ListenerFlags.Capture;
+	return (listener.flags & ListenerFlags.Capture) === ListenerFlags.Capture;
 }
 
 /**
@@ -102,7 +101,7 @@ export function isCapture(listener: Listener): boolean {
  * @param listener The listener to check.
  */
 export function isPassive(listener: Listener): boolean {
-  return (listener.flags & ListenerFlags.Passive) === ListenerFlags.Passive;
+	return (listener.flags & ListenerFlags.Passive) === ListenerFlags.Passive;
 }
 
 /**
@@ -111,7 +110,7 @@ export function isPassive(listener: Listener): boolean {
  * @param listener The listener to check.
  */
 export function isOnce(listener: Listener): boolean {
-  return (listener.flags & ListenerFlags.Once) === ListenerFlags.Once;
+	return (listener.flags & ListenerFlags.Once) === ListenerFlags.Once;
 }
 
 /**
@@ -120,7 +119,7 @@ export function isOnce(listener: Listener): boolean {
  * @param listener The listener to check.
  */
 export function isRemoved(listener: Listener): boolean {
-  return (listener.flags & ListenerFlags.Removed) === ListenerFlags.Removed;
+	return (listener.flags & ListenerFlags.Removed) === ListenerFlags.Removed;
 }
 
 /**
@@ -132,19 +131,19 @@ export function isRemoved(listener: Listener): boolean {
  * @param attribute `true` if this callback is an event attribute handler.
  */
 export function invokeCallback(
-  { callback }: Listener,
-  target: EventTarget<any, any>,
-  event: Event<any>,
+	{ callback }: Listener,
+	target: EventTarget<any, any>,
+	event: Event<any>,
 ): void {
-  try {
-    if (typeIs(callback, "function")) {
-      callback(target, event);
-    } else if (typeIs(callback.handleEvent, "function")) {
-      callback.handleEvent(event);
-    }
-  } catch (thrownError) {
-    reportError(thrownError);
-  }
+	try {
+		if (typeIs(callback, "function")) {
+			callback(target, event);
+		} else if (typeIs(callback.handleEvent, "function")) {
+			callback.handleEvent(event);
+		}
+	} catch (thrownError) {
+		reportError(thrownError);
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -153,8 +152,8 @@ export function invokeCallback(
 
 /** The flags of listeners. */
 const enum ListenerFlags {
-  Capture = 0x01,
-  Passive = 0x02,
-  Once = 0x04,
-  Removed = 0x08,
+	Capture = 0x01,
+	Passive = 0x02,
+	Once = 0x04,
+	Removed = 0x08,
 }

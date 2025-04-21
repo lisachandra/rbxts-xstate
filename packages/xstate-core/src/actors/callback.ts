@@ -1,40 +1,31 @@
 import { XSTATE_STOP } from "../constants";
 import { AnyActorSystem } from "../system";
 import {
-  ActorLogic,
-  ActorRefFromLogic,
-  AnyActorRef,
-  AnyEventObject,
-  EventObject,
-  NonReducibleUnknown,
-  Snapshot,
+	ActorLogic,
+	ActorRefFromLogic,
+	AnyActorRef,
+	AnyEventObject,
+	EventObject,
+	NonReducibleUnknown,
+	Snapshot,
 } from "../types";
 
 interface CallbackInstanceState<TEvent extends EventObject> {
-  receivers: Set<(e: TEvent) => void> | undefined;
-  dispose: (() => void) | void;
+	receivers: Set<(e: TEvent) => void> | undefined;
+	dispose: (() => void) | void;
 }
 
-const instanceStates = /* #__PURE__ */ new WeakMap<
-  AnyActorRef,
-  CallbackInstanceState<any>
->();
+const instanceStates = /* #__PURE__ */ new WeakMap<AnyActorRef, CallbackInstanceState<any>>();
 
 export type CallbackSnapshot<TInput> = Snapshot<undefined> & {
-  input: TInput;
+	input: TInput;
 };
 
 export type CallbackActorLogic<
-  TEvent extends EventObject,
-  TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject,
-> = ActorLogic<
-  CallbackSnapshot<TInput>,
-  TEvent,
-  TInput,
-  AnyActorSystem,
-  TEmitted
->;
+	TEvent extends EventObject,
+	TInput = NonReducibleUnknown,
+	TEmitted extends EventObject = EventObject,
+> = ActorLogic<CallbackSnapshot<TInput>, TEvent, TInput, AnyActorSystem, TEmitted>;
 
 /**
  * Represents an actor created by `fromCallback`.
@@ -44,74 +35,75 @@ export type CallbackActorLogic<
  * @example
  *
  * ```ts
- * import { fromCallback, createActor } from 'xstate';
+ * import { fromCallback, createActor } from "xstate";
  *
  * // The events the actor receives.
- * type Event = { type: 'someEvent' };
+ * type Event = { type: "someEvent" };
  * // The actor's input.
  * type Input = { name: string };
  *
  * // Actor logic that logs whenever it receives an event of type `someEvent`.
  * const logic = fromCallback<Event, Input>(({ self, input, receive }) => {
- *   self;
- *   // ^? CallbackActorRef<Event, Input>
+ * 	self;
+ * 	// ^? CallbackActorRef<Event, Input>
  *
- *   receive((event) => {
- *     if (event.type === 'someEvent') {
- *       console.log(`${input.name}: received "someEvent" event`);
- *       // logs 'myActor: received "someEvent" event'
- *     }
- *   });
+ * 	receive(event => {
+ * 		if (event.type === "someEvent") {
+ * 			console.log(`${input.name}: received "someEvent" event`);
+ * 			// logs 'myActor: received "someEvent" event'
+ * 		}
+ * 	});
  * });
  *
- * const actor = createActor(logic, { input: { name: 'myActor' } });
+ * const actor = createActor(logic, { input: { name: "myActor" } });
  * //    ^? CallbackActorRef<Event, Input>
  * ```
  *
  * @see {@link fromCallback}
  */
 export type CallbackActorRef<
-  TEvent extends EventObject,
-  TInput = NonReducibleUnknown,
+	TEvent extends EventObject,
+	TInput = NonReducibleUnknown,
 > = ActorRefFromLogic<CallbackActorLogic<TEvent, TInput>>;
 
 type Receiver<TEvent extends EventObject> = (
-  listener: {
-    bivarianceHack(event: TEvent): void;
-  }["bivarianceHack"],
+	listener: {
+		bivarianceHack(event: TEvent): void;
+	}["bivarianceHack"],
 ) => void;
 
 export type CallbackLogicFunction<
-  TEvent extends EventObject = AnyEventObject,
-  TSentEvent extends EventObject = AnyEventObject,
-  TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject,
+	TEvent extends EventObject = AnyEventObject,
+	TSentEvent extends EventObject = AnyEventObject,
+	TInput = NonReducibleUnknown,
+	TEmitted extends EventObject = EventObject,
 > = ({
-  input,
-  system,
-  self,
-  sendBack,
-  receive,
-  emit,
+	input,
+	system,
+	self,
+	sendBack,
+	receive,
+	emit,
 }: {
-  /**
-   * Data that was provided to the callback actor
-   *
-   * @see {@link https://stately.ai/docs/input | Input docs}
-   */
-  input: TInput;
-  /** The actor system to which the callback actor belongs */
-  system: AnyActorSystem;
-  /** The parent actor of the callback actor */
-  self: CallbackActorRef<TEvent>;
-  /** A function that can send events back to the parent actor */
-  sendBack: (event: TSentEvent) => void;
-  /**
-   * A function that can be called with a listener function argument; the
-   * listener is then called whenever events are received by the callback actor
-   */
-  receive: Receiver<TEvent>;
-  emit: (emitted: TEmitted) => void;
+	/**
+	 * Data that was provided to the callback actor
+	 *
+	 * @see {@link https://stately.ai/docs/input | Input docs}
+	 */
+	input: TInput;
+	/** The actor system to which the callback actor belongs */
+	system: AnyActorSystem;
+	/** The parent actor of the callback actor */
+	self: CallbackActorRef<TEvent>;
+	/** A function that can send events back to the parent actor */
+	sendBack: (event: TSentEvent) => void;
+	/**
+	 * A function that can be called with a listener function argument; the
+	 * listener is then called whenever events are received by the callback
+	 * actor
+	 */
+	receive: Receiver<TEvent>;
+	emit: (emitted: TEmitted) => void;
 }) => (() => void) | void;
 
 /**
@@ -138,28 +130,28 @@ export type CallbackLogicFunction<
  *
  * ```typescript
  * const callbackLogic = fromCallback(({ sendBack, receive }) => {
- *   let lockStatus = 'unlocked';
+ * 	let lockStatus = "unlocked";
  *
- *   const handler = (event) => {
- *     if (lockStatus === 'locked') {
- *       return;
- *     }
- *     sendBack(event);
- *   };
+ * 	const handler = event => {
+ * 		if (lockStatus === "locked") {
+ * 			return;
+ * 		}
+ * 		sendBack(event);
+ * 	};
  *
- *   receive((event) => {
- *     if (event.type === 'lock') {
- *       lockStatus = 'locked';
- *     } else if (event.type === 'unlock') {
- *       lockStatus = 'unlocked';
- *     }
- *   });
+ * 	receive(event => {
+ * 		if (event.type === "lock") {
+ * 			lockStatus = "locked";
+ * 		} else if (event.type === "unlock") {
+ * 			lockStatus = "unlocked";
+ * 		}
+ * 	});
  *
- *   document.body.addEventListener('click', handler);
+ * 	document.body.addEventListener("click", handler);
  *
- *   return () => {
- *     document.body.removeEventListener('click', handler);
- *   };
+ * 	return () => {
+ * 		document.body.removeEventListener("click", handler);
+ * 	};
  * });
  * ```
  *
@@ -181,79 +173,79 @@ export type CallbackLogicFunction<
  * @see {@link https://stately.ai/docs/input | Input docs} for more information about how input is passed
  */
 export function fromCallback<
-  TEvent extends EventObject,
-  TInput = NonReducibleUnknown,
-  TEmitted extends EventObject = EventObject,
+	TEvent extends EventObject,
+	TInput = NonReducibleUnknown,
+	TEmitted extends EventObject = EventObject,
 >(
-  callback: CallbackLogicFunction<TEvent, AnyEventObject, TInput, TEmitted>,
+	callback: CallbackLogicFunction<TEvent, AnyEventObject, TInput, TEmitted>,
 ): CallbackActorLogic<TEvent, TInput, TEmitted> {
-  const logic: CallbackActorLogic<TEvent, TInput, TEmitted> = {
-    config: callback,
-    start(state, actorScope) {
-      const { system, emit } = actorScope;
-      const itself = actorScope.self;
+	const logic: CallbackActorLogic<TEvent, TInput, TEmitted> = {
+		config: callback,
+		start(state, actorScope) {
+			const { system, emit } = actorScope;
+			const itself = actorScope.self;
 
-      const callbackState: CallbackInstanceState<TEvent> = {
-        receivers: undefined,
-        dispose: undefined,
-      };
+			const callbackState: CallbackInstanceState<TEvent> = {
+				receivers: undefined,
+				dispose: undefined,
+			};
 
-      instanceStates.set(itself, callbackState);
+			instanceStates.set(itself, callbackState);
 
-      callbackState.dispose = callback({
-        input: state.input,
-        system,
-        self: itself as never,
-        sendBack: (event) => {
-          if (itself.getSnapshot().status === "stopped") {
-            return;
-          }
-          if (itself._parent) {
-            system._relay(itself, itself._parent, event);
-          }
-        },
-        receive: (listener) => {
-          callbackState.receivers ??= new Set();
-          callbackState.receivers.add(listener);
-        },
-        emit,
-      });
-    },
-    transition(state, event, actorScope) {
-      const callbackState: CallbackInstanceState<TEvent> = instanceStates.get(
-        actorScope.self,
-      )!;
+			callbackState.dispose = callback({
+				input: state.input,
+				system,
+				self: itself as never,
+				sendBack: event => {
+					if (itself.getSnapshot().status === "stopped") {
+						return;
+					}
+					if (itself._parent) {
+						system._relay(itself, itself._parent, event);
+					}
+				},
+				receive: listener => {
+					callbackState.receivers ??= new Set();
+					callbackState.receivers.add(listener);
+				},
+				emit,
+			});
+		},
+		transition(state, event, actorScope) {
+			const callbackState: CallbackInstanceState<TEvent> = instanceStates.get(
+				actorScope.self,
+			)!;
 
-      if (event.type === XSTATE_STOP) {
-        state = {
-          ...state,
-          status: "stopped",
-          error: undefined,
-        };
+			if (event.type === XSTATE_STOP) {
+				state = {
+					...state,
+					status: "stopped",
+					error: undefined,
+				};
 
-        callbackState.dispose?.();
-        return state;
-      }
+				callbackState.dispose?.();
+				return state;
+			}
 
-      callbackState.receivers?.forEach((receiver) => receiver(event));
+			callbackState.receivers?.forEach(receiver => receiver(event));
 
-      return state;
-    },
-    getInitialSnapshot(_, input) {
-      return {
-        status: "active",
-        output: undefined,
-        error: undefined,
-        input,
-      };
-    },
-    getPersistedSnapshot(snapshot) {
-      return snapshot;
-    },
-    restoreSnapshot(snapshot: any) {
-      return snapshot;
-    },
-  };
+			return state;
+		},
+		getInitialSnapshot(_, input) {
+			return {
+				status: "active",
+				output: undefined,
+				error: undefined,
+				input,
+			};
+		},
+		getPersistedSnapshot(snapshot) {
+			return snapshot;
+		},
+		restoreSnapshot(snapshot: any) {
+			return snapshot;
+		},
+	};
 
-  return logic;
+	return logic;
 }
