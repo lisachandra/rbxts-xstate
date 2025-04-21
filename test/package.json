@@ -10,14 +10,15 @@
 	"dependencies": {
 		"@rbxts/jest": "^0.1.0",
 		"@rbxts/jest-globals": "^0.1.0",
-		"@rbxts/jest-vendor": "workspace:^",
+		"@rbxts/jest-vendor": "^0.1.0",
 		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/react": "^17.2.3",
 		"@rbxts/services": "^1.0.0",
-		"@rbxts/whatwg-abort-controller": "workspace:^",
-		"@rbxts/whatwg-event-target": "workspace:^",
-		"@rbxts/xstate": "workspace:^",
-		"@rbxts/react-testing-library": "^12.1.5"
+		"@rbxts/whatwg-abort-controller": "*",
+		"@rbxts/whatwg-event-target": "*",
+		"@rbxts/xstate": "*",
+		"@rbxts/react-testing-library": "*",
+		"@rbxts/dom-testing-library": "*"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",
