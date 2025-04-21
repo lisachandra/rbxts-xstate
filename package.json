@@ -1,6 +1,5 @@
 {
 	"name": "rbxts-xstate-monorepo",
-	"version": "0.1.0",
 	"private": true,
 	"description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
 	"scripts": {
