@@ -29,13 +29,13 @@
 	"peerDependencies": {
 		"@rbxts/dom-testing-library": "*",
 		"@rbxts/jest-vendor": "*",
-		"@rbxts/react-vendor": "*"
+		"@rbxts/react": "*"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/dom-testing-library": "^8.14.0-rc.1",
 		"@rbxts/jest-vendor": "*",
-		"@rbxts/react-vendor": "*",
-		"@rbxts/dom-testing-library": "*",
+		"@rbxts/react": "^17.2.3",
 		"@rbxts/types": "^1.0.844",
 		"ajv": "^8.12.0",
 		"pkg-up": "^3.1.0",

@@ -8,17 +8,17 @@
 		"dev": "shx rm -rf out && rbxtsc --includePath out/include --noInclude -w"
 	},
 	"dependencies": {
+		"@rbxts/dom-testing-library": "^8.14.0-rc.1",
 		"@rbxts/jest": "^0.1.0",
 		"@rbxts/jest-globals": "^0.1.0",
 		"@rbxts/jest-vendor": "^0.1.0",
 		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/react": "^17.2.3",
+		"@rbxts/react-testing-library": "^12.1.5-rc.1",
 		"@rbxts/services": "^1.0.0",
-		"@rbxts/whatwg-abort-controller": "*",
-		"@rbxts/whatwg-event-target": "*",
-		"@rbxts/xstate": "*",
-		"@rbxts/react-testing-library": "*",
-		"@rbxts/dom-testing-library": "*"
+		"@rbxts/whatwg-abort-controller": "^3.0.0-rc.1",
+		"@rbxts/whatwg-event-target": "^6.0.2-rc.1",
+		"@rbxts/xstate": "^5.19.2-rc.1"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",

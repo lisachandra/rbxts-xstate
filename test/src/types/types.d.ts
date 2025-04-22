@@ -1,5 +1,13 @@
-export {};
+import "@rbxts/jest";
+
 declare global {
+	namespace jest {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		interface Matchers<R, T> {
+			toMatchMockCallsInlineSnapshot(snapshot?: string): R;
+		}
+	}
+
 	type Table = Record<number | string | symbol, unknown>;
 
 	/** A general type for a value that may be nil (undefined). */

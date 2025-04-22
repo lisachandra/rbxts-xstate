@@ -3,7 +3,6 @@ _G.__TEST__ = true
 _G.__ROACT_17_MOCK_SCHEDULER__ = true
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
 local TestService = game:GetService("TestService")
 
 local Jest = require(ReplicatedStorage.TS.node_modules["@rbxts"].jest.src)
@@ -12,6 +11,7 @@ local status, result = Jest.runCLI(script, {
 	verbose = false,
 	ci = false,
 	setupFiles = { TestService.setup },
+	setupFilesAfterEnv = { TestService["setup-env"] }
 }, {
 	ReplicatedStorage.TS.packages,
 }):awaitStatus()
