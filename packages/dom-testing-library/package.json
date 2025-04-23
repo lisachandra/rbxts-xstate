@@ -2,7 +2,7 @@
 	"name": "@rbxts/dom-testing-library",
 	"version": "8.14.0-rc.1",
 	"main": "out/init.luau",
-	"types": "out/index.d.ts",
+	"types": "out/types/index.d.ts",
 	"files": [
 		"out",
 		"!**/*.tsbuildinfo",
@@ -29,11 +29,13 @@
 	"homepage": "https://github.com/lisachandra/rbxts-testing-library/tree/main/packages/dom-testing-library#readme",
 	"peerDependencies": {
 		"@rbxts/jest-vendor": "*",
+		"@rbxts/luau-polyfill": "*",
 		"@rbxts/react-vendor": "*"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",
 		"@rbxts/jest-vendor": "*",
+		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/react-vendor": "*",
 		"@rbxts/types": "^1.0.844",
 		"ajv": "^8.12.0",

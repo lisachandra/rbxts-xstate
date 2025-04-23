@@ -2,7 +2,7 @@
 	"name": "@rbxts/react-testing-library",
 	"version": "12.1.5-rc.1",
 	"main": "out/init.luau",
-	"types": "out/index.d.ts",
+	"types": "out/types/index.d.ts",
 	"files": [
 		"out",
 		"!**/*.tsbuildinfo",
@@ -29,13 +29,17 @@
 	"peerDependencies": {
 		"@rbxts/dom-testing-library": "*",
 		"@rbxts/jest-vendor": "*",
-		"@rbxts/react": "*"
+		"@rbxts/luau-polyfill": "*",
+		"@rbxts/react": "*",
+		"@rbxts/react-roblox": "*"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",
-		"@rbxts/dom-testing-library": "^8.14.0-rc.1",
+		"@rbxts/dom-testing-library": "workspace:*",
 		"@rbxts/jest-vendor": "*",
+		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/react": "^17.2.3",
+		"@rbxts/react-roblox": "*",
 		"@rbxts/types": "^1.0.844",
 		"ajv": "^8.12.0",
 		"pkg-up": "^3.1.0",

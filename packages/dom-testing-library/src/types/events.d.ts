@@ -1,3 +1,5 @@
+type Event = any;
+
 export type EventType =
 	| "copy"
 	| "cut"
@@ -91,18 +93,18 @@ export type EventType =
 	| "pageHide"
 	| "pageShow";
 
-export type FireFunction = (element: Document | Element | Window | Node, event: Event) => boolean;
+export type FireFunction = (element: Instance, event: Event) => boolean;
 export type FireObject = {
-	[K in EventType]: (element: Document | Element | Window | Node, options?: {}) => boolean;
+	[K in EventType]: (element: Instance, options?: {}) => boolean;
 };
 export type CreateFunction = (
 	eventName: string,
-	node: Document | Element | Window | Node,
+	node: Instance,
 	init?: {},
 	options?: { EventType?: string; defaultInit?: {} },
 ) => Event;
 export type CreateObject = {
-	[K in EventType]: (element: Document | Element | Window | Node, options?: {}) => Event;
+	[K in EventType]: (element: Instance, options?: {}) => Event;
 };
 
 export const createEvent: CreateObject & CreateFunction;

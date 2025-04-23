@@ -1,9 +1,14 @@
 import * as React from "@rbxts/react";
-import { render, fireEvent, screen, waitFor, renderHook } from "../src";
-import * as pure from "../src/pure";
+import { render, fireEvent, waitFor, renderHook } from "../types";
+import * as pure from "../types/pure";
+
+const document = {
+	createElement: (_str: string) => new Instance("Folder") as Instance,
+	createDocumentFragment: () => new Instance("Folder") as Instance,
+};
 
 export async function testRender() {
-	const view = render(<button />);
+	const view = render(<textbutton />);
 
 	// single queries
 	view.getByText("foo");
@@ -17,12 +22,12 @@ export async function testRender() {
 
 	// helpers
 	const { container, rerender, debug } = view;
-	expectType<HTMLElement, typeof container>(container);
+	expectType<Instance, typeof container>(container);
 	return { container, rerender, debug };
 }
 
 export async function testPureRender() {
-	const view = pure.render(<button />);
+	const view = pure.render(<textbutton />);
 
 	// single queries
 	view.getByText("foo");
@@ -36,28 +41,30 @@ export async function testPureRender() {
 
 	// helpers
 	const { container, rerender, debug } = view;
-	expectType<HTMLElement, typeof container>(container);
+	expectType<Instance, typeof container>(container);
 	return { container, rerender, debug };
 }
 
 export function testRenderOptions() {
 	const container = document.createElement("div");
 	const options = { container };
-	const { container: returnedContainer } = render(<button />, options);
-	expectType<HTMLDivElement, typeof returnedContainer>(returnedContainer);
+	const { container: returnedContainer } = render(<textbutton />, options);
+	expectType<Instance, typeof returnedContainer>(returnedContainer);
 
-	render(<div />, { wrapper: () => null });
+	render(<frame />, { wrapper: () => undefined });
 }
 
+/*
 export function testSVGRenderOptions() {
 	const container = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 	const options = { container };
 	const { container: returnedContainer } = render(<path />, options);
-	expectType<SVGSVGElement, typeof returnedContainer>(returnedContainer);
+	expectType<Instance, typeof returnedContainer>(returnedContainer);
 }
+*/
 
 export function testFireEvent() {
-	const { container } = render(<button />);
+	const { container } = render(<textbutton />);
 	fireEvent.click(container);
 }
 
@@ -68,13 +75,16 @@ export function testConfigure() {
 		testIdAttribute: `modified-${existingConfig.testIdAttribute}`,
 	}));
 
+	/*
 	// test for RTL's config
 	pure.configure({ reactStrictMode: true });
 	pure.configure(existingConfig => ({
 		reactStrictMode: !existingConfig.reactStrictMode,
 	}));
+	*/
 }
 
+/*
 export function testGetConfig() {
 	// test for DTL's config
 	pure.getConfig().testIdAttribute;
@@ -82,42 +92,45 @@ export function testGetConfig() {
 	// test for RTL's config
 	pure.getConfig().reactStrictMode;
 }
+*/
 
 export function testDebug() {
 	const { debug, getAllByTestId } = render(
 		<>
-			<h2 data-testid="testid">Hello World</h2>
-			<h2 data-testid="testid">Hello World</h2>
+			<frame Tag='data-testid="testid"'></frame>
+			<frame Tag='data-testid="testid"'></frame>
 		</>,
 	);
 	debug(getAllByTestId("testid"));
 }
 
+/*
 export async function testScreen() {
-	render(<button />);
+	render(<textbutton />);
 
 	await screen.findByRole("button");
 }
+*/
 
 export async function testWaitFor() {
-	const { container } = render(<button />);
+	const { container } = render(<textbutton />);
 	fireEvent.click(container);
 	await waitFor(() => {});
 }
 
 export function testQueries() {
-	const { getByLabelText } = render(<label htmlFor="usernameInput">Username</label>);
-	expectType<HTMLElement, ReturnType<typeof getByLabelText>>(getByLabelText("Username"));
+	const { getByText: getByLabelText } = render(<textlabel Text="Username"></textlabel>);
+	expectType<Instance, ReturnType<typeof getByLabelText>>(getByLabelText("Username"));
 
 	const container = document.createElement("div");
 	const options = { container };
-	const { getByText } = render(<div>Hello World</div>, options);
-	expectType<HTMLElement, ReturnType<typeof getByText>>(getByText("Hello World"));
+	const { getByText } = render(<textlabel Text={"Hello World"}></textlabel>, options);
+	expectType<Instance, ReturnType<typeof getByText>>(getByText("Hello World"));
 }
 
-export function wrappedRender(ui: React.ReactNode, options?: pure.RenderOptions) {
-	const Wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
-		return <div>{children}</div>;
+export function wrappedRender(ui: React.ReactElement, options?: pure.RenderOptions) {
+	const Wrapper = ({ children }: { children: React.ReactNode }): JSX.Element => {
+		return <frame>{children}</frame>;
 	};
 
 	return pure.render(ui, {
@@ -128,15 +141,15 @@ export function wrappedRender(ui: React.ReactNode, options?: pure.RenderOptions)
 	});
 }
 
-export function wrappedRenderB(ui: React.ReactNode, options?: pure.RenderOptions) {
+export function wrappedRenderB(ui: React.ReactElement, options?: pure.RenderOptions) {
 	const Wrapper: React.FunctionComponent<{ children?: React.ReactNode }> = ({ children }) => {
-		return <div>{children}</div>;
+		return <frame>{children}</frame>;
 	};
 
 	return pure.render(ui, { wrapper: Wrapper, ...options });
 }
 
-export function wrappedRenderC(ui: React.ReactNode, options?: pure.RenderOptions) {
+export function wrappedRenderC(ui: React.ReactElement, options?: pure.RenderOptions) {
 	interface AppWrapperProps {
 		children?: React.ReactNode;
 		userProviderProps?: { user: string };
@@ -145,7 +158,7 @@ export function wrappedRenderC(ui: React.ReactNode, options?: pure.RenderOptions
 		children,
 		userProviderProps = { user: "TypeScript" },
 	}) => {
-		return <div data-testid={userProviderProps.user}>{children}</div>;
+		return <frame data-testid={userProviderProps.user}>{children}</frame>;
 	};
 
 	return pure.render(ui, { wrapper: AppWrapperProps, ...options });
@@ -163,22 +176,22 @@ export function wrappedRenderHook<Props>(
 		children,
 		userProviderProps = { user: "TypeScript" },
 	}) => {
-		return <div data-testid={userProviderProps.user}>{children}</div>;
+		return <frame data-testid={userProviderProps.user}>{children}</frame>;
 	};
 
 	return pure.renderHook(hook, { ...options });
 }
 
 export function testBaseElement() {
-	const { baseElement: baseDefaultElement } = render(<div />);
-	expectType<HTMLElement, typeof baseDefaultElement>(baseDefaultElement);
+	const { baseElement: baseDefaultElement } = render(<frame />);
+	expectType<Instance, typeof baseDefaultElement>(baseDefaultElement);
 
 	const container = document.createElement("input");
-	const { baseElement: baseElementFromContainer } = render(<div />, { container });
+	const { baseElement: baseElementFromContainer } = render(<frame />, { container });
 	expectType<typeof container, typeof baseElementFromContainer>(baseElementFromContainer);
 
 	const baseElementOption = document.createElement("input");
-	const { baseElement: baseElementFromOption } = render(<div />, {
+	const { baseElement: baseElementFromOption } = render(<frame />, {
 		baseElement: baseElementOption,
 	});
 	expectType<typeof baseElementOption, typeof baseElementFromOption>(baseElementFromOption);
@@ -193,7 +206,7 @@ export function testRenderHook() {
 
 	unmount();
 
-	renderHook(() => null, { wrapper: () => null });
+	renderHook(() => undefined, {});
 }
 
 export function testRenderHookProps() {
@@ -210,58 +223,59 @@ export function testRenderHookProps() {
 }
 
 export function testContainer() {
-	render("a", { container: document.createElement("div") });
-	render("a", { container: document.createDocumentFragment() });
+	render(undefined as never as React.ReactElement, { container: document.createElement("div") });
+	render(undefined as never as React.ReactElement, {
+		container: document.createDocumentFragment(),
+	});
 	//  Only allowed in React 19
+	/*
 	render("a", { container: document });
 	render("a", { container: document.createElement("div"), hydrate: true });
 	// Only allowed for createRoot but typing `render` appropriately makes it harder to compose.
 	render("a", { container: document.createDocumentFragment(), hydrate: true });
 	render("a", { container: document, hydrate: true });
+	*/
 
-	renderHook(() => null, { container: document.createElement("div") });
-	renderHook(() => null, { container: document.createDocumentFragment() });
+	renderHook(() => undefined, { container: document.createElement("div") });
+	renderHook(() => undefined, { container: document.createDocumentFragment() });
 	//  Only allowed in React 19
-	renderHook(() => null, { container: document });
-	renderHook(() => null, {
+	/*
+	renderHook(() => undefined, { container: document });
+	renderHook(() => undefined, {
 		container: document.createElement("div"),
 		hydrate: true,
 	});
 	// Only allowed for createRoot but typing `render` appropriately makes it harder to compose.
-	renderHook(() => null, {
+	renderHook(() => undefined, {
 		container: document.createDocumentFragment(),
 		hydrate: true,
 	});
-	renderHook(() => null, { container: document, hydrate: true });
+	renderHook(() => undefined, { container: document, hydrate: true });
+	*/
 }
 
+/*
 export function testErrorHandlers() {
 	// React 19 types are not used in tests. Verify manually if this works with `"@types/react": "npm:types-react@rc"`
-	render(null, {
+	render(undefined, {
 		// Should work with React 19 types
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-expect-error
 		onCaughtError: () => {},
 	});
-	render(null, {
+	render(undefined, {
 		// Should never work as it's not supported yet.
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-expect-error
 		onUncaughtError: () => {},
 	});
-	render(null, {
+	render(undefined, {
 		onRecoverableError: (error, errorInfo) => {
 			console.error(error);
 			console.log(errorInfo.componentStack);
 		},
 	});
 }
-
-/*
-eslint
-  testing-library/prefer-explicit-assert: "off",
-  testing-library/no-wait-for-empty-callback: "off",
-  testing-library/prefer-screen-queries: "off"
 */
 
 // https://stackoverflow.com/questions/53807517/how-to-test-if-two-types-are-exactly-the-same

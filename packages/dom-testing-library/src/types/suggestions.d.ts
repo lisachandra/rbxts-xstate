@@ -16,25 +16,25 @@ export interface Suggestion {
 export type Variant = "find" | "findAll" | "get" | "getAll" | "query" | "queryAll";
 
 export type Method =
-	| "AltText"
-	| "alttext"
+	// | "AltText"
+	// | "alttext"
 	| "DisplayValue"
 	| "displayvalue"
-	| "LabelText"
-	| "labeltext"
+	// | "LabelText"
+	// | "labeltext"
 	| "PlaceholderText"
 	| "placeholdertext"
-	| "Role"
-	| "role"
+	// | "Role"
+	// | "role"
 	| "TestId"
 	| "testid"
 	| "Text"
-	| "text"
-	| "Title"
-	| "title";
+	| "text";
+// | "Title"
+// | "title";
 
 export function getSuggestedQuery(
-	element: HTMLElement,
+	element: Instance,
 	variant?: Variant,
 	method?: Method,
 ): Suggestion | undefined;

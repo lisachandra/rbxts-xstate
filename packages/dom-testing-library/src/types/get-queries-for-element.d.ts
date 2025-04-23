@@ -1,153 +1,160 @@
+import { Error } from "@rbxts/luau-polyfill";
 import * as queries from "./queries";
 
-export type BoundFunction<T> = T extends (container: HTMLElement, ...args: infer P) => infer R
+export type BoundFunction<T> = T extends (container: Instance, ...args: infer P) => infer R
 	? (...args: P) => R
 	: never;
 
 export type BoundFunctions<Q> = Q extends typeof queries
 	? {
-			getByLabelText<T extends HTMLElement = HTMLElement>(
+			/*
+			getByLabelText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByText<T>>>
 			): ReturnType<queries.GetByText<T>>;
-			getAllByLabelText<T extends HTMLElement = HTMLElement>(
+			getAllByLabelText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByText<T>>>
 			): ReturnType<queries.AllByText<T>>;
-			queryByLabelText<T extends HTMLElement = HTMLElement>(
+			queryByLabelText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByText<T>>>
 			): ReturnType<queries.QueryByText<T>>;
-			queryAllByLabelText<T extends HTMLElement = HTMLElement>(
+			queryAllByLabelText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByText<T>>>
 			): ReturnType<queries.AllByText<T>>;
-			findByLabelText<T extends HTMLElement = HTMLElement>(
+			findByLabelText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByText<T>>>
 			): ReturnType<queries.FindByText<T>>;
-			findAllByLabelText<T extends HTMLElement = HTMLElement>(
+			findAllByLabelText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByText<T>>>
 			): ReturnType<queries.FindAllByText<T>>;
-			getByPlaceholderText<T extends HTMLElement = HTMLElement>(
+			*/
+			getByPlaceholderText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByBoundAttribute<T>>>
 			): ReturnType<queries.GetByBoundAttribute<T>>;
-			getAllByPlaceholderText<T extends HTMLElement = HTMLElement>(
+			getAllByPlaceholderText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			queryByPlaceholderText<T extends HTMLElement = HTMLElement>(
+			queryByPlaceholderText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByBoundAttribute<T>>>
 			): ReturnType<queries.QueryByBoundAttribute<T>>;
-			queryAllByPlaceholderText<T extends HTMLElement = HTMLElement>(
+			queryAllByPlaceholderText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			findByPlaceholderText<T extends HTMLElement = HTMLElement>(
+			findByPlaceholderText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByBoundAttribute<T>>>
 			): ReturnType<queries.FindByBoundAttribute<T>>;
-			findAllByPlaceholderText<T extends HTMLElement = HTMLElement>(
+			findAllByPlaceholderText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByBoundAttribute<T>>>
 			): ReturnType<queries.FindAllByBoundAttribute<T>>;
-			getByText<T extends HTMLElement = HTMLElement>(
+			getByText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByText<T>>>
 			): ReturnType<queries.GetByText<T>>;
-			getAllByText<T extends HTMLElement = HTMLElement>(
+			getAllByText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByText<T>>>
 			): ReturnType<queries.AllByText<T>>;
-			queryByText<T extends HTMLElement = HTMLElement>(
+			queryByText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByText<T>>>
 			): ReturnType<queries.QueryByText<T>>;
-			queryAllByText<T extends HTMLElement = HTMLElement>(
+			queryAllByText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByText<T>>>
 			): ReturnType<queries.AllByText<T>>;
-			findByText<T extends HTMLElement = HTMLElement>(
+			findByText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByText<T>>>
 			): ReturnType<queries.FindByText<T>>;
-			findAllByText<T extends HTMLElement = HTMLElement>(
+			findAllByText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByText<T>>>
 			): ReturnType<queries.FindAllByText<T>>;
-			getByAltText<T extends HTMLElement = HTMLElement>(
+			/*
+			getByAltText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByBoundAttribute<T>>>
 			): ReturnType<queries.GetByBoundAttribute<T>>;
-			getAllByAltText<T extends HTMLElement = HTMLElement>(
+			getAllByAltText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			queryByAltText<T extends HTMLElement = HTMLElement>(
+			queryByAltText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByBoundAttribute<T>>>
 			): ReturnType<queries.QueryByBoundAttribute<T>>;
-			queryAllByAltText<T extends HTMLElement = HTMLElement>(
+			queryAllByAltText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			findByAltText<T extends HTMLElement = HTMLElement>(
+			findByAltText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByBoundAttribute<T>>>
 			): ReturnType<queries.FindByBoundAttribute<T>>;
-			findAllByAltText<T extends HTMLElement = HTMLElement>(
+			findAllByAltText<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByBoundAttribute<T>>>
 			): ReturnType<queries.FindAllByBoundAttribute<T>>;
-			getByTitle<T extends HTMLElement = HTMLElement>(
+			getByTitle<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByBoundAttribute<T>>>
 			): ReturnType<queries.GetByBoundAttribute<T>>;
-			getAllByTitle<T extends HTMLElement = HTMLElement>(
+			getAllByTitle<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			queryByTitle<T extends HTMLElement = HTMLElement>(
+			queryByTitle<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByBoundAttribute<T>>>
 			): ReturnType<queries.QueryByBoundAttribute<T>>;
-			queryAllByTitle<T extends HTMLElement = HTMLElement>(
+			queryAllByTitle<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			findByTitle<T extends HTMLElement = HTMLElement>(
+			findByTitle<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByBoundAttribute<T>>>
 			): ReturnType<queries.FindByBoundAttribute<T>>;
-			findAllByTitle<T extends HTMLElement = HTMLElement>(
+			findAllByTitle<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByBoundAttribute<T>>>
 			): ReturnType<queries.FindAllByBoundAttribute<T>>;
-			getByDisplayValue<T extends HTMLElement = HTMLElement>(
+			*/
+			getByDisplayValue<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByBoundAttribute<T>>>
 			): ReturnType<queries.GetByBoundAttribute<T>>;
-			getAllByDisplayValue<T extends HTMLElement = HTMLElement>(
+			getAllByDisplayValue<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			queryByDisplayValue<T extends HTMLElement = HTMLElement>(
+			queryByDisplayValue<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByBoundAttribute<T>>>
 			): ReturnType<queries.QueryByBoundAttribute<T>>;
-			queryAllByDisplayValue<T extends HTMLElement = HTMLElement>(
+			queryAllByDisplayValue<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			findByDisplayValue<T extends HTMLElement = HTMLElement>(
+			findByDisplayValue<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByBoundAttribute<T>>>
 			): ReturnType<queries.FindByBoundAttribute<T>>;
-			findAllByDisplayValue<T extends HTMLElement = HTMLElement>(
+			findAllByDisplayValue<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByBoundAttribute<T>>>
 			): ReturnType<queries.FindAllByBoundAttribute<T>>;
-			getByRole<T extends HTMLElement = HTMLElement>(
+			/*
+			getByRole<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByRole<T>>>
 			): ReturnType<queries.GetByRole<T>>;
-			getAllByRole<T extends HTMLElement = HTMLElement>(
+			getAllByRole<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByRole<T>>>
 			): ReturnType<queries.AllByRole<T>>;
-			queryByRole<T extends HTMLElement = HTMLElement>(
+			queryByRole<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByRole<T>>>
 			): ReturnType<queries.QueryByRole<T>>;
-			queryAllByRole<T extends HTMLElement = HTMLElement>(
+			queryAllByRole<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByRole<T>>>
 			): ReturnType<queries.AllByRole<T>>;
-			findByRole<T extends HTMLElement = HTMLElement>(
+			findByRole<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByRole<T>>>
 			): ReturnType<queries.FindByRole<T>>;
-			findAllByRole<T extends HTMLElement = HTMLElement>(
+			findAllByRole<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByRole<T>>>
 			): ReturnType<queries.FindAllByRole<T>>;
-			getByTestId<T extends HTMLElement = HTMLElement>(
+			*/
+			getByTestId<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.GetByBoundAttribute<T>>>
 			): ReturnType<queries.GetByBoundAttribute<T>>;
-			getAllByTestId<T extends HTMLElement = HTMLElement>(
+			getAllByTestId<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			queryByTestId<T extends HTMLElement = HTMLElement>(
+			queryByTestId<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.QueryByBoundAttribute<T>>>
 			): ReturnType<queries.QueryByBoundAttribute<T>>;
-			queryAllByTestId<T extends HTMLElement = HTMLElement>(
+			queryAllByTestId<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.AllByBoundAttribute<T>>>
 			): ReturnType<queries.AllByBoundAttribute<T>>;
-			findByTestId<T extends HTMLElement = HTMLElement>(
+			findByTestId<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindByBoundAttribute<T>>>
 			): ReturnType<queries.FindByBoundAttribute<T>>;
-			findAllByTestId<T extends HTMLElement = HTMLElement>(
+			findAllByTestId<T extends Instance = Instance>(
 				...args: Parameters<BoundFunction<queries.FindAllByBoundAttribute<T>>>
 			): ReturnType<queries.FindAllByBoundAttribute<T>>;
 		} & {
@@ -158,9 +165,9 @@ export type BoundFunctions<Q> = Q extends typeof queries
 		};
 
 export type Query = (
-	container: HTMLElement,
+	container: Instance,
 	...args: any[]
-) => Error | HTMLElement | HTMLElement[] | Promise<HTMLElement[]> | Promise<HTMLElement> | null;
+) => Error | Instance | Instance[] | Promise<Instance[]> | Promise<Instance> | undefined;
 
 export interface Queries {
 	[T: string]: Query;
@@ -170,4 +177,4 @@ export function getQueriesForElement<
 	QueriesToBind extends Queries = typeof queries,
 	// Extra type parameter required for reassignment.
 	T extends QueriesToBind = QueriesToBind,
->(element: HTMLElement, queriesToBind?: T): BoundFunctions<T>;
+>(element: Instance, queriesToBind?: T): BoundFunctions<T>;

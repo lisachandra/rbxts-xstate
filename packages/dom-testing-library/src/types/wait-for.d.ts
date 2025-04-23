@@ -1,5 +1,9 @@
+import { Error } from "@rbxts/luau-polyfill";
+
+type MutationObserverInit = object;
+
 export interface waitForOptions {
-	container?: HTMLElement;
+	container?: Instance;
 	timeout?: number;
 	interval?: number;
 	onTimeout?: (error: Error) => Error;

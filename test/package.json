@@ -18,7 +18,8 @@
 		"@rbxts/services": "^1.0.0",
 		"@rbxts/whatwg-abort-controller": "^3.0.0-rc.1",
 		"@rbxts/whatwg-event-target": "^6.0.2-rc.1",
-		"@rbxts/xstate": "^5.19.2-rc.1"
+		"@rbxts/xstate": "^5.19.2-rc.1",
+		"@rbxts/xstate-react": "^5.0.3-rc.1"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",

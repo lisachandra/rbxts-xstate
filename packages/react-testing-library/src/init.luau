@@ -39,6 +39,7 @@ then
 end
 
 Object.assign(exports, require(script:WaitForChild('pure')))
+Object.assign(exports, require(script:WaitForChild('renderHook')))
 
 -- ROBLOX deviation START: reexport types
 local typesModule = require(script:WaitForChild('types'))

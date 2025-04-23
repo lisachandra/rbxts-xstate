@@ -39,7 +39,7 @@
 		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/regexp": "^0.2.1-ts.4",
 		"@rbxts/services": "^1.0.0",
-		"@rbxts/whatwg-abort-controller": "^3.0.0-rc.1"
+		"@rbxts/whatwg-abort-controller": "workspace:^"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",

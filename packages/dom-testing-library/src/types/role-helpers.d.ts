@@ -1,11 +1,11 @@
-export function logRoles(container: HTMLElement, options?: LogRolesOptions): string;
+export function logRoles(container: Instance, options?: LogRolesOptions): string;
 
 interface LogRolesOptions {
 	hidden?: boolean;
 }
 
-export function getRoles(container: HTMLElement): {
-	[index: string]: HTMLElement[];
+export function getRoles(container: Instance): {
+	[index: string]: Instance[];
 };
 
 /** https://testing-library.com/docs/dom-testing-library/api-helpers#isinaccessible */

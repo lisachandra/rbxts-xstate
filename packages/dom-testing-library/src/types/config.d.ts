@@ -1,3 +1,6 @@
+import { Error } from "@rbxts/luau-polyfill";
+import { Element } from "./elements";
+
 export interface Config {
 	testIdAttribute: string;
 	/**
@@ -7,9 +10,7 @@ export interface Config {
 	 * @param cb
 	 */
 	unstable_advanceTimersWrapper(cb: (...args: unknown[]) => unknown): unknown;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	asyncWrapper(cb: (...args: any[]) => any): Promise<any>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	eventWrapper(cb: (...args: any[]) => any): void;
 	asyncUtilTimeout: number;
 	computedStyleSupportsPseudoElements: boolean;
@@ -18,7 +19,7 @@ export interface Config {
 	defaultIgnore: string;
 	showOriginalStackTrace: boolean;
 	throwSuggestions: boolean;
-	getElementError: (message: string | null, container: Element) => Error;
+	getElementError: (message: string | undefined, container: Element) => Error;
 }
 
 export interface ConfigFn {

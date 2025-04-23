@@ -5,7 +5,8 @@ import * as queries from "./queries";
 import * as queryHelpers from "./query-helpers";
 
 declare const within: typeof getQueriesForElement;
-export { queries, queryHelpers, within };
+declare const document: Instance;
+export { queries, queryHelpers, within, document };
 
 export * from "./queries";
 export * from "./query-helpers";
@@ -17,6 +18,6 @@ export * from "./get-node-text";
 export * from "./events";
 export * from "./get-queries-for-element";
 export * from "./pretty-dom";
-export * from "./role-helpers";
+// export * from "./role-helpers";
 export * from "./config";
 export * from "./suggestions";
