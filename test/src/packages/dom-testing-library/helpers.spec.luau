@@ -1,14 +1,14 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/helpers.js
-local Promise = require("@pkg/@jsdotlua/promise")
+local Promise = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["promise"])
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local describe = JestGlobals.describe
 local jest = JestGlobals.jest
 
 -- ROBLOX deviation START: assume constant document
-local document = require("../jsHelpers/document")
+local document = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers.document)
 -- ROBLOX deviation END
 
 -- ROBLOX TODO START: not ported yet. Mocked

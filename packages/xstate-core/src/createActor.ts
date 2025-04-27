@@ -12,6 +12,7 @@ import type {
 	ActorScope,
 	AnyActorLogic,
 	AnyActorRef,
+	AnyObject,
 	ConditionalRequired,
 	DoneActorEvent,
 	EmittedFrom,
@@ -170,7 +171,7 @@ export class Actor<TLogic extends AnyActorLogic>
 			},
 			emit: emittedEvent => {
 				const listeners = this.eventListeners.get(
-					(emittedEvent as object)["type" as never],
+					(emittedEvent as AnyObject).type as string,
 				);
 				const wildcardListener = this.eventListeners.get("*");
 				if (!listeners && !wildcardListener) {
@@ -229,7 +230,7 @@ export class Actor<TLogic extends AnyActorLogic>
 
 		this._initState(options?.snapshot ?? options?.state);
 
-		if (systemId && this._snapshot["status"] !== "active") {
+		if (systemId && (this._snapshot as AnyObject).status !== "active") {
 			this.system._unregister(this);
 		}
 	}
@@ -281,7 +282,7 @@ export class Actor<TLogic extends AnyActorLogic>
 			}
 		}
 
-		switch (this._snapshot["status"]) {
+		switch ((this._snapshot as AnyObject).status) {
 			case "active":
 				for (const observer of this.observers) {
 					try {
@@ -308,14 +309,17 @@ export class Actor<TLogic extends AnyActorLogic>
 
 				this._stopProcedure();
 				this._complete();
-				this._doneEvent = createDoneActorEvent(this.id, this._snapshot["output"]);
+				this._doneEvent = createDoneActorEvent(
+					this.id,
+					(this._snapshot as AnyObject).output,
+				);
 				if (this._parent) {
 					this.system._relay(this, this._parent, this._doneEvent);
 				}
 
 				break;
 			case "error":
-				this._error(this._snapshot["error"]);
+				this._error((this._snapshot as AnyObject).error);
 				break;
 		}
 		this.system._sendInspectionEvent({
@@ -403,7 +407,7 @@ export class Actor<TLogic extends AnyActorLogic>
 		if (this._processingStatus !== ProcessingStatus.Stopped) {
 			this.observers.add(observer);
 		} else {
-			switch (this._snapshot["status"]) {
+			switch ((this._snapshot as AnyObject).status) {
 				case "done":
 					try {
 						observer.complete?.();
@@ -412,7 +416,7 @@ export class Actor<TLogic extends AnyActorLogic>
 					}
 					break;
 				case "error": {
-					const err = this._snapshot["error"];
+					const err = (this._snapshot as AnyObject).error;
 					if (!observer.error) {
 						reportUnhandledError(err);
 					} else {
@@ -493,7 +497,7 @@ export class Actor<TLogic extends AnyActorLogic>
 			event: initEvent,
 		});
 
-		const status = this._snapshot["status"];
+		const status = (this._snapshot as AnyObject).status;
 
 		switch (status) {
 			case "done":
@@ -503,7 +507,7 @@ export class Actor<TLogic extends AnyActorLogic>
 				// TODO: rethink cleanup of observers, mailbox, etc
 				return this;
 			case "error":
-				this._error(this._snapshot["error"]);
+				this._error((this._snapshot as AnyObject).error);
 				return this;
 		}
 
@@ -562,7 +566,7 @@ export class Actor<TLogic extends AnyActorLogic>
 		}
 
 		this.update(nextState, event);
-		if ((event as object)["type" as never] === XSTATE_STOP) {
+		if ((event as AnyObject).type === XSTATE_STOP) {
 			this._stopProcedure();
 			this._complete();
 		}

@@ -23,7 +23,7 @@ import {
 	forwardTo,
 	setup,
 } from "../src/index.ts";
-import { trackEntries } from "./utils.ts";
+import { trackEntries } from "./utils.js";
 
 const originalConsoleLog = console.log;
 

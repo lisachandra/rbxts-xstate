@@ -1,7 +1,7 @@
 import { createMachine, createActor, StateValue } from "../src/index.ts";
 import { assign } from "../src/actions/assign.ts";
 import { raise } from "../src/actions/raise.ts";
-import { testMultiTransition, trackEntries } from "./utils.ts";
+import { testMultiTransition, trackEntries } from "./utils.js";
 
 const composerMachine = createMachine({
 	initial: "ReadOnly",

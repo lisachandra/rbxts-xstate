@@ -1,7 +1,7 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/element-queries.js
-local RegExp = require("@pkg/luau-regexp")
+local RegExp = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["luau-regexp"])
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local describe = JestGlobals.describe
@@ -9,13 +9,13 @@ local afterEach = JestGlobals.afterEach
 
 local CollectionService = game:GetService("CollectionService")
 
-local configure = require("../config").configure
+local configure = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.config).configure
 
 -- ROBLOX deviation START: to restore config
-local getConfig = require("../config").getConfig
+local getConfig = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.config).getConfig
 -- ROBLOX deviation START
 
-local test_utilsModule = require("./helpers/test-utils")
+local test_utilsModule = require(script.Parent.helpers["test-utils"])
 local render = test_utilsModule.render
 local renderIntoDocument = test_utilsModule.renderIntoDocument
 test("query can return null", function()

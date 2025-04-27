@@ -1,11 +1,11 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/wait-for.js
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local Error = LuauPolyfill.Error
 local setTimeout = LuauPolyfill.setTimeout
 
-local Promise = require("@pkg/@jsdotlua/promise")
+local Promise = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["promise"])
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local beforeEach = JestGlobals.beforeEach
@@ -18,11 +18,11 @@ local CollectionService = game:GetService("CollectionService")
 local __dirname = "wait%-for%.spec"
 -- ROBLOX deviation END
 
-local waitFor = require("../wait-for").waitFor
-local configModule = require("../config")
+local waitFor = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out["wait-for"]).waitFor
+local configModule = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.config)
 local configure = configModule.configure
 local getConfig = configModule.getConfig
-local renderIntoDocument = require("./helpers/test-utils").renderIntoDocument
+local renderIntoDocument = require(script.Parent.helpers["test-utils"]).renderIntoDocument
 
 local function deferred()
 	local resolve, reject

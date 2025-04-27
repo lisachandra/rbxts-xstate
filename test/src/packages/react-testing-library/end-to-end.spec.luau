@@ -1,5 +1,5 @@
 -- ROBLOX upstream: https://github.com/testing-library/react-testing-library/blob/v12.1.5/src/__tests__/end-to-end.js
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local describe = JestGlobals.describe
 local test = JestGlobals.test
@@ -7,15 +7,15 @@ local beforeEach = JestGlobals.beforeEach
 local afterEach = JestGlobals.afterEach
 local jest = JestGlobals.jest
 
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local Array = LuauPolyfill.Array
 local setTimeout = LuauPolyfill.setTimeout
 
-local Promise = require("@pkg/@jsdotlua/promise")
-local RegExp = require("@pkg/luau-regexp")
+local Promise = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["promise"])
+local RegExp = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["luau-regexp"])
 
-local ParentModule = require("..")
-local React = require("@pkg/@jsdotlua/react")
+local ParentModule = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out)
+local React = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["react"])
 local render = ParentModule.render
 local waitForElementToBeRemoved = ParentModule.waitForElementToBeRemoved
 local screen = ParentModule.screen

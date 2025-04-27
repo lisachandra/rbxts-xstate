@@ -1,0 +1,54 @@
+diff --git a/out/Project/functions/compileFiles.js b/out/Project/functions/compileFiles.js
+index eafbe133dc7b6ea49d3aceaa9f72843315b1b94d..48dc31ae2a26cd1ce51a4148a6bcb7a7ba95722c 100644
+--- a/out/Project/functions/compileFiles.js
++++ b/out/Project/functions/compileFiles.js
+@@ -44,14 +44,18 @@ function emitResultFailure(messageText) {
+         diagnostics: [(0, createTextDiagnostic_1.createTextDiagnostic)(messageText)],
+     };
+ }
++const ROJO_CACHE = new Map();
+ function compileFiles(program, data, pathTranslator, sourceFiles) {
+     var _a;
+     const compilerOptions = program.getCompilerOptions();
+     const multiTransformState = new TSTransformer_1.MultiTransformState();
+     const outDir = compilerOptions.outDir;
+     const rojoResolver = data.rojoConfigPath
+-        ? rojo_resolver_1.RojoResolver.fromPath(data.rojoConfigPath)
++        ? ROJO_CACHE.get(data.rojoConfigPath) ?? rojo_resolver_1.RojoResolver.fromPath(data.rojoConfigPath)
+         : rojo_resolver_1.RojoResolver.synthetic(outDir);
++    if (data.rojoConfigPath) {
++        ROJO_CACHE.set(data.rojoConfigPath, rojoResolver);
++    }
+     for (const warning of rojoResolver.getWarnings()) {
+         LogService_1.LogService.warn(warning);
+     }
+@@ -61,7 +65,14 @@ function compileFiles(program, data, pathTranslator, sourceFiles) {
+             (0, checkFileName_1.checkFileName)(sourceFile.fileName);
+         }
+     }
+-    const pkgRojoResolvers = compilerOptions.typeRoots.map(rojo_resolver_1.RojoResolver.synthetic);
++    const pkgRojoResolvers = compilerOptions.typeRoots.map(v => {
++        const existing = ROJO_CACHE.get(v);
++        if (existing)
++            return existing;
++        const rojo = rojo_resolver_1.RojoResolver.synthetic(v);
++        ROJO_CACHE.set(v, rojo);
++        return rojo;
++    });
+     const nodeModulesPathMapping = (0, createNodeModulesPathMapping_1.createNodeModulesPathMapping)(compilerOptions.typeRoots);
+     const projectType = (_a = data.projectOptions.type) !== null && _a !== void 0 ? _a : inferProjectType(data, rojoResolver);
+     if (projectType !== constants_1.ProjectType.Package && data.rojoConfigPath === undefined) {
+diff --git a/out/TSTransformer/util/createImportExpression.js b/out/TSTransformer/util/createImportExpression.js
+index cb6cbf00b5d7902021d4d33b7057fb7eccea32ca..90843f019b455cb7e7123bee3dc3941f5706c49c 100644
+--- a/out/TSTransformer/util/createImportExpression.js
++++ b/out/TSTransformer/util/createImportExpression.js
+@@ -116,7 +116,8 @@ function getProjectImportParts(state, sourceFile, moduleSpecifier, moduleOutPath
+         return [luau_ast_1.default.none()];
+     }
+     if (state.projectType === constants_1.ProjectType.Game) {
+-        if (!typescript_1.default.isImportCall(moduleSpecifier.parent) &&
++		const isTestFile = sourceFile.fileName.endsWith(".spec.ts") || sourceFile.fileName.endsWith(".spec.tsx");
++        if (!isTestFile && !typescript_1.default.isImportCall(moduleSpecifier.parent) &&
+             state.rojoResolver.getNetworkType(moduleRbxPath) === rojo_resolver_1.NetworkType.Server &&
+             state.rojoResolver.getNetworkType(sourceRbxPath) !== rojo_resolver_1.NetworkType.Server) {
+             DiagnosticService_1.DiagnosticService.addDiagnostic(diagnostics_1.errors.noServerImport(moduleSpecifier));

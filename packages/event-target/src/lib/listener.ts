@@ -1,4 +1,3 @@
-import { Connection } from "@rbxts/lemon-signal";
 import { reportError } from "./error-handler";
 import { Event } from "./event"; // Used as only type, so no circular.
 import { EventTarget } from "./event-target"; // Used as only type, so no circular.
@@ -20,8 +19,6 @@ export interface Listener {
 	 * `signal`.
 	 */
 	readonly signalListener: (() => void) | undefined;
-	/** The connection. */
-	readonly connection: Connection;
 }
 
 export namespace Listener {
@@ -61,7 +58,6 @@ export function createListener(
 	capture: boolean,
 	passive: boolean,
 	once: boolean,
-	connection: Connection,
 	signal: Listener.AbortSignal | undefined,
 	signalListener: (() => void) | undefined,
 ): Listener {
@@ -71,7 +67,6 @@ export function createListener(
 			(capture ? ListenerFlags.Capture : 0) |
 			(passive ? ListenerFlags.Passive : 0) |
 			(once ? ListenerFlags.Once : 0),
-		connection,
 		signal,
 		signalListener,
 	};
@@ -138,8 +133,13 @@ export function invokeCallback(
 	try {
 		if (typeIs(callback, "function")) {
 			callback(target, event);
-		} else if (typeIs(callback.handleEvent, "function")) {
-			callback.handleEvent(event);
+		} /* if (typeIs(callback.handleEvent, "function")) */ else {
+			// Allow mocking
+			if ("handleEvent" in callback) {
+				callback.handleEvent(event);
+			} else {
+				(callback as Callback)(target, event);
+			}
 		}
 	} catch (thrownError) {
 		reportError(thrownError);

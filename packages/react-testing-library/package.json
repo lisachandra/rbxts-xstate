@@ -39,7 +39,7 @@
 		"@rbxts/jest-vendor": "*",
 		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/react": "^17.2.3",
-		"@rbxts/react-roblox": "*",
+		"@rbxts/react-roblox": "^17.2.3",
 		"@rbxts/types": "^1.0.844",
 		"ajv": "^8.12.0",
 		"pkg-up": "^3.1.0",

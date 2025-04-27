@@ -1,6 +1,6 @@
-import { Event } from "./lib/event";
+import { Event, getEventInternalData } from "./lib/event";
 import { getEventAttributeValue, setEventAttributeValue } from "./lib/event-attribute-handler";
-import { EventTarget } from "./lib/event-target";
+import { EventTarget, getEventTargetInternalData } from "./lib/event-target";
 import { defineCustomEventTarget, defineEventAttribute } from "./lib/legacy";
 import { setWarningHandler } from "./lib/warning-handler";
 
@@ -10,6 +10,8 @@ export {
 	defineEventAttribute,
 	Event,
 	EventTarget,
+	getEventInternalData,
+	getEventTargetInternalData,
 	getEventAttributeValue,
 	setEventAttributeValue,
 	setWarningHandler,

@@ -1,5 +1,5 @@
 import { createMachine, createActor, assign, AnyActorRef, sendParent } from "../src/index.ts";
-import { trackEntries } from "./utils.ts";
+import { trackEntries } from "./utils.js";
 
 describe("final states", () => {
 	it("status of a machine with a root state being final should be done", () => {

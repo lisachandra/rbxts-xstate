@@ -7,6 +7,7 @@ import {
 	AnyActorScope,
 	AnyEventObject,
 	AnyMachineSnapshot,
+	AnyObject,
 	ConditionalRequired,
 	GetConcreteByKey,
 	InputFrom,
@@ -121,12 +122,12 @@ export function createSpawner(
 	}) as Spawner<any>;
 	return ((src, options) => {
 		const actorRef = spawn(src, options) as TODO; // TODO: fix types
-		spawnedChildren[(actorRef as object)["id" as never]] = actorRef;
+		spawnedChildren[(actorRef as AnyObject).id as string] = actorRef;
 		actorScope.defer(() => {
-			if ((actorRef as object)["_processingStatus" as never] === ProcessingStatus.Stopped) {
+			if ((actorRef as AnyObject)._processingStatus === ProcessingStatus.Stopped) {
 				return;
 			}
-			((actorRef as object)["start" as never] as Callback)();
+			((actorRef as AnyObject).start as Callback)();
 		});
 		return actorRef;
 	}) as Spawner<any>;

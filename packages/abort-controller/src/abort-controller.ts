@@ -1,5 +1,6 @@
 import { Error } from "@rbxts/luau-polyfill";
 import AbortSignal, { abortSignal, createAbortSignal } from "./abort-signal";
+import { freeze } from "freeze";
 
 /**
  * The AbortController.
@@ -10,6 +11,7 @@ export default class AbortController {
 	/** Initialize this controller. */
 	public constructor() {
 		signals.set(this, createAbortSignal());
+		freeze(this);
 	}
 
 	/** Returns the `AbortSignal` object associated with this object. */

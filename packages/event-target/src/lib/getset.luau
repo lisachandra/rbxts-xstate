@@ -18,24 +18,33 @@ local function throwSealedError(table, key)
 end
 
 local function getset__index(table, key)
-	local gs = table.__getset
+	local gs = rawget(table, "__getset")
 
 	-- try to find a descriptor first
 	local descriptor = gs.descriptors[key]
 	if descriptor and descriptor.get then
-		return descriptor.get()
+		return descriptor.get(table)
 	end
 
 	-- if an old metatable exists, use that
 	local old__index = gs.old__index
 	if old__index then
-		return old__index(table, key)
+		local property = old__index(table, key)
+		if type(property) == "function" then
+			return function(self, ...)
+				if self == table then
+					self = gs.table_index
+				end
+
+				property(self, ...)
+			end
+		end
 	end
 
 	return nil
 end
 local function getset__newindex(table, key, value)
-	local gs = table.__getset
+	local gs = rawget(table, "__getset")
 
 	-- check for a property first
 	local descriptor = gs.descriptors[key]
@@ -43,8 +52,12 @@ local function getset__newindex(table, key, value)
 		if not descriptor.set then
 			throwReadOnlyError(table, key)
 		end
-		descriptor.set(value)
+		descriptor.set(table, value)
 		return
+	end
+
+	if gs.isFrozen then
+		error("attempt to modify a readonly table")
 	end
 
 	-- use the __newindex from the previous metatable next
@@ -63,32 +76,48 @@ local function getset__newindex(table, key, value)
 	end
 end
 
+local clone = table.clone
 -- initializes the table with __getset field
 local function initgetset(table)
-	if table.__getset then
+	if rawget(table, "__getset") then
 		return
 	end
 
 	local mt = getmetatable(table)
 	local old__index
 	local old__newindex
+	local table_index
 	if mt then
 		old__index = mt.__index
 		old__newindex = mt.__newindex
-	else
-		mt = {}
-		setmetatable(table, mt)
+
+		if type(old__index) == "table" then
+			table_index = old__index
+
+			old__index = function(self, key)
+				return table_index[key]
+			end
+
+			old__newindex = function(self, key, value)
+				table_index[key] = value
+			end
+		end
 	end
+
+	mt = clone(mt)
+	setmetatable(table, mt)
 	mt.__index = getset__index
 	mt.__newindex = getset__newindex
 	rawset(table, "__getset",
 	{
+		table_index = table_index,
 		old__index = old__index,
 		old__newindex = old__newindex,
 		descriptors = {},
 		isExtensible = true,
 		isOldMetatableExtensible = true,
-		isSealed = false
+		isSealed = false,
+		isFrozen = false,
 	})
 	return table
 end
@@ -99,8 +128,8 @@ local getset = {}
 -- and a setter may be defined in the descriptor, but both are optional.
 -- If a metatable already existed, and it had something similar to getters and
 -- setters defined using __index and __newindex, then those functions can be
--- accessed directly through table.__getset.old__index() and
--- table.__getset.old__newindex(). This is useful if you want to override with
+-- accessed directly through rawget(table, "__getset").old__index() and
+-- rawget(table, "__getset").old__newindex(). This is useful if you want to override with
 -- defineProperty(), but still manipulate the original functions.
 -- @param table			The table on which to define or modify the property
 -- @param key			The name of the property to be defined or modified
@@ -109,7 +138,7 @@ local getset = {}
 function getset.defineProperty(table, key, descriptor)
 	initgetset(table)
 
-	local gs = table.__getset
+	local gs = rawget(table, "__getset")
 
 	local oldDescriptor = gs.descriptors[key]
 	local oldValue = table[key]
@@ -136,7 +165,7 @@ end
 function getset.preventExtensions(table)
 	initgetset(table)
 
-	local gs = table.__getset
+	local gs = rawget(table, "__getset")
 	gs.isExtensible = false
 	return table
 end
@@ -149,7 +178,7 @@ end
 -- @param table		The table to be checked
 -- @return			true if extensible, false if non-extensible
 function getset.isExtensible(table)
-	local gs = table.__getset
+	local gs = rawget(table, "__getset")
 	if not gs then
 		return true
 	end
@@ -162,7 +191,7 @@ end
 -- @return			The table
 function getset.seal(table)
 	initgetset(table)
-	local gs = table.__getset
+	local gs = rawget(table, "__getset")
 	gs.isExtensible = false
 	gs.isSealed = true
 	return table
@@ -174,11 +203,26 @@ end
 -- @param table		The table to be checked
 -- @return			true if sealed, false if not sealed
 function getset.isSealed(table)
-	local gs = table.__getset
+	local gs = rawget(table, "__getset")
 	if not gs then
 		return false
 	end
 	return gs.isSealed
+end
+
+function getset.freeze(table)
+	initgetset(table)
+	local gs = rawget(table, "__getset")
+	gs.isFrozen = true
+	return table
+end
+
+function getset.isFrozen(table)
+	local gs = rawget(table, "__getset")
+	if not gs then
+		return false
+	end
+	return gs.isFrozen
 end
 
 return getset

@@ -1,17 +1,17 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/get-queries-for-element.js
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local Array = LuauPolyfill.Array
 local Object = LuauPolyfill.Object
 
-local document = require("../jsHelpers/document")
+local document = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers.document)
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local jest = JestGlobals.jest
 
-local getQueriesForElement = require("../get-queries-for-element").getQueriesForElement
-local queries = require("../queries")
+local getQueriesForElement = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out["get-queries-for-element"]).getQueriesForElement
+local queries = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.queries)
 test("uses default queries", function()
 	local container = Instance.new("Frame")
 	container.Parent = document

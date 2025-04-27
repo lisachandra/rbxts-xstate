@@ -120,9 +120,6 @@ importers:
 
   packages/event-target:
     dependencies:
-      '@rbxts/lemon-signal':
-        specifier: ^1.2.0
-        version: 1.2.0
       '@rbxts/luau-polyfill':
         specifier: ^1.0.0
         version: 1.1.3
@@ -167,7 +164,7 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       '@rbxts/react-roblox':
-        specifier: '*'
+        specifier: ^17.2.3
         version: 17.2.3
       '@rbxts/types':
         specifier: ^1.0.844
@@ -276,9 +273,15 @@ importers:
       '@rbxts/react':
         specifier: ^17.2.3
         version: 17.2.3
+      '@rbxts/react-roblox':
+        specifier: ^17.2.3
+        version: 17.2.3
       '@rbxts/react-testing-library':
         specifier: ^12.1.5-rc.1
         version: link:../packages/react-testing-library
+      '@rbxts/react-vendor':
+        specifier: '*'
+        version: 17.2.3
       '@rbxts/services':
         specifier: ^1.0.0
         version: 1.5.5
@@ -521,9 +524,6 @@ packages:
 
   '@rbxts/jest@0.1.0':
     resolution: {integrity: sha512-0JmmHh0vPbydCRhPWNaU8eb9RcY82i80RP6N5uJphLSZSV57kUvX8ahk1RhbPcn8xFoTmh+Pm6YEdGiPAzX1BA==}
-
-  '@rbxts/lemon-signal@1.2.0':
-    resolution: {integrity: sha512-R8iZqtwqLCnA4g2gS8d8j/QVnctkvzLQspq3VfuKfFbXp+Zqs7rw/2LebD/9ifX/NGpHAGgatRqj0C6DABT9Rw==}
 
   '@rbxts/luau-polyfill@1.1.3':
     resolution: {integrity: sha512-HhTeV1aeCDrr6PoTCc0khnAAxyBcDm0iXeu/t7l96u2Mr1fyA+0ugZd66A1xpThZwz/7YbTSFpiFp5SIFeu2Ug==}
@@ -2921,8 +2921,6 @@ snapshots:
       '@rbxts/jest-globals': 0.1.0
       '@rbxts/jest-vendor': 0.1.0
       '@rbxts/pretty-format': 0.1.0
-
-  '@rbxts/lemon-signal@1.2.0': {}
 
   '@rbxts/luau-polyfill@1.1.3': {}
 

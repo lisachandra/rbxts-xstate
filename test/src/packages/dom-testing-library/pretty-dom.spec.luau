@@ -1,8 +1,8 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/pretty-dom.js
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local console = LuauPolyfill.console
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local describe = JestGlobals.describe
@@ -10,13 +10,13 @@ local beforeEach = JestGlobals.beforeEach
 local afterEach = JestGlobals.afterEach
 local jest = JestGlobals.jest
 
-local document = require("../jsHelpers/document")
+local document = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers.document)
 
-local pretty_domModule = require("../pretty-dom")
+local pretty_domModule = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out["pretty-dom"])
 local prettyDOM = pretty_domModule.prettyDOM
 local logDOM = pretty_domModule.logDOM
-local getUCDModule = require("../get-user-code-frame")
-local test_utilsModule = require("./helpers/test-utils")
+local getUCDModule = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out["get-user-code-frame"])
+local test_utilsModule = require(script.Parent.helpers["test-utils"])
 local render = test_utilsModule.render
 local renderIntoDocument = test_utilsModule.renderIntoDocument
 

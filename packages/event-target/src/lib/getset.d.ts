@@ -29,6 +29,10 @@ declare const getSet: {
 
 	/** Determines if a table is sealed. */
 	isSealed: (table: object) => boolean;
+
+	freeze: (table: object) => void;
+
+	isFrozen: (table: object) => boolean;
 };
 
 export = getSet;

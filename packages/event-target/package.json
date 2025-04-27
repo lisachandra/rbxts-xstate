@@ -35,7 +35,6 @@
 		"lisachandra <lisachandra@proton.me>"
 	],
 	"dependencies": {
-		"@rbxts/lemon-signal": "^1.2.0",
 		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/services": "^1.0.0"
 	},

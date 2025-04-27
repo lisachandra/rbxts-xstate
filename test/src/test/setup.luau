@@ -1,2 +1,2 @@
-require(script.Parent.utils).resetTSRuntime(true)
+require(script.Parent.utils).resetTSRuntime()
 return true

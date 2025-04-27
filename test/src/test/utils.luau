@@ -1,25 +1,6 @@
---!nocheck
-
-local Promise = require(game.ReplicatedStorage.TS.include.Promise)
-
-local setTimeout = require(game.ReplicatedStorage.TS.node_modules["luau-polyfill"]).setTimeout
-local consoleSpies = require(script.Parent.consoleSpies).consoleSpies
-
 local TestUtils = {}
 TestUtils = {
 	isTesting = _G.__TEST__, -- Set within spec.server.luau
-
-	clearConsoleMocks = function()
-		for _k, spy in consoleSpies do
-			spy:mockClear()
-		end
-	end,
-
-	sleep = function(ms)
-		return Promise.new(function(resolve)
-			return setTimeout(resolve, ms)
-		end)
-	end,
 
 	getModuleByTree = function(root, parts)
 		local current = root
@@ -86,7 +67,7 @@ TestUtils = {
 							elseif
 								(type(value) == "table" and rawget(value, "__instance__") == nil)
 								or type(value) == "userdata"
-							then TestUtils.mockOnRuntime(jest, TestUtils.createMockInstance(value))
+							then (TestUtils :: any).mockOnRuntime(jest, (TestUtils :: any).createMockInstance(value))
 							else value
 						else nil
 				end

@@ -1,7 +1,8 @@
 import { Event } from "./event";
 import { EventTarget, getEventTargetInternalData, SignalData } from "./event-target";
-import { createListener, invokeCallback, setRemoved } from "./listener";
 import { InvalidAttributeHandler } from "./warnings";
+import { ensureListenerList } from "./listener-list-map";
+import { addListener, removeListener } from "./listener-list";
 
 /**
  * Get the current value of a given event attribute.
@@ -17,7 +18,7 @@ export function getEventAttributeValue<
 	kind: string,
 ): EventTarget.CallbackFunction<TEventTarget, TEvent> | undefined {
 	const listMap = getEventTargetInternalData(target, "target");
-	return listMap.get(kind)?.attrCallback ?? undefined;
+	return listMap.get(tostring(kind))?.attrCallback ?? undefined;
 }
 
 /**
@@ -32,7 +33,7 @@ export function setEventAttributeValue(
 	kind: string,
 	callback: EventTarget.CallbackFunction<any, any> | undefined,
 ): void {
-	if (callback !== undefined && typeIs(callback, "function")) {
+	if (callback !== undefined && !typeIs(callback, "function")) {
 		InvalidAttributeHandler.warn(callback);
 	}
 
@@ -59,30 +60,19 @@ function upsertEventAttributeListener<TEventTarget extends EventTarget<any, any>
 	kind: string,
 	callback: EventTarget.CallbackFunction<TEventTarget, any>,
 ): void {
-	const listenerMap = getEventTargetInternalData(target, "target");
-	const typeString = string.lower(kind);
-	const signalData = listenerMap.get(typeString);
+	const list = ensureListenerList(getEventTargetInternalData(target, "target"), tostring(kind));
+	list.attrCallback = callback;
 
-	if (!signalData) {
-		// should not happen, but handle it anyway
-		return;
+	if (list.attrListener === undefined) {
+		list.attrListener = addListener(
+			list,
+			defineEventAttributeCallback(list),
+			false,
+			false,
+			false,
+			undefined,
+		);
 	}
-	signalData.attrCallback = callback;
-	if (signalData.attrListener) {
-		return;
-	}
-	const connection = signalData.signal.Connect((event: Event) => {
-		invokeCallback({ callback } as never, target, event);
-	});
-	signalData.attrListener = createListener(
-		defineEventAttributeCallback(signalData),
-		false,
-		false,
-		false,
-		connection,
-		undefined,
-		undefined,
-	);
 }
 /**
  * Remove the given event attribute handler.
@@ -92,22 +82,12 @@ function upsertEventAttributeListener<TEventTarget extends EventTarget<any, any>
  * @param callback The event listener.
  */
 function removeEventAttributeListener(target: EventTarget<any, any>, kind: string): void {
-	const listenerMap = getEventTargetInternalData(target, "target");
-	const typeString = string.lower(kind);
-	const signalData = listenerMap.get(typeString);
-
-	const entry = signalData?.attrListener;
-	const list = signalData?.listeners;
-	if (!signalData || !entry || !list) {
-		// should not happen, but handle it anyway
-		return;
+	const listMap = getEventTargetInternalData(target, "target");
+	const list = listMap.get(tostring(kind));
+	if (list && list.attrListener) {
+		removeListener(list, list.attrListener.callback, false);
+		list.attrCallback = list.attrListener = undefined;
 	}
-
-	entry.connection.Disconnect();
-	setRemoved(entry);
-	entry.signal?.removeEventListener("abort", entry.signalListener!);
-	list.remove(list.indexOf(entry));
-	signalData.attrCallback = signalData.attrListener = undefined;
 }
 
 /**
@@ -119,10 +99,11 @@ function removeEventAttributeListener(target: EventTarget<any, any>, kind: strin
 function defineEventAttributeCallback(
 	signalData: SignalData,
 ): EventTarget.CallbackFunction<any, any> {
-	return (itself, event) => {
+	return (target, event) => {
 		const callback = signalData.attrCallback;
-		if (typeIs(callback, "function")) {
-			callback(itself, event);
+		// Allow mocking
+		if (callback !== undefined) {
+			callback(target, event);
 		}
 	};
 }

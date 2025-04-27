@@ -22,15 +22,18 @@ export class EventWrapper<TEventType extends string> extends Event<TEventType> {
 
 	protected constructor(event: Event<TEventType>) {
 		super(event.type(), {
-			bubbles: event.bubbles(),
-			cancelable: event.cancelable(),
-			composed: event.composed(),
+			bubbles: "bubbles" in event ? event.bubbles() : undefined,
+			cancelable: "cancelable" in event ? event.cancelable() : undefined,
+			composed: "composed" in event ? event.composed() : undefined,
 		});
 
-		if (event.cancelBubble()) {
+		const cancelBubble = "cancelBubble" in event ? event.cancelBubble() : undefined;
+		if (cancelBubble) {
 			super.stopPropagation();
 		}
-		if (event.defaultPrevented()) {
+
+		const defaultPrevented = "defaultPrevented" in event ? event.defaultPrevented() : undefined;
+		if (defaultPrevented) {
 			super.preventDefault();
 		}
 
@@ -41,7 +44,7 @@ export class EventWrapper<TEventType extends string> extends Event<TEventType> {
 		for (let i = 0; i < keys.size(); ++i) {
 			const key = keys[i];
 			if (!(key in this)) {
-				defineProperty(this, key, defineRedirectDescriptor(event, key));
+				defineProperty(this, key, defineRedirectDescriptor(this, key));
 			}
 		}
 	}
@@ -149,9 +152,9 @@ const wrapperClassCache = new WeakMap();
 function getWrapperClassOf<T extends EventLike>(
 	originalEvent: T,
 ): { new (e: T): EventWrapperOf<T> } {
-	const prototype = (getmetatable(originalEvent) as LuaMetatable<EventLike>)[
-		"__index" as never
-	] as EventLike;
+	const prototype = (getmetatable(originalEvent) as LuaMetatable<EventLike>)?.__index as never as
+		| EventLike
+		| undefined;
 	if (prototype === undefined) {
 		return EventWrapper as any;
 	}
@@ -171,35 +174,41 @@ function getWrapperClassOf<T extends EventLike>(
  * @param BaseEventWrapper The base wrapper class.
  * @param originalPrototype The prototype of the original event.
  */
-function defineWrapper(BaseEventWrapper: any, originalPrototype: any): any {
-	class CustomEventWrapper extends BaseEventWrapper {}
-
-	const keys = Object.keys(originalPrototype);
-	for (let i = 0; i < keys.size(); ++i) {
-		defineProperty(
-			CustomEventWrapper,
-			keys[i] as string,
-			defineRedirectDescriptor(originalPrototype, keys[i] as string),
-		);
+function defineWrapper(
+	BaseEventWrapper: { new (e: any): EventWrapperOf<any> },
+	originalPrototype: any,
+): any {
+	class CustomEventWrapper extends BaseEventWrapper {
+		constructor(e: any) {
+			super(e);
+			const keys = Object.keys(originalPrototype);
+			for (let i = 0; i < keys.size(); ++i) {
+				defineProperty(
+					this,
+					keys[i] as string,
+					defineRedirectDescriptor(originalPrototype, keys[i] as string),
+				);
+			}
+		}
 	}
 
 	return CustomEventWrapper;
 }
 
 /** Get the property descriptor to redirect a given property. */
-function defineRedirectDescriptor(_obj: any, key: string) {
+function defineRedirectDescriptor(obj: any, key: string) {
 	return {
 		get() {
-			const original: unknown = _(this).original;
-			const value = (original as never)[key];
+			const original: unknown = _(obj).original;
+			const value = (original as { [K: string]: unknown })[key];
 			if (typeIs(value, "function")) {
 				return bind(value, original);
 			}
 			return value;
 		},
 		set(value: any) {
-			const original: unknown = _(this).original;
-			(original as never)[key as never] = value as never;
+			const original: unknown = _(obj).original;
+			(original as { [K: string]: unknown })[key] = value as never;
 		},
 	};
 }

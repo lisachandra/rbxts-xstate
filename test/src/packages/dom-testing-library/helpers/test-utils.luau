@@ -1,17 +1,16 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/helpers/test-utils.js
-local Packages = script.Parent.Parent.Parent.Parent
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local Object = LuauPolyfill.Object
 type Array<T> = LuauPolyfill.Array<T>
 type Object = LuauPolyfill.Object
 
-local afterEach = require("@pkg/@jsdotlua/jest-globals").afterEach
+local afterEach = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"]).afterEach
 
-local document = require("../../jsHelpers/document")
+local document = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers.document)
 
 local exports = {}
 
-local getQueriesForElement = require("../../get-queries-for-element").getQueriesForElement
+local getQueriesForElement = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out["get-queries-for-element"]).getQueriesForElement
 
 local function render(html: Array<Instance>, ref_: Object?)
 	local ref = (if ref_ == nil then {} else ref_) :: Object

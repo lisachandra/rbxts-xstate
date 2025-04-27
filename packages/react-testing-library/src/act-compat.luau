@@ -27,7 +27,7 @@ local act = reactAct
 -- ROBLOX deviation END
 
 local youHaveBeenWarned = false
-local isAsyncActSupported 
+local isAsyncActSupported
 
 local function asyncAct(cb)
 	if actSupported == true then

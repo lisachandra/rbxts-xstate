@@ -14,6 +14,7 @@
 		"module": "commonjs",
 		"moduleResolution": "Node",
 		"resolveJsonModule": true,
+		"preserveSymlinks": true,
 		"typeRoots": ["node_modules/@rbxts", "types"],
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,

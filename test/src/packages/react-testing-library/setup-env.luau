@@ -1,21 +1,21 @@
 -- ROBLOX upstream: https://github.com/testing-library/react-testing-library/blob/v12.1.5/tests/setup-env.js
 
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local console = LuauPolyfill.console
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local jest = JestGlobals.jest
 local expect = JestGlobals.expect
 local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach
 
 -- ROBLOX deviation START: explicitly extend expect
-local jestDomMatchers = require("../src/jsHelpers/jest-dom")
+local jestDomMatchers = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.jsHelpers["jest-dom"])
 expect.extend(jestDomMatchers)
 -- ROBLOX deviation END
 
 -- ROBLOX deviation START: extend with missing matchers from jest
-local matchers = require("../src/jsHelpers/matchers")
+local matchers = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.jsHelpers.matchers)
 expect.extend(matchers)
 -- ROBLOX deviation END
 

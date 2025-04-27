@@ -1,17 +1,17 @@
 -- ROBLOX upstream: https://github.com/testing-library/react-testing-library/blob/v12.1.5/src/__tests__/new-act.js
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local beforeEach = JestGlobals.beforeEach
 local afterEach = JestGlobals.afterEach
 local jest = JestGlobals.jest
 
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local Error = LuauPolyfill.Error
 local console = LuauPolyfill.console
 type Promise<T> = LuauPolyfill.Promise<T>
 
-local Promise = require("@pkg/@jsdotlua/promise")
+local Promise = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["promise"])
 
 local asyncAct, consoleErrorMock
 
@@ -27,7 +27,7 @@ local asyncAct, consoleErrorMock
 
 beforeEach(function()
 	jest.resetModules()
-	asyncAct = require("../act-compat").asyncAct
+	asyncAct = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out["act-compat"]).asyncAct
 	-- ROBLOX deviation START: replace spyOn
 	consoleErrorMock = jest.fn()
 	console.error = consoleErrorMock

@@ -18,7 +18,7 @@ import {
 } from "xstate";
 import { fromCallback, fromObservable, fromPromise } from "xstate/actors";
 import { useActor, useSelector } from "../src/index.ts";
-import { describeEachReactMode } from "./utils.tsx";
+import { describeEachReactMode } from "./utils.js";
 
 afterEach(() => {
 	jest.useRealTimers();

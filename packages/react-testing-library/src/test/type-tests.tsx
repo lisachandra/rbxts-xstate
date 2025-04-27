@@ -260,13 +260,13 @@ export function testErrorHandlers() {
 	render(undefined, {
 		// Should work with React 19 types
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-expect-error
+
 		onCaughtError: () => {},
 	});
 	render(undefined, {
 		// Should never work as it's not supported yet.
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-expect-error
+
 		onUncaughtError: () => {},
 	});
 	render(undefined, {

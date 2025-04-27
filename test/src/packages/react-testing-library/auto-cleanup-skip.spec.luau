@@ -1,17 +1,17 @@
 -- ROBLOX upstream: https://github.com/testing-library/react-testing-library/blob/v12.1.5/src/__tests__/auto-cleanup-skip.js
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local beforeAll = JestGlobals.beforeAll
 local afterAll = JestGlobals.afterAll
 
-local document = require("@pkg/@jsdotlua/dom-testing-library").document
+local document = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["dom-testing-library"]).document
 
-local React = require("@pkg/@jsdotlua/react")
+local React = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["react"])
 local render, cleanup
 beforeAll(function()
 	_G.RTL_SKIP_AUTO_CLEANUP = "true"
-	local rtl = require("..")
+	local rtl = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out)
 	render = rtl.render
 	-- ROBLOX deviation START: force cleanup
 	cleanup = rtl.cleanup

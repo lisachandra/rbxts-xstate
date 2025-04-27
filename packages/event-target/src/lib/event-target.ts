@@ -1,9 +1,17 @@
 import { Event, getEventInternalData } from "./event";
-import { createListener, invokeCallback, isCapture, Listener, setRemoved } from "./listener";
-import { Signal } from "@rbxts/lemon-signal";
+import { invokeCallback, isCapture, isOnce, isPassive, isRemoved, Listener } from "./listener";
+import {
+	addListener,
+	findIndexOfListener,
+	removeListener,
+	removeListenerAt,
+} from "./listener-list";
+import { createListenerListMap, ensureListenerList, ListenerListMap } from "./listener-list-map";
 import { Error } from "@rbxts/luau-polyfill";
 import { assertType, format } from "./misc";
-import { InvalidEventListener } from "./warnings";
+import { EventListenerWasDuplicated, InvalidEventListener, OptionWasIgnored } from "./warnings";
+import { EventWrapper } from "./event-wrapper";
+import { freeze } from "./freeze";
 
 /**
  * An implementation of the `EventTarget` interface.
@@ -16,7 +24,8 @@ export class EventTarget<
 > {
 	/** Initialize this instance. */
 	constructor() {
-		internalDataMap.set(this, new Map());
+		internalDataMap.set(this, createListenerListMap());
+		freeze(this);
 	}
 
 	/**
@@ -24,7 +33,7 @@ export class EventTarget<
 	 *
 	 * @param type The event type.
 	 * @param callback The event listener.
-	 * @param options Options.
+	 * @param ptions Options.
 	 */
 	addEventListener<T extends string & keyof TEventMap>(
 		type: T,
@@ -80,75 +89,25 @@ export class EventTarget<
 		options0?: boolean | EventTarget.AddOptions,
 	): void {
 		const listenerMap = _(this);
-		const {
-			callback,
-			kind,
-			capture,
-			passive,
-			once,
-			signal: abortSignal,
-		} = normalizeAddOptions(type0, callback0, options0);
+		const { callback, capture, once, passive, signal, kind } = normalizeAddOptions(
+			type0,
+			callback0,
+			options0,
+		);
+		if (callback === undefined || signal?.getAborted()) {
+			return;
+		}
+		const list = ensureListenerList(listenerMap, kind);
 
-		if (callback === undefined) {
+		// Find existing listener.
+		const i = findIndexOfListener(list, callback, capture);
+		if (i !== -1) {
+			warnDuplicate(list.listeners[i], passive, once, signal);
 			return;
 		}
 
-		let signalData = listenerMap.get(kind);
-		if (!signalData) {
-			signalData = {
-				signal: new Signal<Event>(),
-				listeners: [],
-			};
-			listenerMap.set(kind, signalData);
-		}
-
-		// Check for duplicate listeners
-		const duplicate = signalData.listeners.find(
-			listener => listener.callback === callback && isCapture(listener) === capture,
-		);
-
-		if (duplicate) {
-			return;
-		}
-
-		const connection = signalData.signal.Connect((event: Event) => {
-			if (passive && event.preventDefault) {
-				// Throw an error if preventDefault is called in a passive event listener
-				event.preventDefault = () => {
-					throw new Error("preventDefault() called inside passive event listener"); // Spec-compliant error
-				};
-			}
-
-			invokeCallback({ callback } as never, this, event);
-
-			if (once) {
-				this.removeEventListener(kind, callback as never, options0 as never);
-			}
-		});
-
-		// eslint-disable-next-line prefer-const
-		let entry: Listener;
-		let abortSignalListener: Callback = undefined as never;
-		if (abortSignal) {
-			abortSignalListener = () => {
-				entry.connection.Disconnect();
-				setRemoved(entry);
-				entry.signal?.removeEventListener("abort", entry.signalListener!);
-				signalData.listeners.remove(signalData.listeners.indexOf(entry));
-			};
-			abortSignal.addEventListener("abort", abortSignalListener);
-		}
-
-		entry = createListener(
-			callback,
-			capture,
-			passive,
-			once,
-			connection,
-			abortSignal,
-			abortSignalListener,
-		);
-		signalData.listeners.push(entry);
+		// Add the new listener.
+		addListener(list, callback, capture, passive, once, signal);
 	}
 
 	/**
@@ -212,21 +171,11 @@ export class EventTarget<
 		options0?: boolean | EventTarget.Options,
 	): void {
 		const listenerMap = _(this);
-		const { callback, kind: kind } = normalizeOptions(type0, callback0, options0);
-		const signalData = listenerMap.get(kind);
+		const { callback, capture, kind } = normalizeOptions(type0, callback0, options0);
+		const list = listenerMap.get(kind);
 
-		if (signalData && callback) {
-			let index: number = undefined as never;
-			const entry = signalData.listeners.find((entry, i) => {
-				index = i;
-				return entry.callback === callback;
-			});
-			if (entry && index) {
-				entry.connection.Disconnect();
-				setRemoved(entry);
-				entry.signal?.removeEventListener("abort", entry.signalListener!);
-				signalData.listeners.remove(index);
-			}
+		if (callback !== undefined && list) {
+			removeListener(list, callback, capture);
 		}
 	}
 
@@ -250,24 +199,66 @@ export class EventTarget<
 	dispatchEvent(
 		e: EventTarget.EventData<TEventMap, TMode, string> | EventTarget.FallbackEvent<TMode>,
 	): boolean {
-		const signalData = _(this).get(string.lower(e.type()));
-		if (!signalData) {
+		const list = _(this).get(tostring(e.type()));
+		const event = e instanceof Event ? e : (EventWrapper.wrap(e) as typeof e);
+		const eventData = getEventInternalData(event);
+		if (!list) {
 			return true;
 		}
 
-		// 1. Capture Phase: Invoke capture listeners on this EventTarget
-		for (const listener of signalData.listeners) {
-			if (isCapture(listener)) {
-				invokeCallback({ callback: listener.callback } as never, this, e);
-				if (getEventInternalData(e).stopImmediatePropagationFlag) return false;
+		if (eventData.dispatchFlag) {
+			throw "This event has been in dispatching.";
+		}
+
+		eventData.dispatchFlag = true;
+		eventData.target = eventData.currentTarget = this;
+
+		if (!eventData.stopPropagationFlag) {
+			const { cow, listeners } = list;
+
+			// Set copy-on-write flag.
+			list.cow = true;
+
+			// Call listeners.
+			for (let i = 0; i < listeners.size(); ++i) {
+				const listener = listeners[i];
+
+				// Skip if removed.
+				if (isRemoved(listener)) {
+					continue;
+				}
+
+				// Remove this listener if has the `once` flag.
+				if (isOnce(listener) && removeListenerAt(list, i, !cow)) {
+					// Because this listener was removed, the next index is the
+					// same as the current value.
+					i -= 1;
+				}
+
+				// Call this listener with the `passive` flag.
+				eventData.inPassiveListenerFlag = isPassive(listener);
+				invokeCallback(listener, this, event);
+				eventData.inPassiveListenerFlag = false;
+
+				// Stop if the `event.stopImmediatePropagation()` method was called.
+				if (eventData.stopImmediatePropagationFlag) {
+					break;
+				}
+			}
+
+			// Restore copy-on-write flag.
+			if (!cow) {
+				list.cow = false;
 			}
 		}
 
-		// 2. Invoke listeners on the target
-		signalData.signal.Fire(e);
+		eventData.target = undefined;
+		eventData.currentTarget = undefined;
+		eventData.stopImmediatePropagationFlag = false;
+		eventData.stopPropagationFlag = false;
+		eventData.dispatchFlag = false;
 
-		// Bubbling is not relevant for this shim
-		return true;
+		return !eventData.canceledFlag;
 	}
 }
 
@@ -282,7 +273,7 @@ export namespace EventTarget {
 		TEventTarget extends EventTarget<any, any>,
 		TEvent extends Event,
 	> {
-		(self: TEventTarget, event?: TEvent): void;
+		(self: TEventTarget, event: TEvent): void;
 	}
 
 	/**
@@ -321,8 +312,8 @@ export namespace EventTarget {
 	 * @see https://dom.spec.whatwg.org/#abortsignal
 	 */
 	export interface AbortSignal extends EventTarget<{ abort: Event }> {
-		readonly aborted: boolean;
-		onabort: CallbackFunction<this, Event> | undefined;
+		getAborted(): boolean;
+		getOnabort: () => CallbackFunction<this, Event> | undefined;
 	}
 
 	/** The event data to dispatch in strict mode. */
@@ -342,7 +333,9 @@ export namespace EventTarget {
 	 * Define explicit `type` property if `T` is a string literal. Otherwise,
 	 * never.
 	 */
-	export type ExplicitType<T extends string> = string extends T ? never : { readonly type: T };
+	export type ExplicitType<T extends string> = string extends T
+		? never
+		: { readonly type: () => T };
 
 	/** The event listener type in standard mode. Otherwise, never. */
 	export type FallbackEventListener<
@@ -373,16 +366,12 @@ export interface SignalData {
 	attrCallback?: Listener.CallbackFunction<any, any>;
 	/** The listener of the event attribute handler. */
 	attrListener?: Listener;
-	/** Signal for the event. */
-	signal: Signal<Event>;
 	/** The listeners. */
 	listeners: Listener[];
 }
 
-type EventTargetInternalData = Map<string, SignalData>;
-
 /** Internal data. */
-const internalDataMap = new WeakMap<any, EventTargetInternalData>();
+const internalDataMap = new WeakMap<any, ListenerListMap>();
 
 /**
  * Get private data.
@@ -391,7 +380,7 @@ const internalDataMap = new WeakMap<any, EventTargetInternalData>();
  * @param name The variable name to report.
  * @returns The private data of the event.
  */
-function _(target: any, name = "this"): EventTargetInternalData {
+function _(target: any, name = "this"): ListenerListMap {
 	const retv = internalDataMap.get(target);
 	assertType(
 		retv !== undefined,
@@ -423,7 +412,7 @@ function normalizeAddOptions(
 
 	if (typeIs(options, "table")) {
 		return {
-			kind: string.lower(kind),
+			kind: tostring(kind),
 			callback: callback ?? undefined,
 			capture: !!options.capture,
 			passive: !!options.passive,
@@ -433,7 +422,7 @@ function normalizeAddOptions(
 	}
 
 	return {
-		kind: string.lower(kind),
+		kind: tostring(kind),
 		callback: callback ?? undefined,
 		capture: !!options,
 		passive: false,
@@ -460,14 +449,14 @@ function normalizeOptions(
 
 	if (typeIs(options, "table")) {
 		return {
-			kind: string.lower(kind),
+			kind: tostring(kind),
 			callback: callback ?? undefined,
 			capture: !!options.capture,
 		};
 	}
 
 	return {
-		kind: string.lower(kind),
+		kind: tostring(kind),
 		callback: callback ?? undefined,
 		capture: !!options,
 	};
@@ -488,4 +477,31 @@ function assertCallback(callback: unknown): void {
 	}
 
 	throw new Error(format(InvalidEventListener.message, [callback]));
+}
+
+/**
+ * Print warning for duplicated.
+ *
+ * @param listener The current listener that is duplicated.
+ * @param passive The passive flag of the new duplicated listener.
+ * @param once The once flag of the new duplicated listener.
+ * @param signal The signal object of the new duplicated listener.
+ */
+function warnDuplicate(
+	listener: Listener,
+	passive: boolean,
+	once: boolean,
+	signal: EventTarget.AbortSignal | undefined,
+): void {
+	EventListenerWasDuplicated.warn(isCapture(listener) ? "capture" : "bubble", listener.callback);
+
+	if (isPassive(listener) !== passive) {
+		OptionWasIgnored.warn("passive");
+	}
+	if (isOnce(listener) !== once) {
+		OptionWasIgnored.warn("once");
+	}
+	if (listener.signal !== signal) {
+		OptionWasIgnored.warn("signal");
+	}
 }

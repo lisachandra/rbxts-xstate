@@ -1,27 +1,27 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/suggestions.js
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local console = LuauPolyfill.console
 
-local RegExp = require("@pkg/luau-regexp")
+local RegExp = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["luau-regexp"])
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local beforeAll = JestGlobals.beforeAll
 local afterAll = JestGlobals.afterAll
 local afterEach = JestGlobals.afterEach
 
-local typesModule = require("../types")
+local typesModule = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.types)
 type Suggestion = typesModule.Suggestion
 
-local querySelector = require("../jsHelpers/querySelectors").querySelector
-local querySelectorAll = require("../jsHelpers/querySelectors").querySelectorAll
+local querySelector = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers.querySelectors).querySelector
+local querySelectorAll = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers.querySelectors).querySelectorAll
 local CollectionService = game:GetService("CollectionService")
 
-local configure = require("../config").configure
-local screen = require("../screen").screen
-local getSuggestedQuery = require("../suggestions").getSuggestedQuery
-local test_utilsModule = require("./helpers/test-utils")
+local configure = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.config).configure
+local screen = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.screen).screen
+local getSuggestedQuery = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.suggestions).getSuggestedQuery
+local test_utilsModule = require(script.Parent.helpers["test-utils"])
 local renderIntoDocument = test_utilsModule.renderIntoDocument
 local render = test_utilsModule.render
 

@@ -1,10 +1,10 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/get-node-text.js
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local getNodeText = require("../get-node-text").getNodeText
-local render = require("./helpers/test-utils").render
+local getNodeText = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out["get-node-text"]).getNodeText
+local render = require(script.Parent.helpers["test-utils"]).render
 
 --[[
 		ROBLOX deviation START:

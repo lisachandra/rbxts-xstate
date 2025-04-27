@@ -1,5 +1,6 @@
 _G.NOCOLOR = true
 _G.__TEST__ = true
+_G.__DEV__ = true
 _G.__ROACT_17_MOCK_SCHEDULER__ = true
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -11,13 +12,16 @@ local status, result = Jest.runCLI(script, {
 	verbose = false,
 	ci = false,
 	setupFiles = { TestService.setup },
-	setupFilesAfterEnv = { TestService["setup-env"] }
+	setupFilesAfterEnv = { TestService["setup-env"] },
 }, {
-	ReplicatedStorage.TS.packages,
+	-- dom-testing-library and react-testing-library uses legacy versions of jest-lua
+	ReplicatedStorage.TS.packages["event-target"],
+	ReplicatedStorage.TS.packages["abort-controller"],
+	ReplicatedStorage.TS.packages["xstate-core"],
+	ReplicatedStorage.TS.packages["xstate-react"],
 }):awaitStatus()
 
 if status == "Rejected" or result.results.numFailedTestSuites > 0 or result.results.numFailedTests > 0 then
-	print(result)
 	error("Tests failed!")
 else
 	print("Tests passed!")

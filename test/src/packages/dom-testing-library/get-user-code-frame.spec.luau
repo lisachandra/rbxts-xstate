@@ -1,18 +1,18 @@
 -- ROBLOX upstream: https://github.com/testing-library/dom-testing-library/blob/v8.14.0/src/__tests__/get-user-code-frame.js
-local LuauPolyfill = require("@pkg/@jsdotlua/luau-polyfill")
+local LuauPolyfill = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["luau-polyfill"])
 local Error = LuauPolyfill.Error
 
-local stripAnsi = require("../jsHelpers/strip-ansi")
+local stripAnsi = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers["strip-ansi"])
 
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local beforeEach = JestGlobals.beforeEach
 local afterEach = JestGlobals.afterEach
 local jest = JestGlobals.jest
 
-local fs = require("../jsHelpers/fs")
-local codeFrame = require("../get-user-code-frame")
+local fs = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out.jsHelpers.fs)
+local codeFrame = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["dom-testing-library"].out["get-user-code-frame"])
 
 -- ROBLOX deviation START: different error format, doesn't contain column info
 -- local userStackFrame = "at somethingWrong (/sample-error/error-example.js:7:14)"

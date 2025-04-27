@@ -11,7 +11,7 @@ import {
 	sendTo,
 } from "xstate";
 import { useActorRef, useMachine, useSelector } from "../src/index.ts";
-import { describeEachReactMode } from "./utils.tsx";
+import { describeEachReactMode } from "./utils.js";
 
 const originalConsoleWarn = console.warn;
 

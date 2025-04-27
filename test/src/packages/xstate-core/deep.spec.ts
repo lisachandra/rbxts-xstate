@@ -1,5 +1,5 @@
 import { createMachine, createActor } from "../src/index.ts";
-import { trackEntries } from "./utils.ts";
+import { trackEntries } from "./utils.js";
 
 describe("deep transitions", () => {
 	describe("exiting super/substates", () => {

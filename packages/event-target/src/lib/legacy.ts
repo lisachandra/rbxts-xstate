@@ -16,10 +16,13 @@ export function defineCustomEventTarget<
 >(
 	...types: (string & keyof TEventMap)[]
 ): defineCustomEventTarget.CustomEventTargetConstructor<TEventMap, TMode> {
-	class CustomEventTarget extends EventTarget {}
-	const prototype = (getmetatable(CustomEventTarget) as never)["__index"] as CustomEventTarget;
-	for (let i = 0; i < types.size(); ++i) {
-		defineEventAttribute(prototype, types[i]);
+	class CustomEventTarget extends EventTarget {
+		constructor() {
+			super();
+			for (let i = 0; i < types.size(); ++i) {
+				defineEventAttribute(this, types[i]);
+			}
+		}
 	}
 
 	return CustomEventTarget as any;
@@ -68,10 +71,10 @@ export function defineEventAttribute<
 	> {
 	defineProperty(target, `on${kind}`, {
 		get() {
-			return (getEventAttributeValue as Callback)(this, kind);
+			return (getEventAttributeValue as Callback)(target, kind);
 		},
 		set(value) {
-			(setEventAttributeValue as Callback)(this, kind, value);
+			(setEventAttributeValue as Callback)(target, kind, value);
 		},
 	});
 }
@@ -82,9 +85,8 @@ export namespace defineEventAttribute {
 		TEventTarget extends EventTarget<any, any>,
 		TEventMap extends Record<string, Event>,
 	> = {
-		[P in string & keyof TEventMap as `on${P}`]: EventTarget.CallbackFunction<
-			TEventTarget,
-			TEventMap[P]
-		> | null;
+		[P in string & keyof TEventMap as `on${P}`]:
+			| EventTarget.CallbackFunction<TEventTarget, TEventMap[P]>
+			| undefined;
 	};
 }

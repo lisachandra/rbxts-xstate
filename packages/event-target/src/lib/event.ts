@@ -1,4 +1,6 @@
 import { EventTarget } from "./event-target"; // Used as only type, so no circular.
+import { freeze } from "./freeze";
+
 import { assertType } from "./misc";
 import {
 	CanceledInPassiveListener,
@@ -45,7 +47,7 @@ export class Event<TEventType extends string = string> {
 	constructor(kind: TEventType, eventInitDict?: Event.EventInit) {
 		const opts = eventInitDict ?? {};
 		internalDataMap.set(this, {
-			kind: string.lower(kind),
+			kind: tostring(kind),
 			bubbles: !!opts.bubbles,
 			cancelable: !!opts.cancelable,
 			composed: !!opts.composed,
@@ -58,6 +60,7 @@ export class Event<TEventType extends string = string> {
 			dispatchFlag: false,
 			timeStamp: os.clock(),
 		});
+		freeze(this);
 	}
 
 	/**
@@ -250,7 +253,7 @@ export class Event<TEventType extends string = string> {
 
 		internalDataMap.set(this, {
 			...data,
-			kind: string.lower(kind),
+			kind: tostring(kind),
 			bubbles: !!bubbles,
 			cancelable: !!cancelable,
 			target: undefined,

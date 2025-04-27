@@ -1,0 +1,5 @@
+{
+	"roblox-ts.command.npm.useNpmScripts": true,
+	"roblox-ts.command.npm.watchScript": "dev",
+	"roblox-ts.boundary.useRojo": false
+}

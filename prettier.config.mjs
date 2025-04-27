@@ -1,6 +1,6 @@
 /**
- * @see https://prettier.io/docs/configuration
  * @type {import("prettier").Config}
+ * @see https://prettier.io/docs/configuration
  */
 const config = {
 	arrowParens: "avoid",
@@ -15,7 +15,6 @@ const config = {
 	trailingComma: "all",
 	tsdoc: true,
 	useTabs: true,
-
 };
 
 export default config;

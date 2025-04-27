@@ -3,7 +3,9 @@ runs:
     using: "composite"
     steps:
         - name: Build
-          run: pnpm build
+          run: |
+              pnpm build:packages
+              pnpm build:test
           shell: bash
 
         - name: ESLint

@@ -1,11 +1,16 @@
 import { Error } from "@rbxts/luau-polyfill";
-import { Event, EventTarget, defineEventAttribute } from "@rbxts/whatwg-event-target";
+import {
+	Event,
+	EventTarget,
+	getEventAttributeValue,
+	setEventAttributeValue,
+} from "@rbxts/whatwg-event-target";
 
 type Events = {
 	abort: Event<"abort">;
 };
 type EventAttributes = {
-	onabort: Event<"abort">;
+	getOnabort(): Event<"abort">;
 };
 
 /**
@@ -14,12 +19,21 @@ type EventAttributes = {
  * @see https://dom.spec.whatwg.org/#abortsignal
  */
 export default class AbortSignal extends EventTarget<Events> implements EventAttributes {
-	onabort: Event<"abort">;
-
 	/** AbortSignal cannot be constructed directly. */
 	public constructor() {
 		super();
 		throw new Error("AbortSignal cannot be constructed directly");
+	}
+
+	public getOnabort() {
+		return getEventAttributeValue<EventTarget.AbortSignal, Event>(
+			this as never,
+			"abort",
+		) as never;
+	}
+
+	public setOnabort(value: any) {
+		setEventAttributeValue(this, "abort", value);
 	}
 
 	/**
@@ -27,36 +41,41 @@ export default class AbortSignal extends EventTarget<Events> implements EventAtt
 	 * abort, and `false` otherwise.
 	 */
 	public getAborted(): boolean {
-		const aborted = abortedFlags.get(this);
+		const aborted = _(this).aborted;
 		if (!typeIs(aborted, "boolean")) {
 			throw new Error(`Expected 'this' to be an 'AbortSignal' object, but got ${this}`);
 		}
 		return aborted;
 	}
 }
-defineEventAttribute(getmetatable(abortSignal) as AbortSignal, "abort");
 
-const eventTargetConstructor = (getmetatable(EventTarget) as LuaMetatable<EventTarget>)["__index"]![
-	"constructor" as never
-] as Callback;
+interface AbortSignalInternalData {
+	aborted?: boolean;
+}
+
+const internalDataMap = new WeakMap<any, AbortSignalInternalData>();
+
+function _(event: unknown) {
+	internalDataMap.set(event, internalDataMap.get(event) ?? {});
+	return internalDataMap.get(event)!;
+}
+
+const eventTargetConstructor = EventTarget["constructor" as never] as Callback;
 
 /** Create an AbortSignal object. */
 export function createAbortSignal(): AbortSignal {
 	const signal = setmetatable({}, AbortSignal as never) as AbortSignal;
 	eventTargetConstructor(signal);
-	abortedFlags.set(signal, false);
+	_(signal).aborted = false;
 	return signal;
 }
 
 /** Abort a given signal. */
 export function abortSignal(signal: AbortSignal): void {
-	if (abortedFlags.get(signal) !== false) {
+	if (_(signal).aborted !== false) {
 		return;
 	}
 
-	abortedFlags.set(signal, true);
-	signal.dispatchEvent({ type: "abort" } as never);
+	_(signal).aborted = true;
+	signal.dispatchEvent({ type: () => "abort" } as never);
 }
-
-/** Aborted flag for each instances. */
-const abortedFlags = new WeakMap<AbortSignal, boolean>();

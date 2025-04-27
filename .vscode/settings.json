@@ -30,5 +30,5 @@
 	"npm.packageManager": "pnpm",
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"roblox-ts.command.npm.useNpmScripts": true,
-	"roblox-ts.command.npm.watchScript": "dev"
+	"roblox-ts.command.npm.watchScript": "dev:test"
 }

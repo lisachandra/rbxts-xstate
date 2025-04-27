@@ -1,5 +1,5 @@
 import { createMachine, createActor } from "../../src/index.ts";
-import { testAll } from "../utils.ts";
+import { testAll } from "../utils.js";
 
 describe("Example 6.8", () => {
 	const machine = createMachine({

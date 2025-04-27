@@ -1,15 +1,15 @@
 -- ROBLOX upstream: https://github.com/testing-library/react-testing-library/blob/v12.1.5/src/__tests__/multi-base.js
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local beforeAll = JestGlobals.beforeAll
 
 local afterAll = JestGlobals.afterAll
 
-local document = require("@pkg/@jsdotlua/dom-testing-library").document
+local document = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["dom-testing-library"]).document
 
-local React = require("@pkg/@jsdotlua/react")
-local render = require("..").render
+local React = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["react"])
+local render = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out).render
 
 -- these are created once per test suite and reused for each case
 local treeA, treeB

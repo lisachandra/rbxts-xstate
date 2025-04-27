@@ -1,11 +1,11 @@
 -- ROBLOX upstream: https://github.com/testing-library/react-testing-library/blob/v12.1.5/src/__tests__/act.js
-local JestGlobals = require("@pkg/@jsdotlua/jest-globals")
+local JestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["jest-globals"])
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 local jest = JestGlobals.jest
 
-local ParentModule = require("..")
-local React = require("@pkg/@jsdotlua/react")
+local ParentModule = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out)
+local React = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["react-testing-library"].out.node_modules[".luau-aliases"]["@jsdotlua"]["react"])
 local render = ParentModule.render
 local fireEvent = ParentModule.fireEvent
 local screen = ParentModule.screen

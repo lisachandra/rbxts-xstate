@@ -7,7 +7,13 @@ import prettierConfig from "./prettier.config.mjs";
 
 export default tseslint.config(
 	{
-		ignores: ["**/out/**", "**/*.spec.*", "pnpm-lock.yaml", "eslint.config.mjs"],
+		ignores: [
+			"**/out/**",
+			"**/*.spec.*",
+			"pnpm-lock.yaml",
+			"eslint.config.mjs",
+			"prettier.config.mjs",
+		],
 	},
 	eslint.configs.recommended,
 	...tseslint.configs.recommendedTypeChecked,
@@ -24,10 +30,7 @@ export default tseslint.config(
 	},
 	{
 		rules: {
-			"prettier/prettier": [
-				"warn",
-				prettierConfig,
-			],
+			"prettier/prettier": ["warn", prettierConfig],
 			"@typescript-eslint/no-empty-object-type": [
 				"error",
 				{

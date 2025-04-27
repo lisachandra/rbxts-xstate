@@ -15,7 +15,7 @@ import {
 	setup,
 } from "xstate";
 import { shallowEqual, useActorRef, useMachine, useSelector } from "../src/index.ts";
-import { describeEachReactMode } from "./utils";
+import { describeEachReactMode } from "./utils.js";
 
 const originalConsoleError = console.error;
 

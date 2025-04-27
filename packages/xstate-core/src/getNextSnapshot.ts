@@ -3,6 +3,7 @@ import {
 	ActorScope,
 	AnyActorLogic,
 	AnyActorScope,
+	AnyObject,
 	EmittedFrom,
 	EventFromLogic,
 	InputFrom,
@@ -75,6 +76,6 @@ export function getNextSnapshot<T extends AnyActorLogic>(
 	event: EventFromLogic<T>,
 ): SnapshotFrom<T> {
 	const inertActorScope = createInertActorScope(actorLogic);
-	(inertActorScope.self as never)["_snapshot"] = snapshot;
+	(inertActorScope.self as never as AnyObject)._snapshot = snapshot;
 	return actorLogic.transition(snapshot, event, inertActorScope);
 }

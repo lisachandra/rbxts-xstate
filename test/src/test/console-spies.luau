@@ -1,4 +1,4 @@
-local jest = require(game.ReplicatedStorage.TS.node_modules["@rbxts"].jest.src)
+local jest = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["jest-globals"].src).jest
 
 local function spyOnConsole(method)
 	return jest.spyOn(jest.globalEnv, method).mockImplementation(function()
@@ -9,7 +9,7 @@ end
 return {
 	spyOnConsole = spyOnConsole,
 	consoleSpies = {
-		error = spyOnConsole("error"),
+		-- error = spyOnConsole("error"),
 		print = spyOnConsole("print"),
 		warn = spyOnConsole("warn"),
 	},

@@ -106,12 +106,12 @@ local didWarnAboutUsingActInProd = false
 -- ROBLOX deviation: This seems to be a bug in upstream. act-compat doesn't adhere to the callback typing upstream.
 -- Added () -> () to align with how act is used in act-compat.
 local function act(callback: (() -> Thenable<any>) | () -> ())
-do		
+do
 if didWarnAboutUsingActInProd == false then
 			didWarnAboutUsingActInProd = true
 			console.error("act(...) is not supported in production builds of React, and might not behave as expected.")
 		end
-end	
+end
 local previousActingUpdatesScopeDepth = actingUpdatesScopeDepth
 	actingUpdatesScopeDepth += 1
 
@@ -124,7 +124,7 @@ local previousActingUpdatesScopeDepth = actingUpdatesScopeDepth
 		actingUpdatesScopeDepth -= 1
 		IsSomeRendererActing.current = previousIsSomeRendererActing
 		IsThisRendererActing.current = previousIsThisRendererActing
-	
+
 
 
 
@@ -153,7 +153,7 @@ end
 		-- in the async case, the returned thenable runs the callback, flushes
 		-- effects and  microtasks in a loop until flushPassiveEffects() === false,
 		-- and cleans up
-		
+
 
 
 
@@ -194,7 +194,7 @@ return Promise.new(function(resolve, reject)
 		end)
 	else
 		-- flush effects until none remain, and cleanup
-		
+
 
 
 
@@ -224,7 +224,7 @@ local ok_, res_ = pcall(function()
 		-- in the sync case, the returned thenable only warns *if* await-ed
 		return {
 			andThen = function(self, resolve: () -> ())
-				
+
 
 
 resolve()
