@@ -1,3 +1,4 @@
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
 import {
 	ActorRefFrom,
 	and,
@@ -20,7 +21,7 @@ import {
 	setup,
 	spawnChild,
 	stopChild,
-} from "../src";
+} from "@rbxts/xstate";
 
 describe("setup()", () => {
 	it("should be able to define a simple function guard", () => {
@@ -843,7 +844,7 @@ describe("setup()", () => {
 		setup({
 			actors: {
 				greet: fromPromise(async () => "hello"),
-				throwDice: fromPromise(async () => Math.random()),
+				throwDice: fromPromise(async () => math.random()),
 			},
 		}).createMachine({
 			invoke: {
@@ -867,7 +868,7 @@ describe("setup()", () => {
 		setup({
 			actors: {
 				greet: fromPromise(async () => "hello"),
-				throwDice: fromPromise(async () => Math.random()),
+				throwDice: fromPromise(async () => math.random()),
 			},
 		}).createMachine({
 			invoke: {
@@ -1079,7 +1080,7 @@ describe("setup()", () => {
 				src: "fetchUser",
 				// @ts-expect-error
 				input:
-					Math.random() > 0.5
+					math.random() > 0.5
 						? {
 								userId: "4nd4r157",
 							}
@@ -1136,7 +1137,7 @@ describe("setup()", () => {
 				src: "fetchUser",
 				// @ts-expect-error
 				input: () =>
-					Math.random() > 0.5
+					math.random() > 0.5
 						? {
 								userId: "4nd4r157",
 							}
@@ -1166,7 +1167,7 @@ describe("setup()", () => {
 					name: "Andarist",
 				})),
 				rollADie: fromPromise(async ({ input }: { input: number }) =>
-					Math.min(Math.random(), input),
+					math.min(math.random(), input),
 				),
 			},
 		}).createMachine({
@@ -1198,7 +1199,7 @@ describe("setup()", () => {
 		setup({
 			actors: {
 				rollADie: fromPromise(async ({ input }: { input: number | undefined }) =>
-					input ? Math.min(Math.random(), input) : Math.random(),
+					input ? math.min(math.random(), input) : math.random(),
 				),
 			},
 		}).createMachine({

@@ -1,4 +1,5 @@
-import { AnyActorLogic, createMachine } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { AnyActorLogic, createMachine } from "@rbxts/xstate";
 
 describe("definition", () => {
 	it("should provide invoke definitions", () => {
@@ -22,6 +23,6 @@ describe("definition", () => {
 			},
 		});
 
-		expect(invokeMachine.root.definition.invoke.length).toBe(2);
+		expect(invokeMachine.root.getDefinition().invoke.size()).toBe(2);
 	});
 });

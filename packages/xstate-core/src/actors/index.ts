@@ -15,7 +15,12 @@ export {
 	type ObservableActorRef,
 	type ObservableSnapshot,
 } from "./observable";
-export { type PromiseActorLogic, type PromiseActorRef, type PromiseSnapshot } from "./promise";
+export {
+	fromPromise,
+	type PromiseActorLogic,
+	type PromiseActorRef,
+	type PromiseSnapshot,
+} from "./promise";
 export {
 	fromTransition,
 	type TransitionActorLogic,

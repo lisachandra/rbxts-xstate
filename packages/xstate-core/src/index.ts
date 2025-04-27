@@ -1,5 +1,5 @@
 export * from "./actions";
-export * from "./actors/index";
+export * from "./actors";
 export { assertEvent } from "./assert";
 export {
 	Actor,

@@ -1,4 +1,5 @@
-import { assign, createActor, createMachine, fromCallback, fromPromise } from "../src/index";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { assign, createActor, createMachine, fromCallback, fromPromise } from "@rbxts/xstate";
 import { trackEntries } from "./utils";
 
 describe("history states", () => {
@@ -209,7 +210,7 @@ describe("history states", () => {
 
 		actorRef.send({ type: "NEXT" });
 
-		actual.length = 0;
+		actual.clear();
 		actorRef.send({ type: "REENTER" });
 
 		expect(actual).toEqual(["a2 exited", "a2 entered"]);
@@ -323,7 +324,7 @@ describe("history states", () => {
 		const actorRef = createActor(machine).start();
 		actorRef.send({ type: "NEXT" });
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spy).never.toHaveBeenCalled();
 	});
 
 	it("should execute entry actions of a parent of the targeted history state when its parent state was never visited yet", () => {
@@ -461,7 +462,7 @@ describe("history states", () => {
 		actorRef.send({ type: "NEXT" });
 		actorRef.send({ type: "NEXT" });
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spy).never.toHaveBeenCalled();
 	});
 
 	it("should execute entry actions of a parent of the targeted history state when its parent state was already visited", () => {

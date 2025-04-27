@@ -1,4 +1,5 @@
-import { createMachine, createActor } from "../src/index";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor } from "@rbxts/xstate";
 
 describe("multiple", () => {
 	const machine = createMachine({

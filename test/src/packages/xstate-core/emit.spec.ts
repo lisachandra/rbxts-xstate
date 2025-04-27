@@ -1,3 +1,5 @@
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { Error, setTimeout } from "@rbxts/luau-polyfill";
 import {
 	AnyEventObject,
 	createActor,
@@ -9,8 +11,8 @@ import {
 	fromPromise,
 	fromTransition,
 	setup,
-} from "../src";
-import { emit } from "../src/actions/emit";
+} from "@rbxts/xstate";
+import { emit } from "@rbxts/xstate/out/actions/emit";
 
 describe("event emitter", () => {
 	it("only emits expected events if specified in setup", () => {

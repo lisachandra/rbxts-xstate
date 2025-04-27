@@ -14,7 +14,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/lisachandra/rbxts-testing-library.git"
+		"url": "git+https://github.com/lisachandra/rbxts-jsdotlua.git"
 	},
 	"contributors": [
 		"Ignacio Falk <flakolefluk@gmail.com>",
@@ -23,9 +23,9 @@
 	],
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/lisachandra/rbxts-testing-library/issues"
+		"url": "https://github.com/lisachandra/rbxts-jsdotlua/issues"
 	},
-	"homepage": "https://github.com/lisachandra/rbxts-testing-library/tree/main/packages/react-testing-library#readme",
+	"homepage": "https://github.com/lisachandra/rbxts-jsdotlua/tree/main/packages/react-testing-library#readme",
 	"peerDependencies": {
 		"@rbxts/dom-testing-library": "*",
 		"@rbxts/jest-vendor": "*",

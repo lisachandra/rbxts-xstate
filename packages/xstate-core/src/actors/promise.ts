@@ -37,7 +37,7 @@ export type PromiseActorLogic<
  * @example
  *
  * ```ts
- * import { fromPromise, createActor } from "xstate";
+ * import { fromPromise, createActor } from "@rbxts/xstate";
  *
  * // The actor's resolved output
  * type Output = string;

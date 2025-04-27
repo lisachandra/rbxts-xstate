@@ -1,6 +1,7 @@
-import { createMachine, createActor } from "../src/index";
-import { assign } from "../src/actions/assign";
-import { fromCallback } from "../src/actors/callback";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor } from "@rbxts/xstate";
+import { assign } from "@rbxts/xstate/out/actions/assign";
+import { fromCallback } from "@rbxts/xstate/out/actors/callback";
 
 type Events =
 	| { type: "BAR_EVENT" }
@@ -108,7 +109,7 @@ const exampleMachine = createMachine({
 describe("State", () => {
 	describe("status", () => {
 		it("should show that a machine has not reached its final state", () => {
-			expect(createActor(exampleMachine).getSnapshot().status).not.toBe("done");
+			expect(createActor(exampleMachine).getSnapshot().status).never.toBe("done");
 		});
 
 		it("should show that a machine has reached its final state", () => {

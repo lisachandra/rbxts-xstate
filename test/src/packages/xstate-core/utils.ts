@@ -1,3 +1,6 @@
+import { expect, it } from "@rbxts/jest-globals";
+import { Error, Object, String } from "@rbxts/luau-polyfill";
+import { HttpService } from "@rbxts/services";
 import {
 	AnyMachineSnapshot,
 	AnyStateMachine,
@@ -5,11 +8,15 @@ import {
 	matchesState,
 	StateNode,
 	StateValue,
-} from "../src/index.ts";
+} from "@rbxts/xstate";
+import { indexString } from "@rbxts/xstate/out/utils";
 
 const resolveSerializedStateValue = (machine: AnyStateMachine, serialized: string) =>
-	serialized[0] === "{"
-		? machine.resolveState({ value: JSON.parse(serialized), context: {} })
+	indexString(serialized, 0) === "{"
+		? machine.resolveState({
+				value: HttpService.JSONDecode(serialized) as StateValue,
+				context: {},
+			})
 		: machine.resolveState({ value: serialized, context: {} });
 
 export function testMultiTransition(
@@ -18,7 +25,7 @@ export function testMultiTransition(
 	eventTypes: string,
 ): AnyMachineSnapshot {
 	const computeNext = (state: AnyMachineSnapshot | string, eventType: string) => {
-		if (typeof state === "string") {
+		if (typeIs(state, "string")) {
 			state = resolveSerializedStateValue(machine, state);
 		}
 		const nextState = getNextSnapshot(machine, state, {
@@ -27,7 +34,8 @@ export function testMultiTransition(
 		return nextState;
 	};
 
-	const [firstEventType, ...restEvents] = eventTypes.split(/,\s?/);
+	const restEvents = String.split(eventTypes, ",%s?");
+	const firstEventType = restEvents.remove(0)!;
 
 	const resultState = restEvents.reduce<AnyMachineSnapshot>(
 		computeNext,
@@ -42,10 +50,10 @@ export function testAll(
 	expected: Record<string, Record<string, StateValue | undefined>>,
 ): void {
 	Object.keys(expected).forEach(fromState => {
-		Object.keys(expected[fromState]).forEach(eventTypes => {
-			const toState = expected[fromState][eventTypes];
+		Object.keys(expected[fromState]!).forEach(eventTypes => {
+			const toState = expected[fromState]![eventTypes];
 
-			it(`should go from ${fromState} to ${JSON.stringify(toState)} on ${eventTypes}`, () => {
+			it(`should go from ${fromState} to ${HttpService.JSONEncode(toState)} on ${eventTypes}`, () => {
 				const resultState = testMultiTransition(machine, fromState, eventTypes);
 
 				if (toState === undefined) {
@@ -53,7 +61,7 @@ export function testAll(
 					expect(resultState.value).toEqual(
 						resolveSerializedStateValue(machine, fromState).value,
 					);
-				} else if (typeof toState === "string") {
+				} else if (typeIs(toState, "string")) {
 					expect(matchesState(toState, resultState.value)).toBeTruthy();
 				} else {
 					expect(resultState.value).toEqual(toState);
@@ -74,12 +82,16 @@ export function trackEntries(machine: AnyStateMachine) {
 	let logs: string[] = [];
 
 	function addTrackingActions(state: StateNode<any, any>, stateDescription: string) {
-		state.entry.unshift(function __testEntryTracker() {
-			logs.push(`enter: ${stateDescription}`);
-		});
-		state.exit.unshift(function __testExitTracker() {
-			logs.push(`exit: ${stateDescription}`);
-		});
+		state.entry.unshift(
+			/* function __testEntryTracker */ () => {
+				logs.push(`enter: ${stateDescription}`);
+			},
+		);
+		state.exit.unshift(
+			/* function __testExitTracker */ () => {
+				logs.push(`exit: ${stateDescription}`);
+			},
+		);
 	}
 
 	function addTrackingActionsRecursively(state: StateNode<any, any>) {

@@ -1,7 +1,9 @@
-import { of } from "rxjs";
-import { assign, createActor, spawnChild } from "../src";
-import { createMachine } from "../src/createMachine";
-import { fromCallback, fromObservable, fromPromise, fromTransition } from "../src/actors";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+// import { of } from "rxjs";
+import { assign, createActor, spawnChild } from "@rbxts/xstate";
+import { createMachine } from "@rbxts/xstate/out/createMachine";
+import { fromCallback, fromObservable, fromPromise, fromTransition } from "@rbxts/xstate/out/actors";
+import { setTimeout } from "@rbxts/luau-polyfill";
 
 describe("input", () => {
 	it("should create a machine with input", () => {
@@ -25,7 +27,7 @@ describe("input", () => {
 		expect(spy).toHaveBeenCalledWith(42);
 	});
 
-	it("initial event should have input property", done => {
+	it("initial event should have input property", (_, done) => {
 		const machine = createMachine({
 			entry: ({ event }) => {
 				expect(event.input.greeting).toBe("hello");
@@ -61,10 +63,10 @@ describe("input", () => {
 		expect(() => {
 			// TODO: add ts-expect-errpr
 			createActor(machine).start();
-		}).not.toThrowError();
+		}).never.toThrowError();
 	});
 
-	it("should provide input data to invoked machines", done => {
+	it("should provide input data to invoked machines", (_, done) => {
 		const invokedMachine = createMachine({
 			types: {} as {
 				input: { greeting: string };
@@ -88,7 +90,7 @@ describe("input", () => {
 		createActor(machine).start();
 	});
 
-	it("should provide input data to spawned machines", done => {
+	it("should provide input data to spawned machines", (_, done) => {
 		const spawnedMachine = createMachine({
 			types: {} as {
 				input: { greeting: string };
@@ -124,7 +126,7 @@ describe("input", () => {
 			input: { count: 42 },
 		}).start();
 
-		await new Promise(res => setTimeout(res, 5));
+		await new Promise(res => setTimeout(res, 5, undefined as never));
 
 		expect(promiseActor.getSnapshot().output).toEqual({ count: 42 });
 	});
@@ -142,7 +144,9 @@ describe("input", () => {
 		expect(transitionActor.getSnapshot().context).toEqual({ count: 42 });
 	});
 
-	it("should create an observable actor with input", done => {
+	/*
+	FIXME: Observables not supported
+	it("should create an observable actor with input", (_, done) => {
 		const observableLogic = fromObservable<{ count: number }, { count: number }>(({ input }) =>
 			of(input),
 		);
@@ -160,8 +164,9 @@ describe("input", () => {
 
 		observableActor.start();
 	});
+	*/
 
-	it("should create a callback actor with input", done => {
+	it("should create a callback actor with input", (_, done) => {
 		const callbackLogic = fromCallback(({ input }) => {
 			expect(input).toEqual({ count: 42 });
 			done();

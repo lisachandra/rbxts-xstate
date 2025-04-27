@@ -1,8 +1,9 @@
-import { from } from "rxjs";
-import { log } from "../src/actions/log";
-import { raise } from "../src/actions/raise";
-import { stopChild } from "../src/actions/stopChild";
-import { PromiseActorLogic, createEmptyActor, fromCallback, fromPromise } from "../src/actors";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+// import { from } from "rxjs";
+import { log } from "@rbxts/xstate/out/actions/log";
+import { raise } from "@rbxts/xstate/out/actions/raise";
+import { stopChild } from "@rbxts/xstate/out/actions/stopChild";
+import { PromiseActorLogic, createEmptyActor, fromCallback, fromPromise } from "@rbxts/xstate/out/actors";
 import {
 	ActorRefFrom,
 	ActorRefFromLogic,
@@ -22,7 +23,8 @@ import {
 	spawnChild,
 	stateIn,
 	toPromise,
-} from "../src/index";
+} from "@rbxts/xstate";
+import { Array } from "@rbxts/luau-polyfill";
 
 function noop(_x: unknown) {
 	return;
@@ -735,7 +737,7 @@ describe("events", () => {
 							((_accept: number) => {})(event.number);
 							// @ts-expect-error
 							((_accept: string) => {})(event.number);
-							return context.numbers.concat(event.number);
+							return Array.concat(context.numbers, event.number);
 						},
 					}),
 				},
@@ -790,6 +792,8 @@ describe("events", () => {
 });
 
 describe("interpreter", () => {
+	/*
+	FIXME: Observables not supported
 	it("should be convertible to Rx observable", () => {
 		const s = createActor(
 			createMachine({
@@ -809,6 +813,7 @@ describe("interpreter", () => {
 			((_val: string) => {})(state.context.count);
 		});
 	});
+	*/
 });
 
 describe("spawnChild action", () => {
@@ -1042,7 +1047,7 @@ describe("spawnChild action", () => {
 				// @ts-expect-error
 				"child",
 				{
-					input: Math.random() > 0.5 ? "string" : 42,
+					input: math.random() > 0.5 ? "string" : 42,
 				},
 			),
 		});
@@ -1098,7 +1103,7 @@ describe("spawnChild action", () => {
 				// @ts-expect-error
 				"child",
 				{
-					input: () => (Math.random() > 0.5 ? 42 : "hello"),
+					input: () => (math.random() > 0.5 ? 42 : "hello"),
 				},
 			),
 		});
@@ -1445,7 +1450,7 @@ describe("spawner in assign", () => {
 			entry: assign(({ spawn }) => {
 				// @ts-expect-error
 				spawn("child", {
-					input: Math.random() > 0.5 ? "string" : 42,
+					input: math.random() > 0.5 ? "string" : 42,
 				});
 				return {};
 			}),
@@ -1863,7 +1868,7 @@ describe("invoke", () => {
 			invoke: {
 				src: "child",
 				// @ts-expect-error
-				input: Math.random() > 0.5 ? "string" : 42,
+				input: math.random() > 0.5 ? "string" : 42,
 			},
 		});
 	});
@@ -1916,7 +1921,7 @@ describe("invoke", () => {
 			invoke: {
 				src: "child",
 				// @ts-expect-error
-				input: () => (Math.random() > 0.5 ? 42 : "hello"),
+				input: () => (math.random() > 0.5 ? 42 : "hello"),
 			},
 		});
 	});
@@ -2098,14 +2103,14 @@ describe("actor implementations", () => {
 			{
 				actors: {
 					// @ts-expect-error
-					child: fromPromise(() => Promise.resolve(Math.random() > 0.5 ? "foo" : 42)),
+					child: fromPromise(() => Promise.resolve(math.random() > 0.5 ? "foo" : 42)),
 				},
 			},
 		);
 	});
 
 	it(`should accept the provided actor when its output is a sub type of the expected one`, () => {
-		const child = fromPromise(() => Promise.resolve(Math.random() > 0.5 ? "foo" : 42));
+		const child = fromPromise(() => Promise.resolve(math.random() > 0.5 ? "foo" : 42));
 
 		createMachine(
 			{

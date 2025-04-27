@@ -1,5 +1,6 @@
-import { createMachine, createActor } from "../src/index.ts";
-import { stateIn } from "../src/guards.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor } from "@rbxts/xstate";
+import { stateIn } from "@rbxts/xstate/out/guards";
 
 describe('transition "in" check', () => {
 	it("should transition if string state path matches current state value", () => {

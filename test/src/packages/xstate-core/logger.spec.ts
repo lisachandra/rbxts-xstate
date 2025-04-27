@@ -1,4 +1,5 @@
-import { createActor, createMachine, log, spawnChild } from "../src";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createActor, createMachine, log, spawnChild } from "@rbxts/xstate";
 
 describe("logger", () => {
 	it("system logger should be default logger for actors (invoked from machine)", () => {

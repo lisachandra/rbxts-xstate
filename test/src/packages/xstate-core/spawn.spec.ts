@@ -1,4 +1,5 @@
-import { ActorRefFrom, createActor, createMachine } from "../src";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { ActorRefFrom, createActor, createMachine } from "@rbxts/xstate";
 
 describe("spawn inside machine", () => {
 	it("input is required when defined in actor", () => {

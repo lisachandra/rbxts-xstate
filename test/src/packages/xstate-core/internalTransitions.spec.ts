@@ -1,4 +1,5 @@
-import { createMachine, createActor, assign } from "../src/index";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor, assign } from "@rbxts/xstate";
 import { trackEntries } from "./utils";
 
 describe("internal transitions", () => {

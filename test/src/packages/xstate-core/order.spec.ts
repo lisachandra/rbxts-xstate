@@ -1,4 +1,6 @@
-import { createMachine, StateNode } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { Array, Object } from "@rbxts/luau-polyfill";
+import { createMachine, StateNode } from "@rbxts/xstate";
 
 describe("document order", () => {
 	it("should specify the correct document order for each state node", () => {
@@ -53,10 +55,10 @@ describe("document order", () => {
 		});
 
 		function dfs(node: StateNode<any, any>): StateNode<any, any>[] {
-			return [
+			return Array.flat([
 				node as any,
 				...Object.keys(node.states).map(key => dfs(node.states[key] as any)),
-			].flat();
+			]);
 		}
 
 		const allStateNodeOrders = dfs(machine.root).map(sn => [sn.key, sn.order]);

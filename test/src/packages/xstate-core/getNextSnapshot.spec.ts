@@ -1,4 +1,5 @@
-import { createMachine, fromTransition, getNextSnapshot, getInitialSnapshot } from "../src";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, fromTransition, getNextSnapshot, getInitialSnapshot } from "@rbxts/xstate";
 
 describe("getNextSnapshot", () => {
 	it("should calculate the next snapshot for transition logic", () => {
@@ -67,7 +68,7 @@ describe("getNextSnapshot", () => {
 		const init = getInitialSnapshot(machine, undefined);
 		const nextSnapshot = getNextSnapshot(machine, init, { type: "event" });
 
-		expect(fn).not.toHaveBeenCalled();
+		expect(fn).never.toHaveBeenCalled();
 		expect(nextSnapshot.value).toEqual("b");
 	});
 });

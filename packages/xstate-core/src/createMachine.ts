@@ -37,7 +37,7 @@ type _GroupTestValues<TTestValue extends string | TestValue> = TTestValue extend
  * @example
  *
  * ```ts
- * import { createMachine } from "xstate";
+ * import { createMachine } from "@rbxts/xstate";
  *
  * const lightMachine = createMachine({
  * 	id: "light",

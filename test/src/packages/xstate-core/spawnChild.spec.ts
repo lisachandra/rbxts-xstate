@@ -1,4 +1,5 @@
-import { interval } from "rxjs";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+// import { interval } from "rxjs";
 import {
 	ActorRefFrom,
 	createActor,
@@ -7,7 +8,7 @@ import {
 	fromPromise,
 	sendTo,
 	spawnChild,
-} from "../src";
+} from "@rbxts/xstate";
 
 describe("spawnChild action", () => {
 	it("can spawn", () => {
@@ -46,7 +47,9 @@ describe("spawnChild action", () => {
 		expect(actor.getSnapshot().children.child).toBeDefined();
 	});
 
-	it("should accept `syncSnapshot` option", done => {
+	/*
+	FIXME: Observables not supported
+	it("should accept `syncSnapshot` option", (_, done) => {
 		const observableLogic = fromObservable(() => interval(10));
 		const observableMachine = createMachine({
 			id: "observable",
@@ -82,6 +85,7 @@ describe("spawnChild action", () => {
 
 		observableService.start();
 	});
+	*/
 
 	it("should handle a dynamic id", () => {
 		const spy = jest.fn();

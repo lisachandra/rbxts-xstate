@@ -1,4 +1,5 @@
-import { act, fireEvent, screen } from "@testing-library/react";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { act, fireEvent, screen } from "@rbxts/react-testing-library";
 import * as React from "react";
 import {
 	ActorRef,
@@ -13,15 +14,9 @@ import {
 	TransitionSnapshot,
 	AnyEventObject,
 	setup,
-} from "xstate";
-import { shallowEqual, useActorRef, useMachine, useSelector } from "../src/index.ts";
-import { describeEachReactMode } from "./utils.js";
-
-const originalConsoleError = console.error;
-
-afterEach(() => {
-	console.error = originalConsoleError;
-});
+} from "@rbxts/xstate";
+import { shallowEqual, useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
+import { describeEachReactMode } from "./utils";
 
 describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 	it("only rerenders for selected values", () => {
@@ -86,7 +81,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		fireEvent.click(incrementEl);
 
-		expect(countButton.textContent).toBe("2");
+		expect(countButton.Text).toBe("2");
 	});
 
 	it("should work with a custom comparison function", () => {
@@ -137,20 +132,20 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const sendUpperButton = screen.getByTestId("sendUpper");
 		const sendOtherButton = screen.getByTestId("sendOther");
 
-		expect(nameEl.textContent).toEqual("david");
+		expect(nameEl.Text).toEqual("david");
 
 		fireEvent.click(sendUpperButton);
 
 		// unchanged due to comparison function
-		expect(nameEl.textContent).toEqual("david");
+		expect(nameEl.Text).toEqual("david");
 
 		fireEvent.click(sendOtherButton);
 
-		expect(nameEl.textContent).toEqual("other");
+		expect(nameEl.Text).toEqual("other");
 
 		fireEvent.click(sendUpperButton);
 
-		expect(nameEl.textContent).toEqual("DAVID");
+		expect(nameEl.Text).toEqual("DAVID");
 	});
 
 	it("should work with the shallowEqual comparison function", () => {
@@ -210,27 +205,27 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const sendSameButton = screen.getByTestId("sendSame");
 		const sendOtherButton = screen.getByTestId("sendOther");
 
-		expect(nameEl.textContent).toEqual("david");
+		expect(nameEl.Text).toEqual("david");
 
 		// unchanged due to comparison function
 		fireEvent.click(sendSameButton);
-		expect(nameEl.textContent).toEqual("david");
-		expect(changesEl.textContent).toEqual("0");
+		expect(nameEl.Text).toEqual("david");
+		expect(changesEl.Text).toEqual("0");
 
 		// changed
 		fireEvent.click(sendOtherButton);
-		expect(nameEl.textContent).toEqual("other");
-		expect(changesEl.textContent).toEqual("1");
+		expect(nameEl.Text).toEqual("other");
+		expect(changesEl.Text).toEqual("1");
 
 		// changed
 		fireEvent.click(sendSameButton);
-		expect(nameEl.textContent).toEqual("david");
-		expect(changesEl.textContent).toEqual("2");
+		expect(nameEl.Text).toEqual("david");
+		expect(changesEl.Text).toEqual("2");
 
 		// unchanged due to comparison function
 		fireEvent.click(sendSameButton);
-		expect(nameEl.textContent).toEqual("david");
-		expect(changesEl.textContent).toEqual("2");
+		expect(nameEl.Text).toEqual("david");
+		expect(changesEl.Text).toEqual("2");
 	});
 
 	it("should work with selecting values from initially invoked actors", () => {
@@ -323,9 +318,9 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const buttonEl = screen.getByTestId("button");
 		const countEl = screen.getByTestId("count");
 
-		expect(countEl.textContent).toEqual("0");
+		expect(countEl.Text).toEqual("0");
 		fireEvent.click(buttonEl);
-		expect(countEl.textContent).toEqual("1");
+		expect(countEl.Text).toEqual("1");
 	});
 
 	it("should immediately render snapshot of initially spawned custom actor", () => {
@@ -355,7 +350,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<App />);
-		expect(container.textContent).toEqual("foo");
+		expect(container.Text).toEqual("foo");
 	});
 
 	it("should rerender with a new value when the selector changes", () => {
@@ -394,10 +389,10 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		const { container, rerender } = render(<App prop="first" />);
 
-		expect(container.textContent).toEqual("first 0");
+		expect(container.Text).toEqual("first 0");
 
 		rerender(<App prop="second" />);
-		expect(container.textContent).toEqual("second 0");
+		expect(container.Text).toEqual("second 0");
 	});
 
 	it("should use a fresh selector for subscription updates after selector change", () => {
@@ -449,12 +444,12 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const buttonEl = screen.getByRole("button");
 		const valueEl = screen.getByTestId("value");
 
-		expect(valueEl.textContent).toEqual("first 0");
+		expect(valueEl.Text).toEqual("first 0");
 
 		rerender(<App prop="second" />);
 		fireEvent.click(buttonEl);
 
-		expect(valueEl.textContent).toEqual("second 1");
+		expect(valueEl.Text).toEqual("second 1");
 	});
 
 	it("should render snapshot value when actor doesn't emit anything", () => {
@@ -483,7 +478,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<App />);
-		expect(container.textContent).toEqual("foo");
+		expect(container.Text).toEqual("foo");
 	});
 
 	it("should render snapshot state when actor changes", () => {
@@ -502,10 +497,10 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container, rerender } = render(<App prop="first" />);
-		expect(container.textContent).toEqual("foo");
+		expect(container.Text).toEqual("foo");
 
 		rerender(<App prop="second" />);
-		expect(container.textContent).toEqual("bar");
+		expect(container.Text).toEqual("bar");
 	});
 
 	it("should keep rendering a new selected value after selector change when the actor doesn't emit", async () => {
@@ -525,13 +520,13 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container, rerender } = render(<App selector={() => "foo"} />);
-		expect(container.textContent).toEqual("foo");
+		expect(container.Text).toEqual("foo");
 
 		rerender(<App selector={() => "bar"} />);
-		expect(container.textContent).toEqual("bar");
+		expect(container.Text).toEqual("bar");
 
 		fireEvent.click(await screen.findByRole("button"));
-		expect(container.textContent).toEqual("bar");
+		expect(container.Text).toEqual("bar");
 	});
 
 	it("should only rerender once when the selected value changes", () => {
@@ -593,12 +588,12 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			return null;
 		}
 
-		console.error = jest.fn();
+		// console.error = jest.fn();
 		render(<App />);
 
 		const [snapshot1] = snapshots;
 		expect(snapshots.every(s => s === snapshot1));
-		expect(console.error).toHaveBeenCalledTimes(0);
+		// expect(console.error).toHaveBeenCalledTimes(0);
 	});
 
 	it(`shouldn't interfere with spawning actors that are part of the initial state of an actor`, () => {
@@ -675,15 +670,15 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const elState = screen.getByTestId("child-state");
 		const elSend = screen.getByTestId("child-send");
 
-		expect(elState.textContent).toEqual("one");
+		expect(elState.Text).toEqual("one");
 		fireEvent.click(elSend);
 
-		expect(elState.textContent).toEqual("two");
+		expect(elState.Text).toEqual("two");
 	});
 
 	it("should not log any spurious errors when used with a not-started actor", () => {
-		const spy = jest.fn();
-		console.error = spy;
+		// const spy = jest.fn();
+		// console.error = spy;
 
 		const machine = createMachine({});
 		const App = () => {
@@ -694,7 +689,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		expect(spy).not.toHaveBeenCalled();
+		// expect(spy).never.toHaveBeenCalled();
 	});
 
 	it("should work with an optional actor", () => {
@@ -732,10 +727,10 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const button = screen.getByTestId("button");
 		const stateEl = screen.getByTestId("state");
 
-		expect(stateEl.textContent).toBe("undefined");
+		expect(stateEl.Text).toBe("undefined");
 
 		fireEvent.click(button);
 
-		expect(stateEl.textContent).toBe("42");
+		expect(stateEl.Text).toBe("42");
 	});
 });

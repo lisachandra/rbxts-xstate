@@ -1,4 +1,5 @@
-import { fireEvent, screen, waitFor as testWaitFor } from "@testing-library/react";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { fireEvent, screen, waitFor as testWaitFor } from "@rbxts/react-testing-library";
 import * as React from "react";
 import {
 	ActorRefFrom,
@@ -9,18 +10,12 @@ import {
 	fromTransition,
 	sendParent,
 	sendTo,
-} from "xstate";
-import { useActorRef, useMachine, useSelector } from "../src/index.ts";
-import { describeEachReactMode } from "./utils.js";
-
-const originalConsoleWarn = console.warn;
-
-afterEach(() => {
-	console.warn = originalConsoleWarn;
-});
+} from "@rbxts/xstate";
+import { useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
+import { describeEachReactMode } from "./utils";
 
 describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
-	it("observer should be called with next state", done => {
+	it("observer should be called with next state", (_, done) => {
 		const machine = createMachine({
 			initial: "inactive",
 			states: {
@@ -96,14 +91,13 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		expect(actual).toEqual(suiteKey === "strict" ? [1, 1] : [1]);
 
-		actual.length = 0;
+		actual.clear();
 		rerender(<App value={42} />);
 
 		expect(actual).toEqual([42]);
 	});
 
 	it("should rerender OK when only the provided machine implementations have changed", () => {
-		console.warn = jest.fn();
 		const machine = createMachine({
 			initial: "foo",
 			context: { id: 1 },
@@ -199,11 +193,11 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 		const button = screen.getByTestId("button");
 		const childState = screen.getByTestId("child-state");
 
-		expect(childState.textContent).toBe("waiting");
+		expect(childState.Text).toBe("waiting");
 
 		fireEvent.click(button);
 
-		expect(childState.textContent).toBe("received");
+		expect(childState.Text).toBe("received");
 	});
 
 	it("should change state when started (useMachine)", async () => {
@@ -257,11 +251,11 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 		const button = screen.getByTestId("button");
 		const childState = screen.getByTestId("child-state");
 
-		expect(childState.textContent).toBe("waiting");
+		expect(childState.Text).toBe("waiting");
 
 		fireEvent.click(button);
 
-		expect(childState.textContent).toBe("received");
+		expect(childState.Text).toBe("received");
 	});
 
 	it("should deliver messages sent from an effect to the root actor registered in the system", () => {
@@ -312,11 +306,11 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		const count = screen.getByTestId("count");
 
-		expect(count.textContent).toBe("0");
+		expect(count.Text).toBe("0");
 
 		fireEvent.click(count);
 
-		expect(count.textContent).toBe("1");
+		expect(count.Text).toBe("1");
 	});
 
 	it("should work with a promise actor", async () => {
@@ -335,9 +329,9 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		const count = screen.getByTestId("count");
 
-		expect(count.textContent).toBe("");
+		expect(count.Text).toBe("");
 
-		await testWaitFor(() => expect(count.textContent).toBe("42"));
+		await testWaitFor(() => expect(count.Text).toBe("42"));
 	});
 
 	it("invoked actor should be able to receive (deferred) events that it replays when active", () => {
@@ -806,7 +800,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 		screen.getByRole("button").click();
 
 		expect(spy1).toHaveBeenCalledTimes(1);
-		expect(spy2).not.toHaveBeenCalled();
+		expect(spy2).never.toHaveBeenCalled();
 	});
 
 	it("should execute an initial entry action once", () => {

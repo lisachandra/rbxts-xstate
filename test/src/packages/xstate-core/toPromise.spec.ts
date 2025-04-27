@@ -1,4 +1,6 @@
-import { createActor, createMachine, fromPromise, toPromise } from "../src";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { Error, setTimeout } from "@rbxts/luau-polyfill";
+import { createActor, createMachine, fromPromise, toPromise } from "@rbxts/xstate";
 
 describe("toPromise", () => {
 	it("should be awaitable", async () => {

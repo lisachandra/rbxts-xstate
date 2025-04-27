@@ -1,5 +1,5 @@
-import { act, fireEvent, screen } from "@testing-library/react";
-import { sleep } from "@xstate-repo/jest-utils";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { act, fireEvent, screen } from "@rbxts/react-testing-library";
 import * as React from "react";
 import { useState } from "react";
 import { BehaviorSubject } from "rxjs";
@@ -15,10 +15,11 @@ import {
 	createMachine,
 	raise,
 	setup,
-} from "xstate";
-import { fromCallback, fromObservable, fromPromise } from "xstate/actors";
-import { useActor, useSelector } from "../src/index.ts";
-import { describeEachReactMode } from "./utils.js";
+} from "@rbxts/xstate";
+import { fromCallback, fromObservable, fromPromise } from "@rbxts/xstate";
+import { useActor, useSelector } from "@rbxts/xstate-react";
+import { describeEachReactMode } from "./utils";
+import { sleep } from "test/env-utils";
 
 afterEach(() => {
 	jest.useRealTimers();
@@ -55,7 +56,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 								return event.output;
 							},
 						}),
-						guard: ({ event }) => !!event.output.length,
+						guard: ({ event }) => !!event.output.size(),
 					},
 				},
 			},
@@ -127,7 +128,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		screen.getByText("Loading...");
 		await screen.findByText(/Success/);
 		const dataEl = screen.getByTestId("data");
-		expect(dataEl.textContent).toBe("fake data");
+		expect(dataEl.Text).toBe("fake data");
 	});
 
 	it("should work with the useActor hook (rehydrated state)", async () => {
@@ -140,11 +141,11 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		await screen.findByText(/Success/);
 		const dataEl = screen.getByTestId("data");
-		expect(dataEl.textContent).toBe("persisted data");
+		expect(dataEl.Text).toBe("persisted data");
 	});
 
 	it("should work with the useMachine hook (rehydrated state config)", async () => {
-		const persistedFetchStateConfig = JSON.parse(JSON.stringify(persistedSuccessFetchState));
+		const persistedFetchStateConfig = HttpService.JSONDecode(HttpService.JSONEncode(persistedSuccessFetchState));
 		render(
 			<Fetcher
 				onFetch={() => new Promise(res => res("fake data"))}
@@ -154,7 +155,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		await screen.findByText(/Success/);
 		const dataEl = screen.getByTestId("data");
-		expect(dataEl.textContent).toBe("persisted data");
+		expect(dataEl.Text).toBe("persisted data");
 	});
 
 	it("should provide the service", () => {
@@ -248,7 +249,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		await screen.findByTestId("success");
 	});
 
-	it("actions should not use stale data in a builtin transition action", done => {
+	it("actions should not use stale data in a builtin transition action", (_, done) => {
 		const toggleMachine = createMachine({
 			types: {} as {
 				context: { latest: number };
@@ -308,7 +309,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		fireEvent.click(button);
 	});
 
-	it("actions should not use stale data in a builtin entry action", done => {
+	it("actions should not use stale data in a builtin entry action", (_, done) => {
 		const toggleMachine = createMachine({
 			types: {} as { context: { latest: number }; events: { type: "NEXT" } },
 			context: {
@@ -371,7 +372,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		fireEvent.click(button);
 	});
 
-	it("actions should not use stale data in a custom entry action", done => {
+	it("actions should not use stale data in a custom entry action", (_, done) => {
 		const toggleMachine = createMachine({
 			types: {} as {
 				events: { type: "TOGGLE" };
@@ -701,13 +702,13 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		const btn = screen.getByRole("button");
 		fireEvent.click(btn);
 
-		expect(screen.getByTestId("result").textContent).toBe("b");
+		expect(screen.getByTestId("result").Text).toBe("b");
 
 		act(() => {
 			jest.advanceTimersByTime(310);
 		});
 
-		expect(screen.getByTestId("result").textContent).toBe("c");
+		expect(screen.getByTestId("result").Text).toBe("c");
 	});
 
 	it("should not use stale data in a guard", () => {
@@ -752,7 +753,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		const btn = screen.getByRole("button");
 		fireEvent.click(btn);
 
-		expect(screen.getByTestId("result").textContent).toBe("b");
+		expect(screen.getByTestId("result").Text).toBe("b");
 	});
 
 	it("should not invoke initial services more than once", () => {
@@ -822,7 +823,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const { container } = render(<Test />);
 
-		expect(container.textContent).toBe("success");
+		expect(container.Text).toBe("success");
 	});
 
 	it("custom data should be available right away for the invoked actor", () => {
@@ -905,14 +906,14 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		});
 
 		const actorRef = createActor(testMachine).start();
-		const persistedState = JSON.stringify(actorRef.getPersistedSnapshot());
+		const persistedState = HttpService.JSONEncode(actorRef.getPersistedSnapshot());
 		actorRef.stop();
 
 		let currentState: StateFrom<typeof testMachine>;
 
 		const Test = () => {
 			const [state, send] = useActor(testMachine, {
-				snapshot: JSON.parse(persistedState),
+				snapshot: HttpService.JSONDecode(persistedState),
 			});
 
 			currentState = state;
@@ -960,7 +961,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const { container } = render(<App />);
 
-		expect(container.textContent).toBe("2");
+		expect(container.Text).toBe("2");
 	});
 
 	it("should deliver messages sent from an effect to an actor registered in the system", () => {
@@ -1044,12 +1045,12 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const { container } = render(<App />);
 
-		expect(container.textContent).toBe("one");
+		expect(container.Text).toBe("one");
 
 		await act(async () => {
 			await sleep(10);
 		});
 
-		expect(container.textContent).toBe("two");
+		expect(container.Text).toBe("two");
 	});
 });

@@ -160,7 +160,7 @@ export async function testByRole() {
 	);
 
 	assert(
-		queryAllByRole(document, "progressbar", { queryFallbacks: true }).length === 1,
+		queryAllByRole(document, "progressbar", { queryFallbacks: true }).size() === 1,
 	);
 
 	// `name` option

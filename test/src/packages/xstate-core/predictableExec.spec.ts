@@ -1,7 +1,8 @@
-import { AnyActor, assign, createMachine, createActor, sendTo, waitFor } from "../src/index.ts";
-import { raise, sendParent, stopChild } from "../src/actions.ts";
-import { fromCallback } from "../src/actors/index.ts";
-import { fromPromise } from "../src/actors/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { AnyActor, assign, createMachine, createActor, sendTo, waitFor } from "@rbxts/xstate";
+import { raise, sendParent, stopChild } from "@rbxts/xstate/out/actions";
+import { fromCallback } from "@rbxts/xstate/out/actors/index";
+import { fromPromise } from "@rbxts/xstate/out/actors/index";
 
 describe("predictableExec", () => {
 	it("should call mixed custom and builtin actions in the definitions order", () => {
@@ -212,7 +213,7 @@ describe("predictableExec", () => {
 		service.send({ type: "NEXT" });
 		service.send({ type: "NEXT" });
 
-		expect(service.getSnapshot().children.myChild).not.toBeDefined();
+		expect(service.getSnapshot().children.myChild).never.toBeDefined();
 	});
 
 	it("should correctly provide intermediate context value to a custom action executed in between assign actions", () => {
@@ -263,7 +264,7 @@ describe("predictableExec", () => {
 		expect(actual).toEqual([0, 1, 2]);
 	});
 
-	it("parent should be able to read the updated state of a child when receiving an event from it", done => {
+	it("parent should be able to read the updated state of a child when receiving an event from it", (_, done) => {
 		const child = createMachine({
 			initial: "a",
 			states: {
@@ -358,7 +359,7 @@ describe("predictableExec", () => {
 		expect(service.getSnapshot().value).toBe("done");
 	});
 
-	it("should create invoke based on context updated by entry actions of the same state", done => {
+	it("should create invoke based on context updated by entry actions of the same state", (_, done) => {
 		const machine = createMachine({
 			context: {
 				updated: false,
@@ -428,7 +429,7 @@ describe("predictableExec", () => {
 		expect(received).toEqual({ type: "KNOCK_KNOCK" });
 	});
 
-	it("parent should be able to read the updated state of a child when receiving an event from it", done => {
+	it("parent should be able to read the updated state of a child when receiving an event from it", (_, done) => {
 		const child = createMachine({
 			initial: "a",
 			states: {
@@ -521,7 +522,7 @@ describe("predictableExec", () => {
 	});
 
 	// https://github.com/statelyai/xstate/issues/3617
-	it("should deliver events sent from the exit actions to a service invoked in the same state", done => {
+	it("should deliver events sent from the exit actions to a service invoked in the same state", (_, done) => {
 		const machine = createMachine({
 			initial: "active",
 			states: {

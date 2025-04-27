@@ -1,5 +1,6 @@
-import { createMachine, createActor } from "../src/index.ts";
-import { trackEntries } from "./utils.js";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor } from "@rbxts/xstate";
+import { trackEntries } from "./utils";
 
 describe("deep transitions", () => {
 	describe("exiting super/substates", () => {

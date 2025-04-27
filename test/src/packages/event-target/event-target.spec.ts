@@ -19,7 +19,7 @@ const NativeDOMException = undefined;
 
 // Mock spy and assertWarning/assertError if not available from test setup
 const spy = jest.fn;
-// const assertWarning = (...args: any[]) => console.warn("Warning:", ...args); // Placeholder
+// const assertWarning = (...args: any[]) => warn("Warning:", ...args); // Placeholder
 // const assertError = (...args: any[]) => console.error("Error:", ...args); // Placeholder
 
 // Define custom error types if needed, or use standard Error

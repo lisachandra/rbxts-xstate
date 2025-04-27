@@ -1,4 +1,5 @@
-import { createActor, createMachine } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createActor, createMachine } from "@rbxts/xstate";
 
 describe("Initial states", () => {
 	it("should return the correct initial state", () => {

@@ -1688,7 +1688,7 @@ export interface ActorOptions<TLogic extends AnyActorLogic> {
 	 * @example
 	 *
 	 * ```ts
-	 * import { createMachine } from "xstate";
+	 * import { createMachine } from "@rbxts/xstate";
 	 *
 	 * const machine = createMachine({
 	 * 	// ...

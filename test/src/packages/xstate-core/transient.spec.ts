@@ -1,7 +1,9 @@
-import { createMachine, createActor } from "../src/index";
-import { raise } from "../src/actions/raise";
-import { assign } from "../src/actions/assign";
-import { stateIn } from "../src/guards";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor } from "@rbxts/xstate";
+import { raise } from "@rbxts/xstate/out/actions/raise";
+import { assign } from "@rbxts/xstate/out/actions/assign";
+import { stateIn } from "@rbxts/xstate/out/guards";
+import { Error } from "@rbxts/luau-polyfill";
 
 const greetingContext = { hour: 10 };
 const greetingMachine = createMachine({
@@ -451,7 +453,7 @@ describe("transient states (eventless transitions)", () => {
 		});
 
 		const actorRef = createActor(machine);
-		expect(() => actorRef.start()).not.toThrow();
+		expect(() => actorRef.start()).never.toThrow();
 	});
 
 	it("should be taken even in absence of other transitions", () => {

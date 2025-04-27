@@ -1,8 +1,9 @@
-import { createMachine, createActor, assign, AnyActorRef } from "../src/index.ts";
-import { sendTo } from "../src/actions/send";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor, assign, AnyActorRef } from "@rbxts/xstate";
+import { sendTo } from "@rbxts/xstate/out/actions/send";
 
 describe("events", () => {
-	it("should be able to respond to sender by sending self", done => {
+	it("should be able to respond to sender by sending self", (_, done) => {
 		const authServerMachine = createMachine({
 			types: {
 				events: {} as { type: "CODE"; sender: AnyActorRef },
@@ -97,7 +98,7 @@ describe("nested transitions", () => {
 						on: {
 							changePassword: [
 								{
-									guard: ({ event }) => event.password.length >= 10,
+									guard: ({ event }) => event.password.size() >= 10,
 									target: ".invalid",
 									actions: ["assignPassword"],
 								},

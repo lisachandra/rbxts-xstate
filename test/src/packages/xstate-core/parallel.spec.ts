@@ -1,7 +1,10 @@
-import { createMachine, createActor, StateValue } from "../src/index.ts";
-import { assign } from "../src/actions/assign.ts";
-import { raise } from "../src/actions/raise.ts";
-import { testMultiTransition, trackEntries } from "./utils.js";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor, StateValue } from "@rbxts/xstate";
+import { assign } from "@rbxts/xstate/out/actions/assign";
+import { raise } from "@rbxts/xstate/out/actions/raise";
+import { testMultiTransition, trackEntries } from "./utils";
+import { HttpService } from "@rbxts/services";
+import { Object } from "@rbxts/luau-polyfill";
 
 const composerMachine = createMachine({
 	initial: "ReadOnly",
@@ -520,7 +523,7 @@ describe("parallel states", () => {
 				list: "none",
 			},
 		},
-		[JSON.stringify({
+		[HttpService.JSONEncode({
 			bold: "off",
 			italics: "off",
 			underline: "on",
@@ -542,10 +545,10 @@ describe("parallel states", () => {
 	};
 
 	Object.keys(expected).forEach(fromState => {
-		Object.keys(expected[fromState]).forEach(eventTypes => {
-			const toState = expected[fromState][eventTypes];
+		Object.keys(expected[fromState]!).forEach(eventTypes => {
+			const toState = expected[fromState]![eventTypes];
 
-			it(`should go from ${fromState} to ${JSON.stringify(toState)} on ${eventTypes}`, () => {
+			it(`should go from ${fromState} to ${HttpService.JSONEncode(toState)} on ${eventTypes}`, () => {
 				const resultState = testMultiTransition(wordMachine, fromState, eventTypes);
 
 				expect(resultState.value).toEqual(toState);
@@ -945,7 +948,7 @@ describe("parallel states", () => {
 				actorRef.send({
 					type: "UPDATE",
 				});
-			}).not.toThrow();
+			}).never.toThrow();
 		});
 	});
 
@@ -1041,11 +1044,11 @@ describe("parallel states", () => {
 				type: "GOTO_FOOBAZ",
 			});
 
-			expect(actorRef.getSnapshot().context.log.length).toBe(2);
+			expect(actorRef.getSnapshot().context.log.size()).toBe(2);
 		});
 	});
 
-	it('should raise a "xstate.done.state.*" event when all child states reach final state', done => {
+	it('should raise a "xstate.done.state.*" event when all child states reach final state', (_, done) => {
 		const machine = createMachine({
 			id: "test",
 			initial: "p",

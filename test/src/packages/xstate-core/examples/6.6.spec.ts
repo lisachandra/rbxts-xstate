@@ -1,4 +1,5 @@
-import { createMachine } from "../../src/index";
+import { describe, beforeEach, it, expect, afterAll, beforeAll } from "@rbxts/jest-globals";
+import { createMachine } from "@rbxts/xstate";
 import { testAll } from "../utils";
 
 describe("Example 6.6", () => {

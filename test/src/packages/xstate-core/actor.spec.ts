@@ -1,13 +1,14 @@
-import { EMPTY, interval, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { forwardTo, sendParent } from "../src/actions.ts";
-import { assign } from "../src/actions/assign";
-import { raise } from "../src/actions/raise";
-import { sendTo } from "../src/actions/send";
-import { CallbackActorRef, fromCallback } from "../src/actors/callback.ts";
-import { fromEventObservable, fromObservable } from "../src/actors/observable.ts";
-import { PromiseActorLogic, PromiseActorRef, fromPromise } from "../src/actors/promise.ts";
-import { fromTransition } from "../src/actors/transition.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+// import { EMPTY, interval, of } from "rxjs";
+// import { map } from "rxjs/operators";
+import { forwardTo, sendParent } from "@rbxts/xstate/out/actions";
+import { assign } from "@rbxts/xstate/out/actions/assign";
+import { raise } from "@rbxts/xstate/out/actions/raise";
+import { sendTo } from "@rbxts/xstate/out/actions/send";
+import { CallbackActorRef, fromCallback } from "@rbxts/xstate/out/actors/callback";
+import { fromEventObservable, fromObservable } from "@rbxts/xstate/out/actors/observable";
+import { PromiseActorLogic, PromiseActorRef, fromPromise } from "@rbxts/xstate/out/actors/promise";
+import { fromTransition } from "@rbxts/xstate/out/actors/transition";
 import {
 	ActorLogic,
 	ActorRef,
@@ -21,9 +22,10 @@ import {
 	createMachine,
 	waitFor,
 	stopChild,
-} from "../src/index.ts";
-import { setup } from "../src/setup.ts";
-import { sleep } from "@xstate-repo/jest-utils";
+} from "@rbxts/xstate";
+import { setup } from "@rbxts/xstate/out/setup";
+import { sleep } from "test/env-utils";
+import { Error, Object, setTimeout } from "@rbxts/luau-polyfill";
 
 describe("spawning machines", () => {
 	const context = {
@@ -110,7 +112,7 @@ describe("spawning machines", () => {
 		},
 	});
 
-	it("should spawn machines", done => {
+	it("should spawn machines", (_, done) => {
 		const todoMachine = createMachine({
 			id: "todo",
 			initial: "incomplete",
@@ -154,7 +156,7 @@ describe("spawning machines", () => {
 				SET_COMPLETE: {
 					actions: sendTo(
 						({ context, event }) => {
-							return context.todoRefs[event.id];
+							return context.todoRefs[event.id]!;
 						},
 						{ type: "SET_COMPLETE" },
 					),
@@ -210,7 +212,7 @@ describe("spawning machines", () => {
 		expect(actor.getSnapshot().value).toBe("success");
 	});
 
-	it("should allow bidirectional communication between parent/child actors", done => {
+	it("should allow bidirectional communication between parent/child actors", (_, done) => {
 		const actor = createActor(clientMachine);
 		actor.subscribe({
 			complete: () => {
@@ -224,7 +226,7 @@ describe("spawning machines", () => {
 const aaa = "dadasda";
 
 describe("spawning promises", () => {
-	it("should be able to spawn a promise", done => {
+	it("should be able to spawn a promise", (_, done) => {
 		const promiseMachine = createMachine({
 			types: {} as {
 				context: { promiseRef?: PromiseActorRef<string> };
@@ -274,7 +276,7 @@ describe("spawning promises", () => {
 		promiseService.start();
 	});
 
-	it("should be able to spawn a referenced promise", done => {
+	it("should be able to spawn a referenced promise", (_, done) => {
 		const promiseMachine = setup({
 			actors: {
 				somePromise: fromPromise(() => Promise.resolve("response")),
@@ -318,7 +320,7 @@ describe("spawning promises", () => {
 });
 
 describe("spawning callbacks", () => {
-	it("should be able to spawn an actor from a callback", done => {
+	it("should be able to spawn an actor from a callback", (_, done) => {
 		const callbackMachine = createMachine({
 			types: {} as {
 				context: {
@@ -407,12 +409,14 @@ describe("spawning callbacks", () => {
 
 		sendToParent!();
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spy).never.toHaveBeenCalled();
 	});
 });
 
+/*
+FIXME: Observables are unsupported
 describe("spawning observables", () => {
-	it("should spawn an observable", done => {
+	it("should spawn an observable", (_, done) => {
 		const observableLogic = fromObservable(() => interval(10));
 		const observableMachine = createMachine({
 			id: "observable",
@@ -455,7 +459,7 @@ describe("spawning observables", () => {
 		observableService.start();
 	});
 
-	it("should spawn a referenced observable", done => {
+	it("should spawn a referenced observable", (_, done) => {
 		const observableMachine = createMachine(
 			{
 				id: "observable",
@@ -498,7 +502,7 @@ describe("spawning observables", () => {
 		observableService.start();
 	});
 
-	it(`should read the latest snapshot of the event's origin while handling that event`, done => {
+	it(`should read the latest snapshot of the event's origin while handling that event`, (_, done) => {
 		const observableLogic = fromObservable(() => interval(10));
 		const observableMachine = createMachine({
 			id: "observable",
@@ -655,12 +659,12 @@ describe("spawning observables", () => {
 		// wait for potential next event from the interval actor
 		await sleep(15);
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(spy).never.toHaveBeenCalled();
 	});
 });
 
 describe("spawning event observables", () => {
-	it("should spawn an event observable", done => {
+	it("should spawn an event observable", (_, done) => {
 		const eventObservableLogic = fromEventObservable(() =>
 			interval(10).pipe(map(val => ({ type: "COUNT", val }))),
 		);
@@ -702,7 +706,7 @@ describe("spawning event observables", () => {
 		observableService.start();
 	});
 
-	it("should spawn a referenced event observable", done => {
+	it("should spawn a referenced event observable", (_, done) => {
 		const observableMachine = createMachine(
 			{
 				id: "observable",
@@ -746,9 +750,10 @@ describe("spawning event observables", () => {
 		observableService.start();
 	});
 });
+*/
 
 describe("communicating with spawned actors", () => {
-	it("should treat an interpreter as an actor", done => {
+	it("should treat an interpreter as an actor", (_, done) => {
 		const existingMachine = createMachine({
 			types: {
 				events: {} as {
@@ -962,7 +967,7 @@ describe("actors", () => {
 		});
 		const actorRef = createActor(parent).start();
 
-		expect(Object.keys(actorRef.getSnapshot().children).length).toBe(2);
+		expect(Object.keys(actorRef.getSnapshot().children).size()).toBe(2);
 
 		actorRef.stop();
 
@@ -990,7 +995,7 @@ describe("actors", () => {
 		);
 		const actorRef = createActor(parent).start();
 
-		expect(Object.keys(actorRef.getSnapshot().children).length).toBe(2);
+		expect(Object.keys(actorRef.getSnapshot().children).size()).toBe(2);
 
 		actorRef.stop();
 
@@ -999,7 +1004,7 @@ describe("actors", () => {
 	});
 
 	describe("with actor logic", () => {
-		it("should work with a transition function logic", done => {
+		it("should work with a transition function logic", (_, done) => {
 			const countLogic = fromTransition((count: number, event: any) => {
 				if (event.type === "INC") {
 					return count + 1;
@@ -1040,7 +1045,7 @@ describe("actors", () => {
 			expect(countService.getSnapshot().context.count?.getSnapshot().context).toBe(2);
 		});
 
-		it("should work with a promise logic (fulfill)", done => {
+		it("should work with a promise logic (fulfill)", (_, done) => {
 			const countMachine = createMachine({
 				types: {} as {
 					context: {
@@ -1087,7 +1092,7 @@ describe("actors", () => {
 			countService.start();
 		});
 
-		it("should work with a promise logic (reject)", done => {
+		it("should work with a promise logic (reject)", (_, done) => {
 			const errorMessage = "An error occurred";
 			const countMachine = createMachine({
 				types: {} as {
@@ -1131,7 +1136,7 @@ describe("actors", () => {
 			countService.start();
 		});
 
-		it("actor logic should have reference to the parent", done => {
+		it("actor logic should have reference to the parent", (_, done) => {
 			const pongLogic: ActorLogic<Snapshot<undefined>, EventObject> = {
 				transition: (state, event, { self }) => {
 					if (event.type === "PING") {
@@ -1186,7 +1191,7 @@ describe("actors", () => {
 		});
 	});
 
-	it("should be able to spawn callback actors in (lazy) initial context", done => {
+	it("should be able to spawn callback actors in (lazy) initial context", (_, done) => {
 		const machine = createMachine({
 			types: {} as { context: { ref: CallbackActorRef<EventObject> } },
 			context: ({ spawn }) => ({
@@ -1216,7 +1221,7 @@ describe("actors", () => {
 		actor.start();
 	});
 
-	it("should be able to spawn machines in (lazy) initial context", done => {
+	it("should be able to spawn machines in (lazy) initial context", (_, done) => {
 		const childMachine = createMachine({
 			entry: sendParent({ type: "TEST" }),
 		});
@@ -1285,7 +1290,7 @@ describe("actors", () => {
 		const service = createActor(parentMachine);
 		expect(() => {
 			service.start();
-		}).not.toThrow();
+		}).never.toThrow();
 	});
 
 	it("should not crash on child promise-like sync completion during self-initialization", () => {
@@ -1304,7 +1309,7 @@ describe("actors", () => {
 		const service = createActor(parentMachine);
 		expect(() => {
 			service.start();
-		}).not.toThrow();
+		}).never.toThrow();
 	});
 
 	it("should not crash on child observable sync completion during self-initialization", () => {
@@ -1332,9 +1337,11 @@ describe("actors", () => {
 		const service = createActor(parentMachine);
 		expect(() => {
 			service.start();
-		}).not.toThrow();
+		}).never.toThrow();
 	});
 
+	/*
+	FIXME: Observables are unsupported
 	it("should receive done event from an immediately completed observable when self-initializing", () => {
 		const emptyObservable = fromObservable(() => EMPTY);
 
@@ -1366,6 +1373,7 @@ describe("actors", () => {
 
 		expect(service.getSnapshot().value).toBe("done");
 	});
+
 
 	it("should not restart a completed observable", () => {
 		let subscriptionCount = 0;
@@ -1412,6 +1420,7 @@ describe("actors", () => {
 		// Will be 2 if the event observable is resubscribed
 		expect(subscriptionCount).toBe(1);
 	});
+	*/
 
 	it("should be able to restart a spawned actor within a single macrostep", () => {
 		const actual: string[] = [];
@@ -1471,7 +1480,7 @@ describe("actors", () => {
 
 		const service = createActor(machine).start();
 
-		actual.length = 0;
+		actual.clear();
 
 		service.send({
 			type: "update",
@@ -1536,7 +1545,7 @@ describe("actors", () => {
 
 		const service = createActor(machine).start();
 
-		actual.length = 0;
+		actual.clear();
 
 		service.send({
 			type: "update",
@@ -1601,7 +1610,7 @@ describe("actors", () => {
 
 		const service = createActor(machine).start();
 
-		actual.length = 0;
+		actual.clear();
 
 		service.send({
 			type: "update",
@@ -1666,7 +1675,7 @@ describe("actors", () => {
 
 		const service = createActor(machine).start();
 
-		actual.length = 0;
+		actual.clear();
 
 		service.send({
 			type: "update",

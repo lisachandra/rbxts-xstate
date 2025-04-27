@@ -43,7 +43,7 @@ export type ObservableActorLogic<
  * @example
  *
  * ```ts
- * import { fromObservable, createActor } from "xstate";
+ * import { fromObservable, createActor } from "@rbxts/xstate";
  * import { interval } from "rxjs";
  *
  * // The type of the value observed by the actor's logic.
@@ -82,7 +82,7 @@ export type ObservableActorRef<TContext> = ActorRefFromLogic<ObservableActorLogi
  * @example
  *
  * ```ts
- * import { fromObservable, createActor } from "xstate";
+ * import { fromObservable, createActor } from "@rbxts/xstate";
  * import { interval } from "rxjs";
  *
  * const logic = fromObservable(obj => interval(1000));
@@ -250,7 +250,7 @@ export function fromObservable<
  * 	EventObject,
  * 	createMachine,
  * 	createActor,
- * } from "xstate";
+ * } from "@rbxts/xstate";
  * import { fromEvent } from "rxjs";
  *
  * const mouseClickLogic = fromEventObservable(

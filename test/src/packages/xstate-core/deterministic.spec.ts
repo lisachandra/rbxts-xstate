@@ -1,10 +1,11 @@
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
 import {
 	fromCallback,
 	createActor,
 	transition,
 	createMachine,
 	getInitialSnapshot,
-} from "../src/index.ts";
+} from "@rbxts/xstate";
 
 describe("deterministic machine", () => {
 	const lightMachine = createMachine({

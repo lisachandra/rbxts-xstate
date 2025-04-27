@@ -758,7 +758,7 @@ export type RequiredActorOptionsKeys<TLogic extends AnyActorLogic> =
  * @example
  *
  * ```ts
- * import { createActor } from "xstate";
+ * import { createActor } from "@rbxts/xstate";
  * import { someActorLogic } from "./someActorLogic";
  *
  * // Creating the actor, which implicitly creates an actor system with itself as the root actor

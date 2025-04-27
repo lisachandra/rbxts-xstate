@@ -100,7 +100,7 @@ export interface AssignAction<
  * @example
  *
  * ```ts
- * import { createMachine, assign } from "xstate";
+ * import { createMachine, assign } from "@rbxts/xstate";
  *
  * const countMachine = createMachine({
  * 	context: {

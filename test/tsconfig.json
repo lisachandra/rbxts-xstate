@@ -15,7 +15,7 @@
 		"moduleResolution": "Node",
 		"resolveJsonModule": true,
 		"preserveSymlinks": true,
-		"typeRoots": ["node_modules/@rbxts", "types"],
+		"typeRoots": ["node_modules/@rbxts", "src/types"],
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedIndexedAccess": true,

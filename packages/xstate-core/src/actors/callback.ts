@@ -35,7 +35,7 @@ export type CallbackActorLogic<
  * @example
  *
  * ```ts
- * import { fromCallback, createActor } from "xstate";
+ * import { fromCallback, createActor } from "@rbxts/xstate";
  *
  * // The events the actor receives.
  * type Event = { type: "someEvent" };

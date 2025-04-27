@@ -1,4 +1,5 @@
-import { createActor, createMachine, SimulatedClock } from "../src";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createActor, createMachine, SimulatedClock } from "@rbxts/xstate";
 
 describe("clock", () => {
 	it("system clock should be default clock for actors (invoked from machine)", () => {
@@ -25,10 +26,10 @@ describe("clock", () => {
 			clock,
 		}).start();
 
-		expect(actor.getSnapshot().children.child.getSnapshot().value).toEqual("a");
+		expect(actor.getSnapshot().children.child!.getSnapshot().value).toEqual("a");
 
 		clock.increment(10_000);
 
-		expect(actor.getSnapshot().children.child.getSnapshot().value).toEqual("b");
+		expect(actor.getSnapshot().children.child!.getSnapshot().value).toEqual("b");
 	});
 });

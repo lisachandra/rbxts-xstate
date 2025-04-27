@@ -1,4 +1,5 @@
-import { sleep } from "@xstate-repo/jest-utils";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { sleep } from "test/env-utils";
 import {
 	assign,
 	cancel,
@@ -18,11 +19,12 @@ import {
 	toPromise,
 	transition,
 	waitFor,
-} from "../src";
-import { createDoneActorEvent } from "../src/eventUtils";
-import { initialTransition } from "../src/transition";
-import assert from "node:assert";
-import { resolveReferencedActor } from "../src/utils";
+} from "@rbxts/xstate";
+import { createDoneActorEvent } from "@rbxts/xstate/out/eventUtils";
+import { initialTransition } from "@rbxts/xstate/out/transition";
+import { resolveReferencedActor } from "@rbxts/xstate/out/utils";
+import { setTimeout } from "@rbxts/luau-polyfill";
+import { HttpService } from "@rbxts/services";
 
 describe("transition function", () => {
 	it("should capture actions", () => {
@@ -69,8 +71,8 @@ describe("transition function", () => {
 			expect.objectContaining({ type: "stringAction" }),
 		]);
 
-		expect(actionWithParams).not.toHaveBeenCalled();
-		expect(stringAction).not.toHaveBeenCalled();
+		expect(actionWithParams).never.toHaveBeenCalled();
+		expect(stringAction).never.toHaveBeenCalled();
 
 		const [state1, actions1] = transition(machine, state0, {
 			type: "event",
@@ -85,7 +87,7 @@ describe("transition function", () => {
 			}),
 		]);
 
-		expect(actionWithDynamicParams).not.toHaveBeenCalled();
+		expect(actionWithDynamicParams).never.toHaveBeenCalled();
 	});
 
 	it("should not execute a referenced serialized action", () => {
@@ -102,7 +104,7 @@ describe("transition function", () => {
 
 		const [, actions] = initialTransition(machine);
 
-		expect(foo).not.toHaveBeenCalled();
+		expect(foo).never.toHaveBeenCalled();
 	});
 
 	it("should capture enqueued actions", () => {
@@ -380,7 +382,7 @@ describe("transition function", () => {
 
 		initialTransition(machine);
 
-		expect(fn).not.toHaveBeenCalled();
+		expect(fn).never.toHaveBeenCalled();
 	});
 
 	it("should not execute transition actions", () => {
@@ -404,7 +406,7 @@ describe("transition function", () => {
 		const [init] = initialTransition(machine);
 		const [nextSnapshot] = transition(machine, init, { type: "event" });
 
-		expect(fn).not.toHaveBeenCalled();
+		expect(fn).never.toHaveBeenCalled();
 		expect(nextSnapshot.value).toEqual("b");
 	});
 
@@ -434,12 +436,12 @@ describe("transition function", () => {
 
 		async function execute(action: ExecutableActionsFrom<typeof machine>) {
 			if (action.type === "xstate.raise" && action.params.delay) {
-				const currentTime = Date.now();
+				const currentTime = os.clock();
 				const startedAt = currentTime;
 				const elapsed = currentTime - startedAt;
-				const timeRemaining = Math.max(0, action.params.delay - elapsed);
+				const timeRemaining = math.max(0, action.params.delay - elapsed);
 
-				await new Promise(res => setTimeout(res, timeRemaining));
+				await new Promise(res => setTimeout(res, timeRemaining, undefined as never));
 				postEvent(action.params.event);
 			}
 		}
@@ -448,7 +450,7 @@ describe("transition function", () => {
 		async function postStart() {
 			const [state, actions] = initialTransition(machine);
 
-			db.state = JSON.stringify(state);
+			db.state = HttpService.JSONEncode(state);
 
 			// execute actions
 			for (const action of actions) {
@@ -460,11 +462,11 @@ describe("transition function", () => {
 		async function postEvent(event: EventFrom<typeof machine>) {
 			const [nextState, actions] = transition(
 				machine,
-				machine.resolveState(JSON.parse(db.state)),
+				machine.resolveState(HttpService.JSONDecode(db.state) as never),
 				event,
 			);
 
-			db.state = JSON.stringify(nextState);
+			db.state = HttpService.JSONEncode(nextState);
 
 			for (const action of actions) {
 				await execute(action);
@@ -475,7 +477,7 @@ describe("transition function", () => {
 		postEvent({ type: "next" });
 
 		await sleep(15);
-		expect(JSON.parse(db.state).status).toBe("done");
+		expect((HttpService.JSONDecode(db.state) as { status: unknown }).status).toBe("done");
 	});
 
 	it("serverless workflow example (experimental)", async () => {
@@ -522,7 +524,7 @@ describe("transition function", () => {
 						typeof spawnAction.params.src === "string"
 							? resolveReferencedActor(machine, spawnAction.params.src)
 							: spawnAction.params.src;
-					assert("transition" in logic);
+					assert(typeIs(logic, "table") && "transition" in logic);
 					const output = await toPromise(createActor(logic, spawnAction.params).start());
 					postEvent(createDoneActorEvent(spawnAction.params.id, output));
 				}
@@ -535,7 +537,7 @@ describe("transition function", () => {
 		async function postStart() {
 			const [state, actions] = initialTransition(machine);
 
-			db.state = JSON.stringify(state);
+			db.state = HttpService.JSONEncode(state);
 
 			// execute actions
 			for (const action of actions) {
@@ -547,11 +549,11 @@ describe("transition function", () => {
 		async function postEvent(event: EventFrom<typeof machine>) {
 			const [nextState, actions] = transition(
 				machine,
-				machine.resolveState(JSON.parse(db.state)),
+				machine.resolveState(HttpService.JSONDecode(db.state) as never),
 				event,
 			);
 
-			db.state = JSON.stringify(nextState);
+			db.state = HttpService.JSONEncode(nextState);
 
 			// "sync" built-in actions: assign, raise, cancel, stop
 			// "external" built-in actions: sendTo, raise w/delay, log
@@ -566,6 +568,6 @@ describe("transition function", () => {
 		expect(calls).toEqual(["sendWelcomeEmail"]);
 
 		await sleep(10);
-		expect(JSON.parse(db.state).value).toBe("finish");
+		expect((HttpService.JSONDecode(db.state) as { value: unknown }).value).toBe("finish");
 	});
 });

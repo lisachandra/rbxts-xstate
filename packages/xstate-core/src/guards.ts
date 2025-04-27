@@ -136,7 +136,7 @@ function checkNot(
  * @example
  *
  * ```ts
- * import { setup, not } from "xstate";
+ * import { setup, not } from "@rbxts/xstate";
  *
  * const machine = setup({
  * 	guards: {
@@ -189,7 +189,7 @@ function checkAnd(
  * @example
  *
  * ```ts
- * import { setup, and } from "xstate";
+ * import { setup, and } from "@rbxts/xstate";
  *
  * const machine = setup({
  * 	guards: {
@@ -253,7 +253,7 @@ function checkOr(
  * @example
  *
  * ```ts
- * import { setup, or } from "xstate";
+ * import { setup, or } from "@rbxts/xstate";
  *
  * const machine = setup({
  * 	guards: {

@@ -8,17 +8,16 @@ local jestGlobals = require(game.ReplicatedStorage.TS.node_modules["@rbxts"]["je
 local expect, afterEach, jest = jestGlobals.expect, jestGlobals.afterEach, jestGlobals.jest
 
 expect.extend({
-	toMatchInlineSnapshot = matchers.toMatchInlineSnapshot,
-	toMatchMockCallsInlineSnapshot = function(self, received, ...)
+	toMatchMockCallsSnapshot = function(self, received, ...)
 		if jest.isMockFunction(received) then
 			error(
-				"`toMatchMockCallsInlineSnapshot` can only be used on mocked functions"
+				"`toMatchMockCallsSnapshot` can only be used on mocked functions"
 			);
 		end
 
 		local calls = received.mock.calls;
 		received:mockClear();
-		return matchers.toMatchInlineSnapshot(self, calls, ...);
+		return matchers.toMatchSnapshot(self, calls, ...);
 	end,
 });
 

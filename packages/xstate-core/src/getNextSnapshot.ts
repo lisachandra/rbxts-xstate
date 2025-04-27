@@ -48,7 +48,7 @@ export function getInitialSnapshot<T extends AnyActorLogic>(
  * @example
  *
  * ```ts
- * import { getNextSnapshot } from "xstate";
+ * import { getNextSnapshot } from "@rbxts/xstate";
  * import { trafficLightMachine } from "./trafficLightMachine";
  *
  * const nextSnapshot = getNextSnapshot(

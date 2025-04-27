@@ -1,5 +1,6 @@
-import { createMachine, createActor } from "../../src/index.ts";
-import { testAll } from "../utils.js";
+import { describe, beforeEach, it, expect, afterAll, beforeAll } from "@rbxts/jest-globals";
+import { createMachine, createActor } from "@rbxts/xstate";
+import { testAll } from "../utils";
 
 describe("Example 6.8", () => {
 	const machine = createMachine({

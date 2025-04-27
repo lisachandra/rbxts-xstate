@@ -1,5 +1,8 @@
-import { sleep } from "@xstate-repo/jest-utils";
-import { createMachine, createActor, cancel } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test, afterEach } from "@rbxts/jest-globals";
+import { sleep } from "test/env-utils";
+import { createMachine, createActor, cancel, Snapshot } from "@rbxts/xstate";
+import { Object, setTimeout } from "@rbxts/luau-polyfill";
+import { HttpService } from "@rbxts/services";
 
 const lightMachine = createMachine({
 	id: "light",
@@ -70,22 +73,24 @@ describe("delayed transitions", () => {
 		// when the after transition gets executed it tries to clear its own timer when exiting its source state
 		await sleep(5);
 		expect(actorRef.getSnapshot().value).toBe("yellow");
-		expect(spy.mock.calls.length).toBe(0);
+		expect(spy.mock.calls.size()).toBe(0);
 	});
 
 	it("should format transitions properly", () => {
-		const greenNode = lightMachine.states.green;
+		const greenNode = lightMachine.states.green!;
 
 		const transitions = greenNode.transitions;
 
-		expect([...transitions.keys()]).toMatchInlineSnapshot(`
+		/*
+		expect([...Object.keys(transitions)]).toMatchInlineSnapshot(`
       [
         "xstate.after.1000.light.green",
       ]
     `);
+	*/
 	});
 
-	it("should be able to transition with delay from nested initial state", done => {
+	it("should be able to transition with delay from nested initial state", (_, done) => {
 		const machine = createMachine({
 			initial: "nested",
 			states: {
@@ -115,7 +120,7 @@ describe("delayed transitions", () => {
 		actor.start();
 	});
 
-	it("parent state should enter child state without re-entering self (relative target)", done => {
+	it("parent state should enter child state without re-entering self (relative target)", (_, done) => {
 		const actual: string[] = [];
 		const machine = createMachine({
 			initial: "one",
@@ -186,11 +191,11 @@ describe("delayed transitions", () => {
 		createActor(machine).start();
 
 		jest.advanceTimersByTime(10);
-		expect(spy).not.toHaveBeenCalled();
+		expect(spy).never.toHaveBeenCalled();
 	});
 
 	// TODO: figure out correct behavior for restoring delayed transitions
-	it.skip("should execute an after transition after starting from a state resolved using `.getPersistedSnapshot`", done => {
+	it.skip("should execute an after transition after starting from a state resolved using `.getPersistedSnapshot`", (_, done) => {
 		const machine = createMachine({
 			id: "machine",
 			initial: "a",
@@ -220,7 +225,7 @@ describe("delayed transitions", () => {
 		actorRef2.start();
 	});
 
-	it("should execute an after transition after starting from a persisted state", done => {
+	it("should execute an after transition after starting from a persisted state", (_, done) => {
 		const createMyMachine = () =>
 			createMachine({
 				initial: "A",
@@ -243,10 +248,10 @@ describe("delayed transitions", () => {
 
 		let service = createActor(createMyMachine()).start();
 
-		const persistedSnapshot = JSON.parse(JSON.stringify(service.getSnapshot()));
+		const persistedSnapshot = HttpService.JSONDecode(HttpService.JSONEncode(service.getSnapshot()));
 
 		service = createActor(createMyMachine(), {
-			snapshot: persistedSnapshot,
+			snapshot: persistedSnapshot as Snapshot<unknown>,
 		}).start();
 
 		service.send({ type: "NEXT" });

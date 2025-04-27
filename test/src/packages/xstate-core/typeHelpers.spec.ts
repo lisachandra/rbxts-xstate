@@ -1,3 +1,4 @@
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
 import {
 	ActorLogic,
 	ActorRefFrom,
@@ -11,7 +12,7 @@ import {
 	assign,
 	createActor,
 	createMachine,
-} from "../src/index.ts";
+} from "@rbxts/xstate";
 
 describe("ContextFrom", () => {
 	it("should return context of a machine", () => {

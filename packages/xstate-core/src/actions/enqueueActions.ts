@@ -245,7 +245,7 @@ type CollectActions<
  * @example
  *
  * ```ts
- * import { createMachine, enqueueActions } from "xstate";
+ * import { createMachine, enqueueActions } from "@rbxts/xstate";
  *
  * const machine = createMachine({
  * 	entry: enqueueActions(({ enqueue, check }) => {

@@ -69,7 +69,7 @@ export interface EmitAction<
  * @example
  *
  * ```ts
- * import { emit } from "xstate";
+ * import { emit } from "@rbxts/xstate";
  *
  * const machine = createMachine({
  * 	// ...

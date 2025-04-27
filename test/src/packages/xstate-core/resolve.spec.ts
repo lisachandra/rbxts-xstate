@@ -1,5 +1,6 @@
-import { createMachine } from "../src/index";
-import { resolveStateValue } from "../src/stateUtils";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine } from "@rbxts/xstate";
+import { resolveStateValue } from "@rbxts/xstate/out/stateUtils";
 
 // from parallel/test3.scxml
 const flatParallelMachine = createMachine({

@@ -1,4 +1,5 @@
-import { assign, createActor, createMachine, enqueueActions } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { assign, createActor, createMachine, enqueueActions } from "@rbxts/xstate";
 
 interface CounterContext {
 	count: number;
@@ -333,7 +334,7 @@ describe("assign meta", () => {
 		expect(actor.getSnapshot().context.count).toEqual(11);
 	});
 
-	it("a parameterized action that resolves to assign() should be provided the params", done => {
+	it("a parameterized action that resolves to assign() should be provided the params", (_, done) => {
 		const machine = createMachine(
 			{
 				on: {

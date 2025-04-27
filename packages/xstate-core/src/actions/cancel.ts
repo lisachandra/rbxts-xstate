@@ -51,7 +51,7 @@ export interface CancelAction<
  * @example
  *
  * ```ts
- * import { createMachine, sendTo, cancel } from "xstate";
+ * import { createMachine, sendTo, cancel } from "@rbxts/xstate";
  *
  * const machine = createMachine({
  * 	// ...

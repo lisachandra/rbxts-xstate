@@ -1,5 +1,6 @@
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
 import { testAll } from "./utils";
-import { createMachine, createActor, getNextSnapshot, getInitialSnapshot } from "../src/index.ts";
+import { createMachine, createActor, getNextSnapshot, getInitialSnapshot } from "@rbxts/xstate";
 
 const idMachine = createMachine({
 	initial: "A",

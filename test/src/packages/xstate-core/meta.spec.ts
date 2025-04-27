@@ -1,4 +1,5 @@
-import { createMachine, createActor, setup } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor, setup } from "@rbxts/xstate";
 
 describe("state meta data", () => {
 	const pedestrianStates = {
@@ -475,7 +476,7 @@ describe("state description", () => {
 			},
 		});
 
-		expect(machine.states.test.description).toEqual("This is a test");
+		expect(machine.states.test!.description).toEqual("This is a test");
 	});
 });
 
@@ -489,6 +490,6 @@ describe("transition description", () => {
 			},
 		});
 
-		expect(machine.root.on["EVENT"][0].description).toEqual("This is a test");
+		expect(machine.root.getOn()["EVENT"]![0]!.description).toEqual("This is a test");
 	});
 });

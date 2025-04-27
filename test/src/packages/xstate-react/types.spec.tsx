@@ -1,6 +1,8 @@
-import { render } from "@testing-library/react";
-import { ActorRefFrom, assign, createMachine, setup } from "xstate";
-import { useActor, useActorRef, useMachine, useSelector } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { render } from "@rbxts/react-testing-library";
+import { ActorRefFrom, assign, createMachine, setup } from "@rbxts/xstate";
+import { useActor, useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
+import * as React from "react";
 
 describe("useMachine", () => {
 	interface YesNoContext {

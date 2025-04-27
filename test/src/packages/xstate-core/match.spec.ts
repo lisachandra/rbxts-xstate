@@ -1,4 +1,5 @@
-import { matchesState, createMachine, createActor } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { matchesState, createMachine, createActor } from "@rbxts/xstate";
 
 describe("matchesState()", () => {
 	it("should return true if two states are equivalent", () => {

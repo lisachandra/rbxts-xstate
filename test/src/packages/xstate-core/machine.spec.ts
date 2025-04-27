@@ -1,4 +1,6 @@
-import { createActor, createMachine, assign, setup } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { Object } from "@rbxts/luau-polyfill";
+import { createActor, createMachine, assign, setup } from "@rbxts/xstate";
 
 const pedestrianStates = {
 	initial: "walk",
@@ -70,17 +72,17 @@ describe("machine", () => {
 				},
 			});
 
-			const oneState = machine.states.one;
+			const oneState = machine.states.one!;
 
 			expect(oneState.config).toBe(machine.config.states!.one);
 
-			const deepState = machine.states.one.states.deep;
+			const deepState = machine.states.one!.states.deep!;
 
-			expect(deepState.config).toBe(machine.config.states!.one.states!.deep);
+			expect(deepState.config).toBe(machine.config.states!.one!.states!.deep);
 
 			deepState.config.meta = "testing meta";
 
-			expect(machine.config.states!.one.states!.deep.meta).toEqual("testing meta");
+			expect(machine.config.states!.one!.states!.deep!.meta).toEqual("testing meta");
 		});
 	});
 
@@ -197,7 +199,7 @@ describe("machine", () => {
 			const a = createActor(copiedMachine).start();
 			const b = createActor(copiedMachine).start();
 
-			expect(a.getSnapshot().context.foo).not.toBe(b.getSnapshot().context.foo);
+			expect(a.getSnapshot().context.foo).never.toBe(b.getSnapshot().context.foo);
 		});
 	});
 
@@ -218,7 +220,7 @@ describe("machine", () => {
 			const initialState1 = createActor(testMachine1).getSnapshot();
 			const initialState2 = createActor(testMachine2).getSnapshot();
 
-			expect(initialState1.context).not.toBe(initialState2.context);
+			expect(initialState1.context).never.toBe(initialState2.context);
 
 			expect(initialState1.context).toEqual({
 				foo: { bar: "baz" },
@@ -347,7 +349,7 @@ describe("machine", () => {
 				},
 			});
 
-			expect(idMachine.states.idle.id).toEqual("idle");
+			expect(idMachine.states.idle!.id).toEqual("idle");
 		});
 
 		it("should use the key as the ID if no ID is provided (state node)", () => {
@@ -357,7 +359,7 @@ describe("machine", () => {
 				states: { idle: {} },
 			});
 
-			expect(noStateNodeIDMachine.states.idle.id).toEqual("some-id.idle");
+			expect(noStateNodeIDMachine.states.idle!.id).toEqual("some-id.idle");
 		});
 	});
 
@@ -398,10 +400,10 @@ describe("machine", () => {
 
 describe("StateNode", () => {
 	it("should list transitions", () => {
-		const greenNode = lightMachine.states.green;
+		const greenNode = lightMachine.states.green!;
 
 		const transitions = greenNode.transitions;
 
-		expect([...transitions.keys()]).toEqual(["TIMER", "POWER_OUTAGE", "FORBIDDEN_EVENT"]);
+		expect([...Object.keys(transitions)]).toEqual(["TIMER", "POWER_OUTAGE", "FORBIDDEN_EVENT"]);
 	});
 });

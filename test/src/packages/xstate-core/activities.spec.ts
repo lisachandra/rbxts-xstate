@@ -1,6 +1,7 @@
-import { fromCallback } from "../src/actors/index.ts";
-import { createActor, createMachine, assign } from "../src/index.ts";
-import { setup } from "../src/setup.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { fromCallback } from "@rbxts/xstate/out/actors/index";
+import { createActor, createMachine, assign } from "@rbxts/xstate";
+import { setup } from "@rbxts/xstate/out/setup";
 
 // TODO: remove this file but before doing that ensure that things tested here are covered by other tests
 
@@ -275,7 +276,7 @@ describe("invocations (activities)", () => {
 		service.send({ type: "IGNORE" });
 
 		expect(active).toBe(true);
-		expect(cleanupSpy).not.toBeCalled();
+		expect(cleanupSpy).never.toBeCalled();
 	});
 
 	it("should remember the invocations when transitioning within the invoking state", () => {
@@ -311,7 +312,7 @@ describe("invocations (activities)", () => {
 		service.send({ type: "E" });
 
 		expect(active).toBe(true);
-		expect(cleanupSpy).not.toBeCalled();
+		expect(cleanupSpy).never.toBeCalled();
 	});
 
 	it("should start a new actor when leaving an invoking state and entering a new one that invokes the same actor type", () => {

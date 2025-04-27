@@ -31,7 +31,7 @@ export type TransitionActorLogic<
  * 	fromTransition,
  * 	createActor,
  * 	type AnyActorSystem,
- * } from "xstate";
+ * } from "@rbxts/xstate";
  *
  * //* The actor's stored context.
  * type Context = {

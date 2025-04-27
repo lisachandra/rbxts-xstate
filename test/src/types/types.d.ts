@@ -1,13 +1,5 @@
-import "@rbxts/jest";
-
+export {};
 declare global {
-	namespace jest {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		interface Matchers<R, T> {
-			toMatchMockCallsInlineSnapshot(snapshot?: string): R;
-		}
-	}
-
 	type Table = Record<number | string | symbol, unknown>;
 
 	/** A general type for a value that may be nil (undefined). */
@@ -19,6 +11,12 @@ declare global {
 	 * are the type's values.
 	 */
 	type Mapify<T> = Map<keyof T, T[keyof T]>;
+
+	interface PromiseWithResolvers<T> {
+		promise: Promise<T>;
+		reject: (reason?: any) => void;
+		resolve: (value: any) => void;
+	}
 
 	interface LuaGlobals {
 		/** Type signature for the Lua unpack function. */

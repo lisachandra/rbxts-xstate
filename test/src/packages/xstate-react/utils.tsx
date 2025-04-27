@@ -1,5 +1,6 @@
 import * as React from "react";
-import * as RTL from "@testing-library/react";
+import * as RTL from "@rbxts/react-testing-library";
+import { describe } from "@rbxts/jest-globals";
 
 // TS trips over signatures with generic overloads when using bare `typeof RTL.render`
 // conditional types just resolve the last overload

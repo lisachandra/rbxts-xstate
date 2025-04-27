@@ -1,6 +1,8 @@
-import { createMachine, assign, fromPromise, Snapshot, InspectionEvent } from "xstate";
-import { fireEvent, screen, render, waitFor } from "@testing-library/react";
-import { useSelector, createActorContext, shallowEqual } from "../src";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, assign, fromPromise, Snapshot, InspectionEvent } from "@rbxts/xstate";
+import { fireEvent, screen, render, waitFor } from "@rbxts/react-testing-library";
+import { useSelector, createActorContext, shallowEqual } from "@rbxts/xstate-react";
+import * as React from "@rbxts/react";
 
 describe("createActorContext", () => {
 	it("should work with useSelector", () => {
@@ -14,7 +16,7 @@ describe("createActorContext", () => {
 		const Component = () => {
 			const value = SomeContext.useSelector(state => state.value as string);
 
-			return <div data-testid="value">{value}</div>;
+			return <textlabel Tag="data-testid=value">{value}</textlabel>;
 		};
 
 		const App = () => {
@@ -27,7 +29,7 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(screen.getByTestId("value").textContent).toBe("a");
+		expect(screen.getByTestId("value").Text).toBe("a");
 	});
 
 	it("the actor should be able to receive events", () => {
@@ -51,10 +53,10 @@ describe("createActorContext", () => {
 
 			return (
 				<>
-					<div data-testid="value">{state.value as string}</div>
-					<button data-testid="next" onClick={() => actorRef.send({ type: "NEXT" })}>
+					<textlabel Tag="data-testid=value">{state.value as string}</textlabel>
+					<textbutton Tag="data-testid=next" onClick={() => actorRef.send({ type: "NEXT" })}>
 						Next
-					</button>
+					</textbutton>
 				</>
 			);
 		};
@@ -69,11 +71,11 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(screen.getByTestId("value").textContent).toBe("a");
+		expect(screen.getByTestId("value").Text).toBe("a");
 
 		fireEvent.click(screen.getByTestId("next"));
 
-		expect(screen.getByTestId("value").textContent).toBe("b");
+		expect(screen.getByTestId("value").Text).toBe("b");
 	});
 
 	it("should work with useSelector and a custom comparator", async () => {
@@ -120,7 +122,7 @@ describe("createActorContext", () => {
 				<>
 					<button onClick={() => actor.send({ type: "INC" })}>Inc</button>
 					<button onClick={() => actor.send({ type: "PUSH" })}>Push</button>
-					<div data-testid="value">{value.counter}</div>;
+					<textlabel Tag="data-testid=value">{value.counter}</textlabel>;
 				</>
 			);
 		};
@@ -135,12 +137,12 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(screen.getByTestId("value").textContent).toBe("0");
+		expect(screen.getByTestId("value").Text).toBe("0");
 		expect(rerenders).toBe(1);
 
 		fireEvent.click(screen.getByText("Inc"));
 
-		expect(screen.getByTestId("value").textContent).toBe("1");
+		expect(screen.getByTestId("value").Text).toBe("1");
 		expect(rerenders).toBe(2);
 
 		fireEvent.click(screen.getByText("Push"));
@@ -149,7 +151,7 @@ describe("createActorContext", () => {
 
 		fireEvent.click(screen.getByText("Inc"));
 
-		expect(screen.getByTestId("value").textContent).toBe("2");
+		expect(screen.getByTestId("value").Text).toBe("2");
 		expect(rerenders).toBe(3);
 	});
 
@@ -165,7 +167,7 @@ describe("createActorContext", () => {
 			const actor = SomeContext.useActorRef();
 			const value = useSelector(actor, state => state.value);
 
-			return <div data-testid="value">{value as string}</div>;
+			return <textlabel Tag="data-testid=value">{value as string}</textlabel>;
 		};
 
 		const App = () => {
@@ -178,7 +180,7 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(screen.getByTestId("value").textContent).toBe("a");
+		expect(screen.getByTestId("value").Text).toBe("a");
 	});
 
 	it("should work with a provided machine", () => {
@@ -193,7 +195,7 @@ describe("createActorContext", () => {
 			const actor = SomeContext.useActorRef();
 			const count = useSelector(actor, state => state.context.count);
 
-			return <div data-testid="value">{count}</div>;
+			return <textlabel Tag="data-testid=value">{count}</textlabel>;
 		};
 
 		const otherMachine = createSomeMachine({ count: 42 });
@@ -208,7 +210,7 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(screen.getByTestId("value").textContent).toBe("42");
+		expect(screen.getByTestId("value").Text).toBe("42");
 	});
 
 	it("useActorRef should throw when the actor was not provided", () => {
@@ -278,7 +280,7 @@ describe("createActorContext", () => {
 		const Component = () => {
 			const value = PromiseContext.useSelector(data => data);
 
-			return <div data-testid="value">{value.output}</div>;
+			return <textlabel Tag="data-testid=value">{value.output}</textlabel>;
 		};
 
 		const App = () => {
@@ -292,7 +294,7 @@ describe("createActorContext", () => {
 		render(<App />);
 
 		await waitFor(() => {
-			expect(screen.getByTestId("value").textContent).toBe("42");
+			expect(screen.getByTestId("value").Text).toBe("42");
 		});
 	});
 
@@ -313,8 +315,8 @@ describe("createActorContext", () => {
 			const count = SomeContext.useSelector(state => state.context.count);
 			return (
 				<>
-					<span data-testid="count">{count}</span>
-					<button data-testid="button" onClick={() => send({ type: "inc" })}>
+					<span Tag="data-testid=count">{count}</span>
+					<button Tag="data-testid=button" onClick={() => send({ type: "inc" })}>
 						Inc
 					</button>
 				</>
@@ -337,14 +339,14 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(screen.getByTestId("count").textContent).toBe("0");
+		expect(screen.getByTestId("count").Text).toBe("0");
 		fireEvent.click(screen.getByTestId("button"));
 
-		expect(screen.getByTestId("count").textContent).toBe("1");
+		expect(screen.getByTestId("count").Text).toBe("1");
 
 		fireEvent.click(screen.getByTestId("button"));
 
-		expect(screen.getByTestId("count").textContent).toBe("2");
+		expect(screen.getByTestId("count").Text).toBe("2");
 	});
 
 	it("options can be passed to the provider", () => {
@@ -369,14 +371,14 @@ describe("createActorContext", () => {
 			persistedState = actorRef.getPersistedSnapshot();
 
 			return (
-				<div
-					data-testid="value"
+				<textlabel
+					Tag="data-testid=value"
 					onClick={() => {
 						actorRef.send({ type: "next" });
 					}}
 				>
 					{state.value as string}
-				</div>
+				</textlabel>
 			);
 		};
 
@@ -390,12 +392,12 @@ describe("createActorContext", () => {
 
 		const { unmount } = render(<App />);
 
-		expect(screen.getByTestId("value").textContent).toBe("a");
+		expect(screen.getByTestId("value").Text).toBe("a");
 
 		fireEvent.click(screen.getByTestId("value"));
 
 		// Ensure that the state machine without restored state functions as normal
-		expect(screen.getByTestId("value").textContent).toBe("b");
+		expect(screen.getByTestId("value").Text).toBe("b");
 
 		// unrender app
 		unmount();
@@ -406,7 +408,7 @@ describe("createActorContext", () => {
 		render(<App />);
 
 		// Ensure that the state machine is restored to the persisted state
-		expect(screen.getByTestId("value").textContent).toBe("b");
+		expect(screen.getByTestId("value").Text).toBe("b");
 	});
 
 	it("input can be passed to the provider", () => {
@@ -424,7 +426,7 @@ describe("createActorContext", () => {
 		const Component = () => {
 			const doubled = SomeContext.useSelector(state => state.context.doubled);
 
-			return <div data-testid="value">{doubled}</div>;
+			return <textlabel Tag="data-testid=value">{doubled}</textlabel>;
 		};
 
 		const App = () => {
@@ -437,7 +439,7 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(screen.getByTestId("value").textContent).toBe("84");
+		expect(screen.getByTestId("value").Text).toBe("84");
 	});
 
 	it("should merge createActorContext options with options passed to the provider", () => {
@@ -460,7 +462,7 @@ describe("createActorContext", () => {
 		const Component = () => {
 			const count = SomeContext.useSelector(state => state.context.count);
 
-			return <div data-testid="value">{count}</div>;
+			return <textlabel Tag="data-testid=value">{count}</textlabel>;
 		};
 
 		const App = () => {
@@ -473,7 +475,7 @@ describe("createActorContext", () => {
 
 		render(<App />);
 
-		expect(events.length).toBeGreaterThan(0);
+		expect(events.size()).toBeGreaterThan(0);
 		expect(events).toContainEqual(
 			expect.objectContaining({
 				snapshot: expect.objectContaining({

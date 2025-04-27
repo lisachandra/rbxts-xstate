@@ -1,5 +1,5 @@
-import { stateIn } from "../../src/guards";
-import { createMachine, StateValue } from "../../src/index";
+import { describe, beforeEach, it, expect, afterAll, beforeAll } from "@rbxts/jest-globals";
+import { createMachine, StateValue, stateIn } from "@rbxts/xstate";
 import { testAll } from "../utils";
 
 describe("Example 6.16", () => {

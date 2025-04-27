@@ -1,4 +1,5 @@
-import { createMachine, getNextSnapshot } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, getNextSnapshot } from "@rbxts/xstate";
 
 describe("invalid or resolved states", () => {
 	it("should resolve a String state", () => {

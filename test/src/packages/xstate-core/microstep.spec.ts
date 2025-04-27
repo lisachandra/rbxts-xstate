@@ -1,6 +1,7 @@
-import { createMachine } from "../src/index.ts";
-import { raise } from "../src/actions/raise";
-import { createInertActorScope } from "../src/getNextSnapshot.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine } from "@rbxts/xstate";
+import { raise } from "@rbxts/xstate/out/actions/raise";
+import { createInertActorScope } from "@rbxts/xstate/out/getNextSnapshot";
 
 describe("machine.microstep()", () => {
 	it("should return an array of states from all microsteps", () => {

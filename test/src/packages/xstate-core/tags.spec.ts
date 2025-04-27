@@ -1,4 +1,5 @@
-import { createMachine, createActor } from "../src/index.ts";
+import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import { createMachine, createActor } from "@rbxts/xstate";
 
 describe("tags", () => {
 	it("supports tagging states", () => {
