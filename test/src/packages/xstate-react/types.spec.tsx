@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { render } from "@rbxts/react-testing-library";
 import { ActorRefFrom, assign, createMachine, setup } from "@rbxts/xstate";
 import { useActor, useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
@@ -36,10 +45,10 @@ describe("useMachine", () => {
 			const [state] = useMachine(yesNoMachine);
 
 			if (state.matches("no")) {
-				return <span>No</span>;
+				return <textlabel Text="No"></textlabel>;
 			}
 
-			return <span>Yes: {state.context.value}</span>;
+			return <textlabel Text={`Yes: ${state.context.value}`}></textlabel>;
 		};
 
 		render(<YesNo />);
@@ -95,10 +104,13 @@ describe("useMachine", () => {
 			send({ type: "WHATEVER" });
 
 			return (
-				<>
-					{bar}
-					<div onClick={() => myActor.send({ type: "FOO", data: 1 })}>click</div>
-				</>
+				<frame>
+					<textlabel Text={`${bar}`}></textlabel>
+					<textbutton
+						Event={{ Activated: () => myActor.send({ type: "FOO", data: 1 }) }}
+						Text="click"
+					></textbutton>
+				</frame>
 			);
 		}
 
@@ -106,7 +118,7 @@ describe("useMachine", () => {
 			const [current] = useMachine(m);
 
 			if (!current.context.actor) {
-				return null;
+				return <></>;
 			}
 
 			return <Element myActor={current.context.actor} />;

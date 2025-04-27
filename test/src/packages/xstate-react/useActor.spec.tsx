@@ -1,8 +1,18 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+	afterEach,
+} from "@rbxts/jest-globals";
 import { act, fireEvent, screen } from "@rbxts/react-testing-library";
 import * as React from "react";
 import { useState } from "react";
-import { BehaviorSubject } from "rxjs";
+// import { BehaviorSubject } from "rxjs";
 import {
 	Actor,
 	ActorLogicFrom,
@@ -20,6 +30,9 @@ import { fromCallback, fromObservable, fromPromise } from "@rbxts/xstate";
 import { useActor, useSelector } from "@rbxts/xstate-react";
 import { describeEachReactMode } from "./utils";
 import { sleep } from "test/env-utils";
+import { HttpService } from "@rbxts/services";
+import { BehaviorSubjectStub } from "packages/xstate-core/utils";
+import { Error } from "@rbxts/luau-polyfill";
 
 afterEach(() => {
 	jest.useRealTimers();
@@ -107,17 +120,23 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		switch (current.value) {
 			case "idle":
-				return <button onClick={_ => send({ type: "FETCH" })}>Fetch</button>;
+				return (
+					<textbutton
+						Event={{ Activated: _ => send({ type: "FETCH" }) }}
+						Text="Fetch"
+					></textbutton>
+				);
 			case "loading":
-				return <div>Loading...</div>;
+				return <textlabel Text="Loading..."></textlabel>;
 			case "success":
 				return (
-					<div>
-						Success! Data: <div data-testid="data">{current.context.data}</div>
-					</div>
+					<frame>
+						<textlabel Text="Success! Data:"></textlabel>
+						<textlabel Tag="data-testid=data" Text={current.context.data}></textlabel>
+					</frame>
 				);
 			default:
-				return null;
+				return <></>;
 		}
 	};
 
@@ -126,9 +145,9 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		const button = screen.getByText("Fetch");
 		fireEvent.click(button);
 		screen.getByText("Loading...");
-		await screen.findByText(/Success/);
+		await screen.findByText("Success! Data:");
 		const dataEl = screen.getByTestId("data");
-		expect(dataEl.Text).toBe("fake data");
+		expect((dataEl as TextLabel).Text).toBe("fake data");
 	});
 
 	it("should work with the useActor hook (rehydrated state)", async () => {
@@ -141,11 +160,13 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		await screen.findByText(/Success/);
 		const dataEl = screen.getByTestId("data");
-		expect(dataEl.Text).toBe("persisted data");
+		expect((dataEl as TextLabel).Text).toBe("persisted data");
 	});
 
 	it("should work with the useMachine hook (rehydrated state config)", async () => {
-		const persistedFetchStateConfig = HttpService.JSONDecode(HttpService.JSONEncode(persistedSuccessFetchState));
+		const persistedFetchStateConfig = HttpService.JSONDecode(
+			HttpService.JSONEncode(persistedSuccessFetchState),
+		) as never;
 		render(
 			<Fetcher
 				onFetch={() => new Promise(res => res("fake data"))}
@@ -155,7 +176,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		await screen.findByText(/Success/);
 		const dataEl = screen.getByTestId("data");
-		expect(dataEl.Text).toBe("persisted data");
+		expect((dataEl as TextLabel).Text).toBe("persisted data");
 	});
 
 	it("should provide the service", () => {
@@ -166,7 +187,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 				throw new Error("service not instance of Interpreter");
 			}
 
-			return null;
+			return <></>;
 		};
 
 		render(<Test />);
@@ -198,7 +219,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 				test: true,
 			});
 
-			return null;
+			return <></>;
 		};
 
 		render(<Test />);
@@ -236,11 +257,11 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 			switch (current.value) {
 				case "start":
-					return <span data-testid="start" />;
+					return <frame Tag="data-testid=start" />;
 				case "success":
-					return <span data-testid="success" />;
+					return <frame Tag="data-testid=success" />;
 				default:
-					return null;
+					return <></>;
 			}
 		};
 
@@ -283,20 +304,24 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			);
 
 			return (
-				<>
-					<button
-						data-testid="extbutton"
-						onClick={_ => {
-							setExt(2);
+				<frame>
+					<textbutton
+						Tag="data-testid=extbutton"
+						Event={{
+							Activated: _ => {
+								setExt(2);
+							},
 						}}
 					/>
-					<button
-						data-testid="button"
-						onClick={_ => {
-							send({ type: "SET_LATEST" });
+					<textbutton
+						Tag="data-testid=button"
+						Event={{
+							Activated: _ => {
+								send({ type: "SET_LATEST" });
+							},
 						}}
 					/>
-				</>
+				</frame>
 			);
 		};
 
@@ -346,20 +371,24 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			);
 
 			return (
-				<>
-					<button
-						data-testid="extbutton"
-						onClick={_ => {
-							setExt(2);
+				<frame>
+					<textbutton
+						Tag="data-testid=extbutton"
+						Event={{
+							Activated: _ => {
+								setExt(2);
+							},
 						}}
 					/>
-					<button
-						data-testid="button"
-						onClick={_ => {
-							send({ type: "NEXT" });
+					<textbutton
+						Tag="data-testid=button"
+						Event={{
+							Activated: _ => {
+								send({ type: "NEXT" });
+							},
 						}}
 					/>
-				</>
+				</frame>
 			);
 		};
 
@@ -405,20 +434,24 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			);
 
 			return (
-				<>
-					<button
-						data-testid="extbutton"
-						onClick={_ => {
-							setExt(true);
+				<frame>
+					<textbutton
+						Tag="data-testid=extbutton"
+						Event={{
+							Activated: _ => {
+								setExt(true);
+							},
 						}}
 					/>
-					<button
-						data-testid="button"
-						onClick={_ => {
-							send({ type: "TOGGLE" });
+					<textbutton
+						Tag="data-testid=button"
+						Event={{
+							Activated: _ => {
+								send({ type: "TOGGLE" });
+							},
 						}}
 					/>
-				</>
+				</frame>
 			);
 		};
 
@@ -459,7 +492,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		const App = () => {
 			useActor(m);
 			rerenders++;
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -507,18 +540,21 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			}, [state.context.stuff]);
 
 			return (
-				<>
-					<div>{`Counter: ${state.context.counter}`}</div>
-					<button onClick={() => send({ type: "INC" })}>Increase</button>
-				</>
+				<frame>
+					<textlabel Text={`Counter: ${state.context.counter}`}></textlabel>
+					<textbutton
+						Event={{ Activated: () => send({ type: "INC" }) }}
+						Text="Increase"
+					></textbutton>
+				</frame>
 			);
 		};
 
-		const { getByRole } = render(<App />);
+		const { getByText } = render(<App />);
 
 		expect(effectsFired).toBe(suiteKey === "strict" ? 2 : 1);
 
-		const button = getByRole("button");
+		const button = getByText("Increase");
 		fireEvent.click(button);
 
 		expect(effectsFired).toBe(suiteKey === "strict" ? 2 : 1);
@@ -539,7 +575,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const App = () => {
 			useActor(machine);
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -570,7 +606,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			React.useEffect(() => {
 				send({ type: "EV" });
 			}, []);
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -611,7 +647,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			React.useEffect(() => {
 				send({ type: "EV" });
 			}, []);
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -653,7 +689,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			React.useEffect(() => {
 				send({ type: "EV" });
 			}, []);
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -690,25 +726,28 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		const App = () => {
 			const [state, send] = useActor(machine);
 			return (
-				<>
-					<div data-testid="result">{state.value}</div>
-					<button onClick={() => send({ type: "EV" })} />
-				</>
+				<frame>
+					<textlabel Tag="data-testid=result" Text={state.value}></textlabel>
+					<textbutton
+						Tag="data-testid=button"
+						Event={{ Activated: () => send({ type: "EV" }) }}
+					/>
+				</frame>
 			);
 		};
 
 		render(<App />);
 
-		const btn = screen.getByRole("button");
+		const btn = screen.getByTestId("button");
 		fireEvent.click(btn);
 
-		expect(screen.getByTestId("result").Text).toBe("b");
+		expect((screen.getByTestId("result") as TextLabel).Text).toBe("b");
 
 		act(() => {
 			jest.advanceTimersByTime(310);
 		});
 
-		expect(screen.getByTestId("result").Text).toBe("c");
+		expect((screen.getByTestId("result") as TextLabel).Text).toBe("c");
 	});
 
 	it("should not use stale data in a guard", () => {
@@ -740,20 +779,23 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 				}),
 			);
 			return (
-				<>
-					<div data-testid="result">{state.value}</div>
-					<button onClick={() => send({ type: "EV" })} />
-				</>
+				<frame>
+					<textlabel Tag="data-testid=result" Text={state.value}></textlabel>
+					<textbutton
+						Tag="data-testid=button"
+						Event={{ Activated: () => send({ type: "EV" }) }}
+					/>
+				</frame>
 			);
 		};
 
 		const { rerender } = render(<App isAwesome={false} />);
 		rerender(<App isAwesome={true} />);
 
-		const btn = screen.getByRole("button");
+		const btn = screen.getByTestId("button");
 		fireEvent.click(btn);
 
-		expect(screen.getByTestId("result").Text).toBe("b");
+		expect((screen.getByTestId("result") as TextLabel).Text).toBe("b");
 	});
 
 	it("should not invoke initial services more than once", () => {
@@ -776,7 +818,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		const Test = () => {
 			useActor(machine);
 
-			return null;
+			return <></>;
 		};
 
 		render(<Test />);
@@ -807,23 +849,22 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 				send({ type: "FINISH" });
 			}, []);
 
-			return null;
+			return <></>;
 		};
 
 		const Test = () => {
 			const [state, send] = useActor(machine);
 
 			return (
-				<>
+				<textlabel Text={state.value}>
 					<ChildTest send={send} />
-					{state.value}
-				</>
+				</textlabel>
 			);
 		};
 
 		const { container } = render(<Test />);
 
-		expect(container.Text).toBe("success");
+		expect((container as TextLabel).Text).toBe("success");
 	});
 
 	it("custom data should be available right away for the invoked actor", () => {
@@ -873,7 +914,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 			expect(childState.context.value).toBe(42);
 
-			return null;
+			return <></>;
 		};
 
 		render(<Test />);
@@ -913,12 +954,17 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const Test = () => {
 			const [state, send] = useActor(testMachine, {
-				snapshot: HttpService.JSONDecode(persistedState),
+				snapshot: HttpService.JSONDecode(persistedState) as never,
 			});
 
 			currentState = state;
 
-			return <button onClick={() => send({ type: "START" })} data-testid="button"></button>;
+			return (
+				<textbutton
+					Event={{ Activated: () => send({ type: "START" }) }}
+					Tag="data-testid=button"
+				></textbutton>
+			);
 		};
 
 		render(<Test />);
@@ -956,12 +1002,12 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const App = () => {
 			const [state] = useActor(m);
-			return <>{state.context.count}</>;
+			return <textlabel Text={`${state.context.count}`}></textlabel>;
 		};
 
 		const { container } = render(<App />);
 
-		expect(container.Text).toBe("2");
+		expect((container as TextLabel).Text).toBe("2");
 	});
 
 	it("should deliver messages sent from an effect to an actor registered in the system", () => {
@@ -986,7 +1032,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 				actor.system.get("child")!.send({ type: "PING" });
 			});
 
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -995,7 +1041,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 	});
 
 	it("should work with `onSnapshot`", () => {
-		const subject = new BehaviorSubject(0);
+		const subject = new BehaviorSubjectStub(0);
 
 		const spy = jest.fn();
 
@@ -1012,7 +1058,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const App = () => {
 			useActor(machine);
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -1040,17 +1086,17 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		const App = () => {
 			const [state] = useActor(machine);
-			return <>{state.value}</>;
+			return <textlabel Text={state.value} />;
 		};
 
 		const { container } = render(<App />);
 
-		expect(container.Text).toBe("one");
+		expect((container as TextLabel).Text).toBe("one");
 
 		await act(async () => {
 			await sleep(10);
 		});
 
-		expect(container.Text).toBe("two");
+		expect((container as TextLabel).Text).toBe("two");
 	});
 });

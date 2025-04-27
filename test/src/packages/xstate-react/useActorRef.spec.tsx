@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { fireEvent, screen, waitFor as testWaitFor } from "@rbxts/react-testing-library";
 import * as React from "react";
 import {
@@ -13,6 +22,7 @@ import {
 } from "@rbxts/xstate";
 import { useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
 import { describeEachReactMode } from "./utils";
+import { Object, setTimeout } from "@rbxts/luau-polyfill";
 
 describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 	it("observer should be called with next state", (_, done) => {
@@ -40,17 +50,19 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			}, [actorRef]);
 
 			return (
-				<button
-					data-testid="button"
-					onClick={() => {
-						actorRef.send({ type: "ACTIVATE" });
+				<textbutton
+					Tag="data-testid=button"
+					Event={{
+						Activated: () => {
+							actorRef.send({ type: "ACTIVATE" });
+						},
 					}}
-				></button>
+				></textbutton>
 			);
 		};
 
 		render(<App />);
-		const button = screen.getByTestId("button");
+		const button = screen.getByTestId("button") as TextLabel;
 
 		fireEvent.click(button);
 	});
@@ -84,7 +96,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 				service.send({ type: "EXEC_ACTION" });
 			});
 
-			return null;
+			return <></>;
 		};
 
 		const { rerender } = render(<App value={1} />);
@@ -125,22 +137,24 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			);
 
 			return (
-				<>
-					<button
-						onClick={() => {
-							setId(2);
+				<frame>
+					<textbutton
+						Tag="data-testid=button"
+						Event={{
+							Activated: () => {
+								setId(2);
+							},
 						}}
-					>
-						update id
-					</button>
-					<span>{id}</span>
-				</>
+						Text="update id"
+					></textbutton>
+					<textlabel Text={`${id}`}></textlabel>
+				</frame>
 			);
 		};
 
 		render(<App />);
 
-		fireEvent.click(screen.getByRole("button"));
+		fireEvent.click(screen.getByTestId("button"));
 
 		expect(screen.getByText("2")).toBeTruthy();
 	});
@@ -176,22 +190,24 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const childState = useSelector(parentState.context.childRef, s => s);
 
 			return (
-				<>
-					<button
-						data-testid="button"
-						onClick={() => parentActor.send({ type: "SEND_TO_CHILD" })}
-					>
-						Send to child
-					</button>
-					<div data-testid="child-state">{childState.value as string}</div>
-				</>
+				<frame>
+					<textbutton
+						Tag="data-testid=button"
+						Event={{ Activated: () => parentActor.send({ type: "SEND_TO_CHILD" }) }}
+						Text="Send to child"
+					></textbutton>
+					<textlabel
+						Tag="data-testid=child-state"
+						Text={childState.value as string}
+					></textlabel>
+				</frame>
 			);
 		};
 
 		render(<App />);
 
-		const button = screen.getByTestId("button");
-		const childState = screen.getByTestId("child-state");
+		const button = screen.getByTestId("button") as TextLabel;
+		const childState = screen.getByTestId("child-state") as TextLabel;
 
 		expect(childState.Text).toBe("waiting");
 
@@ -234,22 +250,24 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const childState = useSelector(parentState.context.childRef, s => s);
 
 			return (
-				<>
-					<button
-						data-testid="button"
-						onClick={() => parentSend({ type: "SEND_TO_CHILD" })}
-					>
-						Send to child
-					</button>
-					<div data-testid="child-state">{childState.value as string}</div>
-				</>
+				<frame>
+					<textbutton
+						Tag="data-testid=button"
+						Event={{ Activated: () => parentSend({ type: "SEND_TO_CHILD" }) }}
+						Text="Send to child"
+					></textbutton>
+					<textlabel
+						Tag="data-testid=child-state"
+						Text={childState.value as string}
+					></textlabel>
+				</frame>
 			);
 		};
 
 		render(<App />);
 
-		const button = screen.getByTestId("button");
-		const childState = screen.getByTestId("child-state");
+		const button = screen.getByTestId("button") as TextLabel;
+		const childState = screen.getByTestId("child-state") as TextLabel;
 
 		expect(childState.Text).toBe("waiting");
 
@@ -275,7 +293,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 				actor.system?.get("test")!.send({ type: "PING" });
 			});
 
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -296,15 +314,17 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const count = useSelector(actorRef, state => state);
 
 			return (
-				<div data-testid="count" onClick={() => actorRef.send({ type: "inc" })}>
-					{count.context}
-				</div>
+				<textbutton
+					Tag="data-testid=count"
+					Event={{ Activated: () => actorRef.send({ type: "inc" }) }}
+					Text={`${count.context}`}
+				></textbutton>
 			);
 		};
 
 		render(<App />);
 
-		const count = screen.getByTestId("count");
+		const count = screen.getByTestId("count") as TextLabel;
 
 		expect(count.Text).toBe("0");
 
@@ -322,12 +342,12 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const actorRef = useActorRef(promiseLogic);
 			const count = useSelector(actorRef, state => state);
 
-			return <div data-testid="count">{count.output}</div>;
+			return <textlabel Tag="data-testid=count" Text={`${count.output}`}></textlabel>;
 		};
 
 		render(<App />);
 
-		const count = screen.getByTestId("count");
+		const count = screen.getByTestId("count") as TextLabel;
 
 		expect(count.Text).toBe("");
 
@@ -375,7 +395,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 				}
 			}, []);
 
-			return null;
+			return <></>;
 		};
 
 		const Test = () => {
@@ -435,7 +455,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 				}
 			}, []);
 
-			return null;
+			return <></>;
 		};
 
 		const Test = () => {
@@ -477,27 +497,27 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const value = useSelector(actorRef, state => state.value);
 
 			return (
-				<>
-					<button
-						type="button"
-						onClick={() => {
-							setMachine(machine2);
+				<frame>
+					<textbutton
+						Event={{
+							Activated: () => {
+								setMachine(machine2);
+							},
 						}}
-					>
-						Reload machine
-					</button>
-					<button
-						type="button"
-						onClick={() => {
-							actorRef.send({
-								type: "NEXT",
-							});
+						Text="Reload machine"
+					></textbutton>
+					<textbutton
+						Event={{
+							Activated: () => {
+								actorRef.send({
+									type: "NEXT",
+								});
+							},
 						}}
-					>
-						Send event
-					</button>
-					<span>{value as string}</span>
-				</>
+						Text="Send event"
+					></textbutton>
+					<textlabel Text={value as string}></textlabel>
+				</frame>
 			);
 		}
 
@@ -536,27 +556,27 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const value = useSelector(actorRef, state => state.value);
 
 			return (
-				<>
-					<button
-						type="button"
-						onClick={() => {
-							setMachine(machine2);
+				<frame>
+					<textbutton
+						Event={{
+							Activated: () => {
+								setMachine(machine2);
+							},
 						}}
-					>
-						Reload machine
-					</button>
-					<button
-						type="button"
-						onClick={() => {
-							actorRef.send({
-								type: "NEXT",
-							});
+						Text="Reload machine"
+					></textbutton>
+					<textbutton
+						Event={{
+							Activated: () => {
+								actorRef.send({
+									type: "NEXT",
+								});
+							},
 						}}
-					>
-						Send event
-					</button>
-					<span>{value as string}</span>
-				</>
+						Text="Send event"
+					></textbutton>
+					<textlabel Text={value as string}></textlabel>
+				</frame>
 			);
 		}
 
@@ -583,16 +603,16 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			rerenders++;
 
 			return (
-				<>
-					<button
-						type="button"
-						onClick={() => {
-							setMachine(machine2);
+				<frame>
+					<textbutton
+						Event={{
+							Activated: () => {
+								setMachine(machine2);
+							},
 						}}
-					>
-						Reload machine
-					</button>
-				</>
+						Text="Reload machine"
+					></textbutton>
+				</frame>
 			);
 		}
 
@@ -626,16 +646,16 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			detectedInconsistency ||= machine.config.tags[0] !== tag;
 
 			return (
-				<>
-					<button
-						type="button"
-						onClick={() => {
-							setMachine(machine2);
+				<frame>
+					<textbutton
+						Event={{
+							Activated: () => {
+								setMachine(machine2);
+							},
 						}}
-					>
-						Reload machine
-					</button>
-				</>
+						Text="Reload machine"
+					></textbutton>
+				</frame>
 			);
 		}
 
@@ -667,16 +687,16 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const tag = useSelector(actorRef, state => [...state.tags][0]);
 
 			return (
-				<>
-					<button
-						type="button"
-						onClick={() => {
-							setMachine(machine2);
+				<frame>
+					<textbutton
+						Event={{
+							Activated: () => {
+								setMachine(machine2);
+							},
 						}}
-					>
-						Reload machine
-					</button>
-				</>
+						Text="Reload machine"
+					></textbutton>
+				</frame>
 			);
 		}
 
@@ -718,27 +738,29 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const actorRef = useActorRef(machine);
 
 			return (
-				<>
-					<button
-						type="button"
-						onClick={() => {
-							setMachine(machine2);
+				<frame>
+					<textbutton
+						Event={{
+							Activated: () => {
+								setMachine(machine2);
+							},
 						}}
-					>
-						Reload machine
-					</button>
-					<button
-						type="button"
-						onClick={() => {
-							const child: any = Object.values(actorRef.getSnapshot().children)[0];
-							child.send({
-								type: "EV",
-							});
+						Text="Reload machine"
+					></textbutton>
+					<textbutton
+						Event={{
+							Activated: () => {
+								const child: any = Object.values(
+									actorRef.getSnapshot().children,
+								)[0];
+								child.send({
+									type: "EV",
+								});
+							},
 						}}
-					>
-						Send event
-					</button>
-				</>
+						Text="Send event"
+					></textbutton>
+				</frame>
 			);
 		}
 
@@ -782,22 +804,23 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			);
 
 			return (
-				<button
-					type="button"
-					onClick={() => {
-						actorRef1.send({
-							type: "DO",
-						});
+				<textbutton
+					Tag="data-testid=button"
+					Event={{
+						Activated: () => {
+							actorRef1.send({
+								type: "DO",
+							});
+						},
 					}}
-				>
-					Click
-				</button>
+					Text="Click"
+				></textbutton>
 			);
 		};
 
 		render(<Test />);
 
-		screen.getByRole("button").click();
+		fireEvent.click(screen.getByTestId("button"));
 
 		expect(spy1).toHaveBeenCalledTimes(1);
 		expect(spy2).never.toHaveBeenCalled();
@@ -812,7 +835,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		const Test = () => {
 			useActorRef(machine);
-			return null;
+			return <></>;
 		};
 
 		render(<Test />);

@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { act, fireEvent, screen } from "@rbxts/react-testing-library";
 import * as React from "react";
 import {
@@ -49,24 +58,24 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			rerenders++;
 
 			return (
-				<>
-					<div data-testid="count">{count}</div>
-					<button
-						data-testid="other"
-						onClick={() => service.send({ type: "OTHER" })}
-					></button>
-					<button
-						data-testid="increment"
-						onClick={() => service.send({ type: "INCREMENT" })}
-					></button>
-				</>
+				<frame>
+					<textlabel Tag="data-testid=count" Text={`${count}`}></textlabel>
+					<textbutton
+						Tag="data-testid=other"
+						Event={{ Activated: () => service.send({ type: "OTHER" }) }}
+					></textbutton>
+					<textbutton
+						Tag="data-testid=increment"
+						Event={{ Activated: () => service.send({ type: "INCREMENT" }) }}
+					></textbutton>
+				</frame>
 			);
 		};
 
 		render(<App />);
-		const countButton = screen.getByTestId("count");
-		const otherButton = screen.getByTestId("other");
-		const incrementEl = screen.getByTestId("increment");
+		const countButton = screen.getByTestId("count") as TextLabel;
+		const otherButton = screen.getByTestId("other") as TextLabel;
+		const incrementEl = screen.getByTestId("increment") as TextLabel;
 
 		fireEvent.click(incrementEl);
 
@@ -109,28 +118,32 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const name = useSelector(
 				service,
 				state => state.context.name,
-				(a, b) => a.toUpperCase() === b.toUpperCase(),
+				(a, b) => a.upper() === b.upper(),
 			);
 
 			return (
-				<>
-					<div data-testid="name">{name}</div>
-					<button
-						data-testid="sendUpper"
-						onClick={() => service.send({ type: "CHANGE", value: "DAVID" })}
-					></button>
-					<button
-						data-testid="sendOther"
-						onClick={() => service.send({ type: "CHANGE", value: "other" })}
-					></button>
-				</>
+				<frame>
+					<textlabel Tag="data-testid=name" Text={name}></textlabel>
+					<textbutton
+						Tag="data-testid=sendUpper"
+						Event={{
+							Activated: () => service.send({ type: "CHANGE", value: "DAVID" }),
+						}}
+					></textbutton>
+					<textbutton
+						Tag="data-testid=sendOther"
+						Event={{
+							Activated: () => service.send({ type: "CHANGE", value: "other" }),
+						}}
+					></textbutton>
+				</frame>
 			);
 		};
 
 		render(<App />);
-		const nameEl = screen.getByTestId("name");
-		const sendUpperButton = screen.getByTestId("sendUpper");
-		const sendOtherButton = screen.getByTestId("sendOther");
+		const nameEl = screen.getByTestId("name") as TextLabel;
+		const sendUpperButton = screen.getByTestId("sendUpper") as TextLabel;
+		const sendOtherButton = screen.getByTestId("sendOther") as TextLabel;
 
 		expect(nameEl.Text).toEqual("david");
 
@@ -184,26 +197,26 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			}, [user]);
 
 			return (
-				<>
-					<div data-testid="name">{user.name}</div>
-					<div data-testid="changes">{userChanges}</div>
-					<button
-						data-testid="sendSame"
-						onClick={() => service.send({ type: "change.same" })}
-					></button>
-					<button
-						data-testid="sendOther"
-						onClick={() => service.send({ type: "change.other" })}
-					></button>
-				</>
+				<frame>
+					<textlabel Tag="data-testid=name" Text={user.name}></textlabel>
+					<textlabel Tag="data-testid=changes" Text={`${userChanges}`}></textlabel>
+					<textbutton
+						Tag="data-testid=sendSame"
+						Event={{ Activated: () => service.send({ type: "change.same" }) }}
+					></textbutton>
+					<textbutton
+						Tag="data-testid=sendOther"
+						Event={{ Activated: () => service.send({ type: "change.other" }) }}
+					></textbutton>
+				</frame>
 			);
 		};
 
 		render(<App />);
-		const nameEl = screen.getByTestId("name");
-		const changesEl = screen.getByTestId("changes");
-		const sendSameButton = screen.getByTestId("sendSame");
-		const sendOtherButton = screen.getByTestId("sendOther");
+		const nameEl = screen.getByTestId("name") as TextLabel;
+		const changesEl = screen.getByTestId("changes") as TextLabel;
+		const sendSameButton = screen.getByTestId("sendSame") as TextLabel;
+		const sendOtherButton = screen.getByTestId("sendOther") as TextLabel;
 
 		expect(nameEl.Text).toEqual("david");
 
@@ -254,7 +267,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 			expect(state.value).toEqual("active");
 
-			return null;
+			return <></>;
 		};
 
 		const Test = () => {
@@ -302,21 +315,21 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const count = useSelector(actor, selector);
 
 			return (
-				<>
-					<div data-testid="count">{count}</div>
+				<frame>
+					<textlabel Tag="data-testid=count" Text={`${count}`}></textlabel>
 
-					<button
-						onClick={() => actor.send({ type: "UPDATE_COUNT" })}
-						data-testid="button"
+					<textbutton
+						Event={{ Activated: () => actor.send({ type: "UPDATE_COUNT" }) }}
+						Tag="data-testid=button"
 					/>
-				</>
+				</frame>
 			);
 		};
 
 		render(<App />);
 
-		const buttonEl = screen.getByTestId("button");
-		const countEl = screen.getByTestId("count");
+		const buttonEl = screen.getByTestId("button") as TextLabel;
+		const countEl = screen.getByTestId("count") as TextLabel;
 
 		expect(countEl.Text).toEqual("0");
 		fireEvent.click(buttonEl);
@@ -346,11 +359,11 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 			const value = useSelector(actor, identitySelector);
 
-			return <>{value.context}</>;
+			return <textlabel Text={value.context} />;
 		};
 
 		const { container } = render(<App />);
-		expect(container.Text).toEqual("foo");
+		expect((container as TextLabel).Text).toEqual("foo");
 	});
 
 	it("should rerender with a new value when the selector changes", () => {
@@ -384,15 +397,15 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const actor = state.context.childActor;
 			const value = useSelector(actor, state => `${prop} ${state.context.count}`);
 
-			return <div data-testid="value">{value}</div>;
+			return <textlabel Tag="data-testid=value" Text={value}></textlabel>;
 		};
 
 		const { container, rerender } = render(<App prop="first" />);
 
-		expect(container.Text).toEqual("first 0");
+		expect((container as TextLabel).Text).toEqual("first 0");
 
 		rerender(<App prop="second" />);
-		expect(container.Text).toEqual("second 0");
+		expect((container as TextLabel).Text).toEqual("second 0");
 	});
 
 	it("should use a fresh selector for subscription updates after selector change", () => {
@@ -427,22 +440,25 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const value = useSelector(actor, state => `${prop} ${state.context.count}`);
 
 			return (
-				<>
-					<div data-testid="value">{value}</div>
+				<frame>
+					<textlabel Tag="data-testid=value" Text={value}></textlabel>
 
-					<button
-						onClick={() => {
-							actor.send({ type: "INC" });
+					<textbutton
+						Tag="data-testid=button"
+						Event={{
+							Activated: () => {
+								actor.send({ type: "INC" });
+							},
 						}}
 					/>
-				</>
+				</frame>
 			);
 		};
 
 		const { rerender } = render(<App prop="first" />);
 
-		const buttonEl = screen.getByRole("button");
-		const valueEl = screen.getByTestId("value");
+		const buttonEl = screen.getByTestId("button");
+		const valueEl = screen.getByTestId("value") as TextLabel;
 
 		expect(valueEl.Text).toEqual("first 0");
 
@@ -478,7 +494,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<App />);
-		expect(container.Text).toEqual("foo");
+		expect((container as TextLabel).Text).toEqual("foo");
 	});
 
 	it("should render snapshot state when actor changes", () => {
@@ -497,10 +513,10 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container, rerender } = render(<App prop="first" />);
-		expect(container.Text).toEqual("foo");
+		expect((container as TextLabel).Text).toEqual("foo");
 
 		rerender(<App prop="second" />);
-		expect(container.Text).toEqual("bar");
+		expect((container as TextLabel).Text).toEqual("bar");
 	});
 
 	it("should keep rendering a new selected value after selector change when the actor doesn't emit", async () => {
@@ -512,21 +528,23 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const value = useSelector(actor, selector);
 
 			return (
-				<>
-					{value as number}
-					<button type="button" onClick={() => forceRerender(s => s + 1)}></button>
-				</>
+				<textlabel Text={`${value as number}`}>
+					<textbutton
+						Tag="data-testid=button"
+						Event={{ Activated: () => forceRerender(s => s + 1) }}
+					></textbutton>
+				</textlabel>
 			);
 		};
 
 		const { container, rerender } = render(<App selector={() => "foo"} />);
-		expect(container.Text).toEqual("foo");
+		expect((container as TextLabel).Text).toEqual("foo");
 
 		rerender(<App selector={() => "bar"} />);
-		expect(container.Text).toEqual("bar");
+		expect((container as TextLabel).Text).toEqual("bar");
 
-		fireEvent.click(await screen.findByRole("button"));
-		expect(container.Text).toEqual("bar");
+		fireEvent.click(await screen.findByTestId("button"));
+		expect((container as TextLabel).Text).toEqual("bar");
 	});
 
 	it("should only rerender once when the selected value changes", () => {
@@ -554,7 +572,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			++renders;
 			useSelector(service, selector);
 
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -585,7 +603,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 				snapshots.push(state);
 				return state.children.child;
 			});
-			return null;
+			return <></>;
 		}
 
 		// console.error = jest.fn();
@@ -611,7 +629,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const service = useActorRef(machine);
 			useSelector(service, () => {});
 			expect(called).toBe(false);
-			return null;
+			return <></>;
 		}
 
 		render(<App />);
@@ -655,20 +673,20 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const childState = useSelector(childRef, s => s);
 
 			return (
-				<>
-					<div data-testid="child-state">{childState.value}</div>
-					<button
-						data-testid="child-send"
-						onClick={() => childRef.send({ type: "NEXT" })}
-					></button>
-				</>
+				<frame>
+					<textlabel Tag="data-testid=child-state" Text={childState.value}></textlabel>
+					<textbutton
+						Tag="data-testid=child-send"
+						Event={{ Activated: () => childRef.send({ type: "NEXT" }) }}
+					></textbutton>
+				</frame>
 			);
 		};
 
 		render(<App />);
 
-		const elState = screen.getByTestId("child-state");
-		const elSend = screen.getByTestId("child-send");
+		const elState = screen.getByTestId("child-state") as TextLabel;
+		const elSend = screen.getByTestId("child-send") as TextLabel;
 
 		expect(elState.Text).toEqual("one");
 		fireEvent.click(elSend);
@@ -684,7 +702,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const App = () => {
 			useSelector(useActorRef(machine), s => s);
 
-			return null;
+			return <></>;
 		};
 
 		render(<App />);
@@ -702,7 +720,9 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			((_accept: { count: number }) => {})(state?.context);
 			((_accept: { count: number } | undefined) => {})(state?.context);
 
-			return <div data-testid="state">{state?.context?.count ?? "undefined"}</div>;
+			return (
+				<textlabel Tag="data-testid=state" Text={`${state?.context?.count}`}></textlabel>
+			);
 		};
 
 		const App = () => {
@@ -710,24 +730,26 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 				React.useState<ActorRef<TransitionSnapshot<{ count: number }>, any>>();
 
 			return (
-				<>
-					<button
-						data-testid="button"
-						onClick={() => setActor(createActor(fromTransition(s => s, { count: 42 })))}
-					>
-						Set actor
-					</button>
+				<frame>
+					<textbutton
+						Tag="data-testid=button"
+						Event={{
+							Activated: () =>
+								setActor(createActor(fromTransition(s => s, { count: 42 }))),
+						}}
+						Text="Set actor"
+					></textbutton>
 					<Child actor={actor} />
-				</>
+				</frame>
 			);
 		};
 
 		render(<App />);
 
-		const button = screen.getByTestId("button");
-		const stateEl = screen.getByTestId("state");
+		const button = screen.getByTestId("button") as TextLabel;
+		const stateEl = screen.getByTestId("state") as TextLabel;
 
-		expect(stateEl.Text).toBe("undefined");
+		expect(stateEl.Text).toBe("nil");
 
 		fireEvent.click(button);
 
