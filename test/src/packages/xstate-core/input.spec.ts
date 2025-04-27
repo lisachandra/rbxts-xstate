@@ -1,8 +1,22 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 // import { of } from "rxjs";
 import { assign, createActor, spawnChild } from "@rbxts/xstate";
 import { createMachine } from "@rbxts/xstate/out/createMachine";
-import { fromCallback, fromObservable, fromPromise, fromTransition } from "@rbxts/xstate/out/actors";
+import {
+	fromCallback,
+	fromObservable,
+	fromPromise,
+	fromTransition,
+} from "@rbxts/xstate/out/actors";
 import { setTimeout } from "@rbxts/luau-polyfill";
 
 describe("input", () => {

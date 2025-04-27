@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { Object } from "@rbxts/luau-polyfill";
 import { createActor, createMachine, assign, setup } from "@rbxts/xstate";
 

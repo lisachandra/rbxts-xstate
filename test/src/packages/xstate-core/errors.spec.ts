@@ -1,4 +1,14 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test, afterEach } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+	afterEach,
+} from "@rbxts/jest-globals";
 import { sleep } from "test/env-utils";
 import {
 	assign,
@@ -10,19 +20,25 @@ import {
 } from "@rbxts/xstate";
 import { Error, Object, setTimeout } from "@rbxts/luau-polyfill";
 
-interface ErrorEvent { error: { message: string } }
+interface ErrorEvent {
+	error: { message: string };
+}
 
-const originalConsoleError = (jest as never as { globalEnv: { error: jest.Mock } }).globalEnv.error as never as typeof error
+const originalConsoleError = (jest as never as { globalEnv: { error: jest.Mock } }).globalEnv
+	.error as never as typeof error;
 
 const cleanups: (() => void)[] = [];
 function installGlobalOnErrorHandler(handler: (ev: ErrorEvent) => void) {
-	jest.spyOn((jest as never as { globalEnv: { error: jest.Mock } }).globalEnv, "error").mockImplementation((err) => {
+	jest.spyOn(
+		(jest as never as { globalEnv: { error: jest.Mock } }).globalEnv,
+		"error",
+	).mockImplementation(err => {
 		if (err instanceof Error) {
-			handler({ error: err })
+			handler({ error: err });
 		}
 
-		originalConsoleError(err)
-	})
+		originalConsoleError(err);
+	});
 }
 
 afterEach(() => {
@@ -244,7 +260,7 @@ describe("error handling", () => {
 		actorRef.start();
 
 		await sleep(0);
-/*
+		/*
 		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -301,7 +317,7 @@ describe("error handling", () => {
 		actorRef.start();
 
 		await sleep(0);
-/*
+		/*
 
 		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
       [
@@ -506,7 +522,7 @@ describe("error handling", () => {
 			error: errorSpy,
 		});
 		actorRef.start();
-/*
+		/*
 
 		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
       [
@@ -773,7 +789,7 @@ describe("error handling", () => {
 			error: errorSpy,
 		});
 		actorRef.start();
-/*
+		/*
 
 		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
       [

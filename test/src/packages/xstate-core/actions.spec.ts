@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { sleep } from "test/env-utils";
 import {
 	cancel,
@@ -1951,7 +1960,7 @@ describe("initial actions", () => {
 		actorRef.send({
 			type: "NEXT",
 		});
-/*
+		/*
 		expect(spy.mock.calls).toMatchInlineSnapshot(`
       [
         [
@@ -1985,7 +1994,7 @@ describe("initial actions", () => {
 		});
 
 		createActor(machine).start();
-/*
+		/*
 		expect(spy.mock.calls).toMatchInlineSnapshot(`
       [
         [
@@ -2480,7 +2489,7 @@ describe("forwardTo()", () => {
 		});
 		actorRef.start();
 		actorRef.send({ type: "TEST" });
-/*
+		/*
 		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -2493,12 +2502,12 @@ describe("forwardTo()", () => {
 
 describe("log()", () => {
 	it("should log a string", () => {
-		const consoleSpy = print as jest.Mock
+		const consoleSpy = print as jest.Mock;
 		const machine = createMachine({
 			entry: log("some string", "string label"),
 		});
 		createActor(machine, { logger: consoleSpy }).start();
-/*
+		/*
 		expect(consoleSpy.mock.calls).toMatchInlineSnapshot(`
       [
         [
@@ -2510,15 +2519,18 @@ describe("log()", () => {
 	});
 
 	it("should log an expression", () => {
-		const consoleSpy = print as jest.Mock
+		const consoleSpy = print as jest.Mock;
 		const machine = createMachine({
 			context: {
 				count: 42,
 			},
-			entry: consoleSpy(({ context }: { context: { count: number } }) => `expr ${context.count}`, "expr label"),
+			entry: consoleSpy(
+				({ context }: { context: { count: number } }) => `expr ${context.count}`,
+				"expr label",
+			),
 		});
 		createActor(machine, { logger: consoleSpy }).start();
-/*
+		/*
 		expect(consoleSpy.mock.calls).toMatchInlineSnapshot(`
       [
         [
@@ -2619,7 +2631,7 @@ describe("enqueueActions", () => {
 		);
 
 		createActor(machine).start();
-/*
+		/*
 		expect(spy).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -2765,7 +2777,7 @@ describe("enqueueActions", () => {
 		);
 
 		createActor(machine);
-/*
+		/*
 		expect(spy).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -3130,7 +3142,7 @@ describe("sendTo", () => {
 			error: errorSpy,
 		});
 		actorRef.start();
-/*
+		/*
 		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -3168,7 +3180,7 @@ describe("sendTo", () => {
 
 		actorRef.send({ type: "NEXT" });
 		actorRef.send({ type: "EVENT" });
-/*
+		/*
 		expect(spy).toMatchMockCallsInlineSnapshot(`
 [
   [
@@ -3237,7 +3249,7 @@ describe("sendTo", () => {
 
 		expect(spy1).toHaveBeenCalledTimes(0);
 		expect(spy2).toHaveBeenCalledTimes(0);
-/*
+		/*
 		expect(warn).toMatchMockCallsInlineSnapshot(`
 [
   [
@@ -3310,7 +3322,7 @@ Event: {"type":"PING"}",
 
 		expect(spy1).toHaveBeenCalledTimes(0);
 		expect(spy2).toHaveBeenCalledTimes(0);
-/*
+		/*
 		expect(warn).toMatchMockCallsInlineSnapshot(`
 [
   [
@@ -3515,7 +3527,7 @@ describe("raise", () => {
 			error: errorSpy,
 		});
 		actorRef.start();
-/*
+		/*
 		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -4260,7 +4272,7 @@ describe("actions", () => {
 		});
 
 		createActor(machine).start();
-/*
+		/*
 		expect(warn).toMatchMockCallsInlineSnapshot(`
 [
   [

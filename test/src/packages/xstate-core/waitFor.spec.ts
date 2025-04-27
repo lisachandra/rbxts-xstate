@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { Error, setTimeout } from "@rbxts/luau-polyfill";
 import { AbortController } from "@rbxts/whatwg-abort-controller";
 import { createActor, waitFor } from "@rbxts/xstate";
@@ -66,7 +75,9 @@ describe("waitFor", () => {
 			waitFor(service, state => state.matches("c"), {
 				timeout: math.huge,
 			}),
-			new Promise(res => setTimeout(res, 10, undefined as never)).then(() => "timeout") as never,
+			new Promise(res => setTimeout(res, 10, undefined as never)).then(
+				() => "timeout",
+			) as never,
 		]);
 
 		expect(result).toBe("timeout");

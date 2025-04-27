@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 // import { interval, of } from "rxjs";
 // import { map, take } from "rxjs/operators";
 import { forwardTo, raise, sendTo } from "@rbxts/xstate/out/actions";

@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { createMachine, createActor } from "@rbxts/xstate";
 import { raise } from "@rbxts/xstate/out/actions/raise";
 import { assign } from "@rbxts/xstate/out/actions/assign";

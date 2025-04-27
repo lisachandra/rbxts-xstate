@@ -190,8 +190,10 @@ describe("json", () => {
 		// 2. onError
 		// 3. EVENT
 		expect(
-			Array.flatMap([...Object.values(revivedMachine.getStateNodeById("active").transitions)], t => t)
-				.size(),
+			Array.flatMap(
+				[...Object.values(revivedMachine.getStateNodeById("active").transitions)],
+				t => t,
+			).size(),
 		).toBe(3);
 	});
 });

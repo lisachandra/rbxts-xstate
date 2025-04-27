@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { createMachine, createActor } from "@rbxts/xstate";
 
 describe("event descriptors", () => {
@@ -260,7 +269,7 @@ describe("event descriptors", () => {
 		actorRef1.send({ type: "event.foo.bar.first.second" });
 
 		expect(actorRef1.getSnapshot().matches("success")).toBeFalsy();
-/*
+		/*
 		expect(warn).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -284,7 +293,7 @@ describe("event descriptors", () => {
 		actorRef2.send({ type: "whatever.event" });
 
 		expect(actorRef2.getSnapshot().matches("success")).toBeFalsy();
-/*
+		/*
 		expect(warn).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -322,7 +331,7 @@ describe("event descriptors", () => {
 		actorRef1.send({ type: "eventually.bar.baz" });
 
 		expect(actorRef1.getSnapshot().matches("success")).toBeFalsy();
-/*
+		/*
 		expect(warn).toMatchMockCallsInlineSnapshot(`
       [
         [
@@ -340,7 +349,7 @@ describe("event descriptors", () => {
 		actorRef2.send({ type: "prevent.whatever" });
 
 		expect(actorRef2.getSnapshot().matches("success")).toBeFalsy();
-/*
+		/*
 		expect(warn).toMatchMockCallsInlineSnapshot(`
       [
         [

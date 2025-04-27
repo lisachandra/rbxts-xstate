@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { Array, Error, Object } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
 // import { BehaviorSubject } from "rxjs";
@@ -9,73 +18,9 @@ import {
 	fromObservable,
 	assign,
 	sendTo,
-	Subscribable, Observer, Subscription
 } from "@rbxts/xstate";
-import { symbolObservable } from "@rbxts/xstate/out/symbolObservable";
 import { sleep } from "test/env-utils";
-
-// Simple stub to replace RxJS BehaviorSubject for testing purposes
-// Implements the Subscribable interface from @rbxts/xstate
-class BehaviorSubjectStub<T> implements Subscribable<T> {
-    private _value: T;
-    private _subscribers: Array<Observer<T>> = [];
-
-	[symbolObservable] = () => this
-
-    constructor(initialValue: T) {
-        this._value = initialValue;
-    }
-
-    // Implements the Subscribable.subscribe method
-    // Supports both Observer object and individual callback signatures
-    subscribe(
-        observerOrNext: Observer<T> | ((value: T) => void),
-        error?: (error: any) => void,
-        complete?: () => void
-    ): Subscription {
-        let observer: Observer<T>;
-
-        // Determine if the first argument is an Observer object or the next callback
-        if (typeof observerOrNext === 'function') {
-            observer = { next: observerOrNext, error, complete };
-        } else {
-            observer = observerOrNext;
-        }
-
-        this._subscribers.push(observer);
-
-        // Immediately emit the current value to the new subscriber if they have a 'next' method
-        if (observer.next) {
-            observer.next(this._value);
-        }
-
-        // Return a Subscription object
-        return {
-            unsubscribe: () => {
-                const index = this._subscribers.indexOf(observer);
-                if (index > -1) {
-                    this._subscribers.remove(index)
-                }
-            }
-        };
-    }
-
-    // Mimics the next method to push new values to subscribers
-    next(value: T) {
-        this._value = value;
-        // Notify all current subscribers who have a 'next' method
-        for (const observer of this._subscribers) {
-            if (observer.next) {
-                observer.next(value);
-            }
-        }
-    }
-
-    // Method to get the current value (useful for debugging or other tests)
-    getValue(): T {
-        return this._value;
-    }
-}
+import { BehaviorSubjectStub } from "./utils";
 
 describe("rehydration", () => {
 	describe("using persisted state", () => {
@@ -132,7 +77,9 @@ describe("rehydration", () => {
 				},
 			});
 
-			const persistedState = HttpService.JSONEncode(createActor(machine).start().getSnapshot());
+			const persistedState = HttpService.JSONEncode(
+				createActor(machine).start().getSnapshot(),
+			);
 			const restoredState = HttpService.JSONDecode(persistedState) as never;
 			const service = createActor(machine, {
 				snapshot: restoredState,

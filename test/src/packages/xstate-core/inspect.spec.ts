@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import {
 	createActor,
 	createMachine,
@@ -99,7 +108,7 @@ describe("inspect", () => {
 		actor.send({ type: "NEXT" });
 		actor.send({ type: "NEXT" });
 
-    /*
+		/*
 		expect(
 			simplifyEvents(events, ev =>
 				["@xstate.actor", "@xstate.event", "@xstate.snapshot"].includes(ev.type),
@@ -235,7 +244,7 @@ describe("inspect", () => {
 
 		await waitFor(actor, state => state.value === "success");
 
-    /*
+		/*
 		expect(
 			simplifyEvents(events, ev =>
 				["@xstate.actor", "@xstate.event", "@xstate.snapshot"].includes(ev.type),

@@ -1,4 +1,13 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 import { SimulatedClock } from "@rbxts/xstate/out/SimulatedClock";
 import {
 	createActor,
@@ -1686,7 +1695,7 @@ describe("interpreter", () => {
 							),
 							{ id: "promiseChild" },
 						),
-						/*
+					/*
 						// FIXME: Observables not supported
 					observableRef: ({ spawn }) =>
 						spawn(

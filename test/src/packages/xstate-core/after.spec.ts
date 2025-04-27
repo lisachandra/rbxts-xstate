@@ -1,4 +1,14 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test, afterEach } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+	afterEach,
+} from "@rbxts/jest-globals";
 import { sleep } from "test/env-utils";
 import { createMachine, createActor, cancel, Snapshot } from "@rbxts/xstate";
 import { Object, setTimeout } from "@rbxts/luau-polyfill";
@@ -248,7 +258,9 @@ describe("delayed transitions", () => {
 
 		let service = createActor(createMyMachine()).start();
 
-		const persistedSnapshot = HttpService.JSONDecode(HttpService.JSONEncode(service.getSnapshot()));
+		const persistedSnapshot = HttpService.JSONDecode(
+			HttpService.JSONEncode(service.getSnapshot()),
+		);
 
 		service = createActor(createMyMachine(), {
 			snapshot: persistedSnapshot as Snapshot<unknown>,

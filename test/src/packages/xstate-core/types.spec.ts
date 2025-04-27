@@ -1,9 +1,23 @@
-import { describe, beforeEach, it, expect, afterAll, beforeAll, jest, test } from "@rbxts/jest-globals";
+import {
+	describe,
+	beforeEach,
+	it,
+	expect,
+	afterAll,
+	beforeAll,
+	jest,
+	test,
+} from "@rbxts/jest-globals";
 // import { from } from "rxjs";
 import { log } from "@rbxts/xstate/out/actions/log";
 import { raise } from "@rbxts/xstate/out/actions/raise";
 import { stopChild } from "@rbxts/xstate/out/actions/stopChild";
-import { PromiseActorLogic, createEmptyActor, fromCallback, fromPromise } from "@rbxts/xstate/out/actors";
+import {
+	PromiseActorLogic,
+	createEmptyActor,
+	fromCallback,
+	fromPromise,
+} from "@rbxts/xstate/out/actors";
 import {
 	ActorRefFrom,
 	ActorRefFromLogic,
