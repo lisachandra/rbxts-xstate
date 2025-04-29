@@ -49,9 +49,9 @@ describe("events", () => {
 						id: "auth-server",
 						src: authServerMachine,
 					},
-					entry: sendTo("auth-server", ({ self }) => ({
+					entry: sendTo("auth-server", ({ self: itself }: { self: unknown }) => ({
 						type: "CODE",
-						sender: self,
+						sender: itself,
 					})),
 					on: {
 						TOKEN: "authorized",

@@ -1,4 +1,4 @@
-import isDevelopment from "./isDevelopment";
+import isDevelopment from "./utils/polyfill/isDevelopment";
 import type {
 	EventObject,
 	StateValue,
@@ -11,7 +11,7 @@ import type {
 	Elements,
 	DoNotInfer,
 } from "./types";
-import { isStateId } from "./stateUtils";
+import { isStateId } from "utils/state/isStateId";
 import { Error } from "@rbxts/luau-polyfill";
 
 type SingleGuardArg<

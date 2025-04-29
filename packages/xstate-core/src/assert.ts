@@ -1,6 +1,6 @@
 import { Error } from "@rbxts/luau-polyfill";
 import { EventObject } from "./types";
-import { toArray } from "./utils";
+import { toArray } from "utils/polyfill/array";
 import { HttpService } from "@rbxts/services";
 
 /**

@@ -75,15 +75,15 @@ describe("delayed transitions", () => {
 
 		const actorRef = createActor(machine, {
 			clock: {
-				setTimeout,
-				clearTimeout: spy,
+				setTimeout: setTimeout as never,
+				clearTimeout: spy as never,
 			},
 		}).start();
 
 		// when the after transition gets executed it tries to clear its own timer when exiting its source state
 		await sleep(5);
 		expect(actorRef.getSnapshot().value).toBe("yellow");
-		expect(spy.mock.calls.size()).toBe(0);
+		expect(spy.mock.calls).toHaveLength(0);
 	});
 
 	it("should format transitions properly", () => {

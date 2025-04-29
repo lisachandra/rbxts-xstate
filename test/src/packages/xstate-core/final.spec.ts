@@ -8,7 +8,14 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { createMachine, createActor, assign, AnyActorRef, sendParent } from "@rbxts/xstate";
+import {
+	createMachine,
+	createActor,
+	assign,
+	AnyActorRef,
+	sendParent,
+	AnyObject,
+} from "@rbxts/xstate";
 import { trackEntries } from "./utils";
 
 describe("final states", () => {
@@ -160,7 +167,7 @@ describe("final states", () => {
 						target: "success",
 						actions: assign({
 							revealedSecret: ({ event }) => {
-								return (event.output as any).secret;
+								return (event.output as AnyObject).secret as never;
 							},
 						}),
 					},
@@ -220,11 +227,11 @@ describe("final states", () => {
 					type: "final",
 				},
 			},
-			output: ({ self }) => ({ selfRef: self }),
+			output: ({ self: itself }) => ({ selfRef: itself }),
 		});
 
 		const actor = createActor(machine).start();
-		expect(actor.getSnapshot().output!.selfRef.send).toBeDefined();
+		expect(actor.getSnapshot().output!.selfRef["send" as never]).toBeDefined();
 	});
 
 	it("state output should be able to use context updated by the entry action of the reached final state", () => {
@@ -1246,7 +1253,7 @@ describe("final states", () => {
 		expect(actorRef.getSnapshot().value).toBe("canceled");
 	});
 
-	it("should be possible to complete with a null output (directly on root)", () => {
+	it("should be possible to complete with a undefined output (directly on root)", () => {
 		const machine = createMachine({
 			initial: "start",
 			states: {
@@ -1259,16 +1266,16 @@ describe("final states", () => {
 					type: "final",
 				},
 			},
-			output: null,
+			output: undefined,
 		});
 
 		const actorRef = createActor(machine).start();
 		actorRef.send({ type: "NEXT" });
 
-		expect(actorRef.getSnapshot().output).toBe(null);
+		expect(actorRef.getSnapshot().output).toBe(undefined);
 	});
 
-	it("should be possible to complete with a null output (resolving with final state's output)", () => {
+	it("should be possible to complete with a undefined output (resolving with final state's output)", () => {
 		const machine = createMachine({
 			initial: "start",
 			states: {
@@ -1279,7 +1286,7 @@ describe("final states", () => {
 				},
 				end: {
 					type: "final",
-					output: null,
+					output: undefined,
 				},
 			},
 			output: ({ event }) => event.output,
@@ -1288,6 +1295,6 @@ describe("final states", () => {
 		const actorRef = createActor(machine).start();
 		actorRef.send({ type: "NEXT" });
 
-		expect(actorRef.getSnapshot().output).toBe(null);
+		expect(actorRef.getSnapshot().output).toBe(undefined);
 	});
 });

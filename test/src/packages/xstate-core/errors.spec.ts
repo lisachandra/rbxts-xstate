@@ -11,6 +11,7 @@ import {
 } from "@rbxts/jest-globals";
 import { sleep } from "test/env-utils";
 import {
+	AnyObject,
 	assign,
 	createActor,
 	createMachine,
@@ -33,7 +34,7 @@ function installGlobalOnErrorHandler(handler: (ev: ErrorEvent) => void) {
 		(jest as never as { globalEnv: { error: jest.Mock } }).globalEnv,
 		"error",
 	).mockImplementation(err => {
-		if (err instanceof Error) {
+		if ((err as AnyObject) instanceof Error) {
 			handler({ error: err });
 		}
 
@@ -379,7 +380,7 @@ describe("error handling", () => {
 		const actorRef = createActor(machine);
 		const childActorRef = Object.values(actorRef.getSnapshot().children)[0]!;
 		childActorRef.subscribe({
-			error: function preventUnhandledErrorListener() {},
+			error: () => {},
 		});
 		childActorRef.subscribe(() => {});
 		actorRef.start();
@@ -412,10 +413,10 @@ describe("error handling", () => {
 		const actorRef = createActor(machine);
 		const childActorRef = Object.values(actorRef.getSnapshot().children)[0]!;
 		childActorRef.subscribe({
-			error: function preventUnhandledErrorListener() {},
+			error: () => {},
 		});
 		childActorRef.subscribe({
-			error: function preventUnhandledErrorListener() {},
+			error: () => {},
 		});
 		actorRef.start();
 
@@ -445,7 +446,7 @@ describe("error handling", () => {
 		const actorRef = createActor(machine);
 		const childActorRef = Object.values(actorRef.getSnapshot().children)[0]!;
 		childActorRef.subscribe({
-			error: function preventUnhandledErrorListener() {},
+			error: () => {},
 		});
 		childActorRef.subscribe({});
 		actorRef.start();
@@ -679,7 +680,7 @@ describe("error handling", () => {
 
 		const actorRef = createActor(machine);
 		actorRef.subscribe({
-			error: function preventUnhandledErrorListener() {},
+			error: () => {},
 		});
 		actorRef.subscribe(() => {});
 		actorRef.start();
@@ -857,7 +858,7 @@ describe("error handling", () => {
 		});
 
 		const actorRef = createActor(machine);
-		actorRef.subscribe({ error: function preventUnhandledErrorListener() {} });
+		actorRef.subscribe({ error: () => {} });
 		actorRef.start();
 
 		expect(spy).toHaveBeenCalledTimes(0);
@@ -886,7 +887,7 @@ describe("error handling", () => {
 		);
 
 		const actorRef = createActor(machine);
-		actorRef.subscribe({ error: function preventUnhandledErrorListener() {} });
+		actorRef.subscribe({ error: () => {} });
 		actorRef.start();
 
 		const snapshot = actorRef.getSnapshot();

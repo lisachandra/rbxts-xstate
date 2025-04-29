@@ -29,11 +29,11 @@ import {
 	transition,
 	waitFor,
 } from "@rbxts/xstate";
-import { createDoneActorEvent } from "@rbxts/xstate/out/eventUtils";
+import { createDoneActorEvent } from "@rbxts/xstate/out/utils/event/createDoneActorEvent";
 import { initialTransition } from "@rbxts/xstate/out/transition";
-import { resolveReferencedActor } from "@rbxts/xstate/out/utils";
 import { setTimeout } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
+import { resolveReferencedActor } from "@rbxts/xstate/out/utils/misc/resolveReferencedActor";
 
 describe("transition function", () => {
 	it("should capture actions", () => {
@@ -526,19 +526,14 @@ describe("transition function", () => {
 		const calls: string[] = [];
 
 		async function execute(action: ExecutableActionsFrom<typeof machine>) {
-			switch (action.type) {
-				case "xstate.spawnChild": {
-					const spawnAction = action as ExecutableSpawnAction;
-					const logic =
-						typeof spawnAction.params.src === "string"
-							? resolveReferencedActor(machine, spawnAction.params.src)
-							: spawnAction.params.src;
-					assert(typeIs(logic, "table") && "transition" in logic);
-					const output = await toPromise(createActor(logic, spawnAction.params).start());
-					postEvent(createDoneActorEvent(spawnAction.params.id, output));
-				}
-				default:
-					break;
+			if (action.type === "xstate.spawnChild") {
+				const spawnAction = action as ExecutableSpawnAction;
+				const logic = typeIs(spawnAction.params.src, "string")
+					? resolveReferencedActor(machine, spawnAction.params.src)
+					: spawnAction.params.src;
+				assert(typeIs(logic, "table") && "transition" in logic);
+				const output = await toPromise(createActor(logic, spawnAction.params).start());
+				postEvent(createDoneActorEvent(spawnAction.params.id, output));
 			}
 		}
 

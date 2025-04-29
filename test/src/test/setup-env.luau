@@ -1,5 +1,3 @@
-local matchers = require(script.Parent.matchers)
-
 local _0 = require(script.Parent["console-spies"])
 local consoleSpies, spyOnConsole = _0.consoleSpies, _0.spyOnConsole;
 local envTestUtils = require(script.Parent["env-utils"])
@@ -17,7 +15,7 @@ expect.extend({
 
 		local calls = received.mock.calls;
 		received:mockClear();
-		return matchers.toMatchSnapshot(self, calls, ...);
+		return expect.toMatchSnapshot(self, calls, ...);
 	end,
 });
 

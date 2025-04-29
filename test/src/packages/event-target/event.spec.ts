@@ -46,7 +46,7 @@ describe("'Event' class", () => {
 
 		it("should be the string representation of the constructor's first argument", () => {
 			expect(new Event(undefined as never).type()).toBe("nil");
-			// expect(new Event(null).type()).toBe("null");
+			// expect(new Event(undefined).type()).toBe("undefined");
 			expect(new Event(1000 as never).type()).toBe("1000");
 		});
 
@@ -237,7 +237,7 @@ describe("'Event' class", () => {
 	});
 
 	describe("Edge cases", () => {
-		it("should handle events with null prototype", () => {
+		it("should handle events with undefined prototype", () => {
 			const event = {
 				type: "foo",
 				bubbles: false,

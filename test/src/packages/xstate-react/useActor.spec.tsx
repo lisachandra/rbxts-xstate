@@ -10,13 +10,14 @@ import {
 	afterEach,
 } from "@rbxts/jest-globals";
 import { act, fireEvent, screen } from "@rbxts/react-testing-library";
-import * as React from "react";
-import { useState } from "react";
+import * as React from "@rbxts/react";
+import { useState } from "@rbxts/react";
 // import { BehaviorSubject } from "rxjs";
 import {
 	Actor,
 	ActorLogicFrom,
 	ActorRef,
+	AnyObject,
 	DoneActorEvent,
 	Snapshot,
 	StateFrom,
@@ -158,7 +159,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			/>,
 		);
 
-		await screen.findByText(/Success/);
+		await screen.findByText("Success! Data:");
 		const dataEl = screen.getByTestId("data");
 		expect((dataEl as TextLabel).Text).toBe("persisted data");
 	});
@@ -174,7 +175,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			/>,
 		);
 
-		await screen.findByText(/Success/);
+		await screen.findByText("Success! Data:");
 		const dataEl = screen.getByTestId("data");
 		expect((dataEl as TextLabel).Text).toBe("persisted data");
 	});
@@ -846,7 +847,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			// This will send an event to the parent service
 			// BEFORE the service is ready.
 			React.useLayoutEffect(() => {
-				send({ type: "FINISH" });
+				(send as Callback)({ type: "FINISH" });
 			}, []);
 
 			return <></>;
@@ -1029,7 +1030,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			const [_state, _send, actor] = useActor(m);
 
 			React.useEffect(() => {
-				actor.system.get("child")!.send({ type: "PING" });
+				((actor.system.get("child") as AnyObject).send as Callback)({ type: "PING" });
 			});
 
 			return <></>;
@@ -1050,7 +1051,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 				{
 					src: fromObservable(() => subject),
 					onSnapshot: {
-						actions: [({ event }) => spy((event.snapshot as any).context)],
+						actions: [({ event }) => spy((event.snapshot as AnyObject).context)],
 					},
 				},
 			],

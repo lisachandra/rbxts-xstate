@@ -1,6 +1,6 @@
-import isDevelopment from "../isDevelopment";
+import isDevelopment from "../utils/polyfill/isDevelopment";
 import { XSTATE_ERROR } from "../constants";
-import { createErrorActorEvent } from "../eventUtils";
+import { createErrorActorEvent } from "utils/event/createErrorActorEvent";
 import { executingCustomAction } from "../createActor";
 import {
 	ActionArgs,

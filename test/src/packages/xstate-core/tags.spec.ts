@@ -8,7 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { createMachine, createActor } from "@rbxts/xstate";
+import { createMachine, createActor, AnyObject } from "@rbxts/xstate";
 
 describe("tags", () => {
 	it("supports tagging states", () => {
@@ -153,6 +153,6 @@ describe("tags", () => {
 
 		const jsonState = createActor(machine).getSnapshot().toJSON();
 
-		expect((jsonState as any).tags).toEqual(["go", "light"]);
+		expect((jsonState as AnyObject).tags).toEqual(["go", "light"]);
 	});
 });

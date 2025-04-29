@@ -1,4 +1,4 @@
-import { symbolObservable } from "symbolObservable";
+import { symbolObservable } from "utils/polyfill/symbolObservable";
 import type { MachineSnapshot } from "./State";
 import type { StateMachine } from "./StateMachine";
 import type { StateNode } from "./StateNode";
@@ -9,7 +9,7 @@ import { PromiseActorLogic } from "./actors/promise";
 import type { Actor, ProcessingStatus } from "./createActor";
 import { Guard, GuardPredicate, UnknownGuard } from "./guards";
 import { InspectionEvent } from "./inspection";
-import { Spawner } from "./spawn";
+import { Spawner } from "./createSpawner";
 import { AnyActorSystem, Clock } from "./system";
 
 type PropertyKey = string | number | symbol;

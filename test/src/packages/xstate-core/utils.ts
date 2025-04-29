@@ -12,8 +12,8 @@ import {
 	Subscribable,
 	Subscription,
 } from "@rbxts/xstate";
-import { symbolObservable } from "@rbxts/xstate/out/symbolObservable";
-import { indexString } from "@rbxts/xstate/out/utils";
+import { symbolObservable } from "@rbxts/xstate/out/utils/polyfill/symbolObservable";
+import { indexString } from "@rbxts/xstate/out/utils/polyfill/indexString";
 
 const resolveSerializedStateValue = (machine: AnyStateMachine, serialized: string) =>
 	indexString(serialized, 0) === "{"
@@ -130,14 +130,14 @@ export class BehaviorSubjectStub<T> implements Subscribable<T> {
 	// Supports both Observer object and individual callback signatures
 	subscribe(
 		observerOrNext: Observer<T> | ((value: T) => void),
-		error?: (error: any) => void,
+		err?: (err: any) => void,
 		complete?: () => void,
 	): Subscription {
 		let observer: Observer<T>;
 
 		// Determine if the first argument is an Observer object or the next callback
 		if (typeIs(observerOrNext, "function")) {
-			observer = { next: observerOrNext, error, complete };
+			observer = { next: observerOrNext, error: err, complete };
 		} else {
 			observer = observerOrNext;
 		}
@@ -150,11 +150,12 @@ export class BehaviorSubjectStub<T> implements Subscribable<T> {
 		}
 
 		// Return a Subscription object
+		const subscribers = this._subscribers;
 		return {
-			unsubscribe: () => {
-				const index = this._subscribers.indexOf(observer);
+			unsubscribe() {
+				const index = subscribers.indexOf(observer);
 				if (index > -1) {
-					this._subscribers.remove(index);
+					subscribers.remove(index);
 				}
 			},
 		};

@@ -9,8 +9,8 @@ import {
 	EventObject,
 	Subscription,
 } from "./types";
-import { toObserver } from "./utils";
-import randomBase36String from "randomBase36String";
+import { toObserver } from "utils/misc/toObserver";
+import randomBase36String from "utils/polyfill/randomBase36String";
 
 interface ScheduledEvent {
 	id: string;

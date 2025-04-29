@@ -60,7 +60,7 @@ function TS.import(context, module, ...)
 	end
 
 	if module.ClassName ~= "ModuleScript" then
-		error(OUTPUT_PREFIX .. "Failed to import! Expected ModuleScript, got " .. module.ClassName, 2)
+		error(OUTPUT_PREFIX .. "Failed to import! Expected ModuleScript, got " .. module.ClassName .. module:GetFullName(), 2)
 	end
 
 	currentlyLoading[context] = module

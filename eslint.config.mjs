@@ -4,6 +4,8 @@ import eslint from "@eslint/js";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import eslintPluginRoblox from "isentinel-eslint-plugin-roblox-ts";
 import prettierConfig from "./prettier.config.mjs";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
+import * as eslintPluginImportX from "eslint-plugin-import-x"
 
 export default tseslint.config(
 	{
@@ -18,7 +20,14 @@ export default tseslint.config(
 	eslint.configs.recommended,
 	...tseslint.configs.recommendedTypeChecked,
 	eslintPluginPrettierRecommended,
+	eslintPluginImportX.flatConfigs.recommended,
+	eslintPluginImportX.flatConfigs.typescript,
 	{
+		settings: {
+			"import-x/resolver-next": createTypeScriptImportResolver({
+				project: "tsconfig.json"
+			})
+		},
 		plugins: {
 			"roblox-ts": eslintPluginRoblox,
 		},
@@ -26,6 +35,7 @@ export default tseslint.config(
 			...eslintPluginRoblox.configs.recommended.rules,
 			"roblox-ts/lua-truthiness": "off",
 			"roblox-ts/no-null": "off",
+			"import-x/no-cycle": "error",
 		},
 	},
 	{

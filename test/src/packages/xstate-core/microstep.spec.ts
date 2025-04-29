@@ -10,7 +10,7 @@ import {
 } from "@rbxts/jest-globals";
 import { createMachine } from "@rbxts/xstate";
 import { raise } from "@rbxts/xstate/out/actions/raise";
-import { createInertActorScope } from "@rbxts/xstate/out/getNextSnapshot";
+import { createInertActorScope } from "@rbxts/xstate/out/utils/state/getNextSnapshot";
 
 describe("machine.microstep()", () => {
 	it("should return an array of states from all microsteps", () => {

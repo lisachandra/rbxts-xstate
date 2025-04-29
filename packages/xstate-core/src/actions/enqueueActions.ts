@@ -1,4 +1,4 @@
-import isDevelopment from "../isDevelopment";
+import isDevelopment from "../utils/polyfill/isDevelopment";
 import { Guard, evaluateGuard } from "../guards";
 import {
 	Action,

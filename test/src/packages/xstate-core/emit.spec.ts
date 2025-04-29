@@ -11,6 +11,7 @@ import {
 import { Error, setTimeout } from "@rbxts/luau-polyfill";
 import {
 	AnyEventObject,
+	AnyObject,
 	createActor,
 	createMachine,
 	enqueueActions,
@@ -276,7 +277,7 @@ describe("event emitter", () => {
 
 		const logic = fromTransition<any, any, any, any, { type: "emitted"; msg: string }>(
 			(s, e, { emit }) => {
-				if (e.type === "emit") {
+				if ((e as AnyObject).type === "emit") {
 					emit({
 						type: "emitted",
 						msg: "hello",
@@ -322,9 +323,9 @@ describe("event emitter", () => {
 			});
 
 			return {
-				subscribe: () => {
+				subscribe() {
 					return {
-						unsubscribe: () => {},
+						unsubscribe() {},
 					};
 				},
 			};
@@ -364,9 +365,9 @@ describe("event emitter", () => {
 				});
 
 				return {
-					subscribe: () => {
+					subscribe() {
 						return {
-							unsubscribe: () => {},
+							unsubscribe() {},
 						};
 					},
 				};

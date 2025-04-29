@@ -32,6 +32,7 @@ import {
 	Snapshot,
 	ActorRef,
 	AnyEventObject,
+	AnyObject,
 } from "@rbxts/xstate";
 import { sleep } from "test/env-utils";
 import { clearInterval, Error, setInterval, setTimeout } from "@rbxts/luau-polyfill";
@@ -178,14 +179,17 @@ describe("invoke", () => {
 				waiting: {
 					invoke: {
 						src: childMachine,
-						input: ({ context }: any) => ({
-							userId: context.selectedUserId,
+						input: ({ context }: AnyObject) => ({
+							userId: (context as AnyObject).selectedUserId,
 						}),
 						onDone: {
 							target: "received",
 							guard: ({ event }) => {
 								// Should receive { user: { name: 'David' } } as event data
-								return (event.output as any).user.name === "David";
+								return (
+									(event.output as { user: { name: string } }).user.name ===
+									"David"
+								);
 							},
 						},
 					},
@@ -549,7 +553,8 @@ describe("invoke", () => {
 									src: pongMachine,
 									onDone: {
 										target: "success",
-										guard: ({ event }) => event.output.secret === "pingpong",
+										guard: ({ event }) =>
+											(event.output as AnyObject).secret === "pingpong",
 									},
 								},
 							},
@@ -745,8 +750,10 @@ describe("invoke", () => {
 		},
 	];
 
-	promiseTypes.forEach(({ type, createPromise }) => {
-		describe(`with promises (${type})`, () => {
+	promiseTypes.forEach(t => {
+		const kind = t.type;
+
+		describe(`with promises (${kind})`, () => {
 			const invokePromiseMachine = createMachine({
 				types: {} as { context: { id: number; succeed: boolean } },
 				id: "invokePromise",
@@ -760,19 +767,21 @@ describe("invoke", () => {
 					pending: {
 						invoke: {
 							src: fromPromise(({ input }) =>
-								createPromise(resolve => {
-									if (input.succeed) {
-										resolve(input.id);
+								t.createPromise(resolve => {
+									if ((input as AnyObject).succeed) {
+										resolve((input as AnyObject).id);
 									} else {
-										throw new Error(`failed on purpose for: ${input.id}`);
+										throw new Error(
+											`failed on purpose for: ${(input as AnyObject).id}`,
+										);
 									}
 								}),
 							),
-							input: ({ context }: any) => context,
+							input: ({ context }: AnyObject) => context,
 							onDone: {
 								target: "success",
 								guard: ({ context, event }) => {
-									return event.output === context.id;
+									return (event.output as unknown) === context.id;
 								},
 							},
 							onError: "failure",
@@ -794,7 +803,7 @@ describe("invoke", () => {
 						pending: {
 							invoke: {
 								src: fromPromise(() =>
-									createPromise(resolve => {
+									t.createPromise(resolve => {
 										resolve();
 									}),
 								),
@@ -831,7 +840,7 @@ describe("invoke", () => {
 						pending: {
 							invoke: {
 								src: fromPromise(() =>
-									createPromise(() => {
+									t.createPromise(() => {
 										throw new Error("test");
 									}),
 								),
@@ -846,8 +855,8 @@ describe("invoke", () => {
 
 				const service = createActor(promiseMachine);
 				service.subscribe({
-					error(err) {
-						expect((err as any).message).toEqual(expect.stringMatching("test"));
+					error: err => {
+						expect((err as AnyObject).message).toEqual(expect.stringMatching("test"));
 						done();
 					},
 				});
@@ -865,7 +874,7 @@ describe("invoke", () => {
 						pending: {
 							invoke: {
 								src: fromPromise(() =>
-									createPromise(() => {
+									t.createPromise(() => {
 										throw new Error("test");
 									}),
 								),
@@ -883,7 +892,7 @@ describe("invoke", () => {
 				actor.subscribe({
 					error: err => {
 						expect(err).toBeInstanceOf(Error);
-						expect((err as any).message).toBe("test");
+						expect((err as AnyObject).message).toBe("test");
 						expect(completeSpy).never.toHaveBeenCalled();
 						done();
 					},
@@ -902,7 +911,9 @@ describe("invoke", () => {
 							states: {
 								pending: {
 									invoke: {
-										src: fromPromise(() => createPromise(resolve => resolve())),
+										src: fromPromise(() =>
+											t.createPromise(resolve => resolve()),
+										),
 										onDone: "success",
 									},
 								},
@@ -950,7 +961,7 @@ describe("invoke", () => {
 					},
 					{
 						actors: {
-							somePromise: fromPromise(() => createPromise(resolve => resolve())),
+							somePromise: fromPromise(() => t.createPromise(resolve => resolve())),
 						},
 					},
 				);
@@ -968,12 +979,13 @@ describe("invoke", () => {
 						pending: {
 							invoke: {
 								src: fromPromise(() =>
-									createPromise(resolve => resolve({ count: 1 })),
+									t.createPromise(resolve => resolve({ count: 1 })),
 								),
 								onDone: {
 									target: "success",
 									actions: assign({
-										count: ({ event }) => event.output.count,
+										count: ({ event }) =>
+											(event.output as { count: number }).count,
 									}),
 								},
 							},
@@ -1008,7 +1020,8 @@ describe("invoke", () => {
 									onDone: {
 										target: "success",
 										actions: assign({
-											count: ({ event }) => event.output.count,
+											count: ({ event }) =>
+												(event.output as AnyObject).count as number,
 										}),
 									},
 								},
@@ -1021,7 +1034,7 @@ describe("invoke", () => {
 					{
 						actors: {
 							somePromise: fromPromise(() =>
-								createPromise(resolve => resolve({ count: 1 })),
+								t.createPromise(resolve => resolve({ count: 1 })),
 							),
 						},
 					},
@@ -1048,12 +1061,12 @@ describe("invoke", () => {
 						pending: {
 							invoke: {
 								src: fromPromise(() =>
-									createPromise(resolve => resolve({ count: 1 })),
+									t.createPromise(resolve => resolve({ count: 1 })),
 								),
 								onDone: {
 									target: "success",
 									actions: ({ event }) => {
-										count = (event.output as any).count;
+										count = (event.output as AnyObject).count as number;
 									},
 								},
 							},
@@ -1088,7 +1101,7 @@ describe("invoke", () => {
 									onDone: {
 										target: "success",
 										actions: ({ event }) => {
-											count = event.output.count;
+											count = (event.output as AnyObject).count as number;
 										},
 									},
 								},
@@ -1101,7 +1114,7 @@ describe("invoke", () => {
 					{
 						actors: {
 							somePromise: fromPromise(() =>
-								createPromise(resolve => resolve({ count: 1 })),
+								t.createPromise(resolve => resolve({ count: 1 })),
 							),
 						},
 					},
@@ -1125,8 +1138,8 @@ describe("invoke", () => {
 
 				const promiseActor = fromPromise(
 					({ input }: { input: { foo: boolean; event: { payload: any } } }) => {
-						return createPromise((resolve, reject) => {
-							input.foo && input.event.payload ? resolve() : reject();
+						return t.createPromise((resolve, reject) => {
+							input.foo && (input.event.payload as unknown) ? resolve() : reject();
 						});
 					},
 				);
@@ -1188,8 +1201,8 @@ describe("invoke", () => {
 					{
 						types: {} as {
 							context: {
-								result1: number | null;
-								result2: number | null;
+								result1: number | undefined;
+								result2: number | undefined;
 							};
 							actors: {
 								src: "getRandomNumber";
@@ -1197,8 +1210,8 @@ describe("invoke", () => {
 							};
 						},
 						context: {
-							result1: null,
-							result2: null,
+							result1: undefined,
+							result2: undefined,
 						},
 						initial: "pending",
 						states: {
@@ -1215,7 +1228,8 @@ describe("invoke", () => {
 														target: "success",
 														// TODO: we get DoneInvokeEvent<any> here, this gets fixed with https://github.com/microsoft/TypeScript/pull/48838
 														actions: assign(({ event }) => ({
-															result1: event.output.result,
+															result1: (event.output as AnyObject)
+																.result as never,
 														})),
 													},
 												},
@@ -1234,7 +1248,8 @@ describe("invoke", () => {
 													onDone: {
 														target: "success",
 														actions: assign(({ event }) => ({
-															result2: event.output.result,
+															result2: (event.output as AnyObject)
+																.result as never,
 														})),
 													},
 												},
@@ -1256,7 +1271,9 @@ describe("invoke", () => {
 						actors: {
 							// it's important for this actor to be reused, this test shouldn't use a factory or anything like that
 							getRandomNumber: fromPromise(() => {
-								return createPromise(resolve => resolve({ result: math.random() }));
+								return t.createPromise(resolve =>
+									resolve({ result: math.random() }),
+								);
 							}),
 						},
 					},
@@ -1266,8 +1283,8 @@ describe("invoke", () => {
 				service.subscribe({
 					complete: () => {
 						const snapshot = service.getSnapshot();
-						expect(typeof snapshot.context.result1).toBe("number");
-						expect(typeof snapshot.context.result2).toBe("number");
+						expect(type(snapshot.context.result1)).toBe("number");
+						expect(type(snapshot.context.result2)).toBe("number");
 						expect(snapshot.context.result1).never.toBe(snapshot.context.result2);
 						done();
 					},
@@ -1282,7 +1299,7 @@ describe("invoke", () => {
 						active: {
 							invoke: {
 								src: fromPromise(() =>
-									createPromise(res => {
+									t.createPromise(res => {
 										setTimeout(() => res(42), 5);
 									}),
 								),
@@ -1619,7 +1636,7 @@ describe("invoke", () => {
 							id: "child",
 							src: fromCallback(({ sendBack, receive }) => {
 								receive(e => {
-									if (e.type === "PING") {
+									if ((e as AnyObject).type === "PING") {
 										sendBack({ type: "PONG" });
 									}
 								});
@@ -1826,7 +1843,7 @@ describe("invoke", () => {
 								expect(input).toEqual({ foo: "bar" });
 								done();
 							}),
-							input: ({ context }: any) => context,
+							input: ({ context }: AnyObject) => context,
 						},
 					},
 				},
@@ -2000,10 +2017,10 @@ describe("invoke", () => {
 							onError: {
 								target: "success",
 								guard: ({ context, event }) => {
-									expect((event.error as any).message).toEqual("some error");
+									expect((event.error as AnyObject).message).toEqual("some error");
 									return (
 										context.count === 4 &&
-										(event.error as any).message === "some error"
+										(event.error as AnyObject).message === "some error"
 									);
 								},
 							},
@@ -2189,10 +2206,10 @@ describe("invoke", () => {
 							onError: {
 								target: "success",
 								guard: ({ context, event }) => {
-									expect((event.error as any).message).toEqual("some error");
+									expect((event.error as AnyObject).message).toEqual("some error");
 									return (
 										context.count === 4 &&
-										(event.error as any).message === "some error"
+										(event.error as AnyObject).message === "some error"
 									);
 								},
 							},
@@ -2247,7 +2264,7 @@ describe("invoke", () => {
 	describe("with logic", () => {
 		it("should work with actor logic", (_, done) => {
 			const countLogic: ActorLogic<Snapshot<undefined> & { context: number }, EventObject> = {
-				transition: (state, event) => {
+				transition(state, event) {
 					if (event.type === "INC") {
 						return {
 							...state,
@@ -2261,13 +2278,17 @@ describe("invoke", () => {
 					}
 					return state;
 				},
-				getInitialSnapshot: () => ({
-					status: "active",
-					output: undefined,
-					error: undefined,
-					context: 0,
-				}),
-				getPersistedSnapshot: s => s,
+				getInitialSnapshot() {
+					return {
+						status: "active",
+						output: undefined,
+						error: undefined,
+						context: 0,
+					};
+				},
+				getPersistedSnapshot(s) {
+					return s;
+				},
 			};
 
 			const countMachine = createMachine({
@@ -2284,7 +2305,7 @@ describe("invoke", () => {
 
 			const countService = createActor(countMachine);
 			countService.subscribe(state => {
-				if (state.children["count"]?.getSnapshot().context === 2) {
+				if ((state.children["count"]?.getSnapshot() as { context: number }).context === 2) {
 					done();
 				}
 			});
@@ -2296,19 +2317,23 @@ describe("invoke", () => {
 
 		it("logic should have reference to the parent", (_, done) => {
 			const pongLogic: ActorLogic<Snapshot<undefined>, EventObject> = {
-				transition: (state, event, { self }) => {
+				transition(state, event, { self: itself }) {
 					if (event.type === "PING") {
-						self._parent?.send({ type: "PONG" });
+						itself._parent?.send({ type: "PONG" });
 					}
 
 					return state;
 				},
-				getInitialSnapshot: () => ({
-					status: "active",
-					output: undefined,
-					error: undefined,
-				}),
-				getPersistedSnapshot: s => s,
+				getInitialSnapshot() {
+					return {
+						status: "active",
+						output: undefined,
+						error: undefined,
+					};
+				},
+				getPersistedSnapshot(s) {
+					return s;
+				},
 			};
 
 			const pingMachine = createMachine({
@@ -2368,7 +2393,7 @@ describe("invoke", () => {
 
 			const countService = createActor(countMachine);
 			countService.subscribe(state => {
-				if (state.children["count"]?.getSnapshot().context === 2) {
+				if ((state.children["count"]?.getSnapshot() as { context: number }).context === 2) {
 					done();
 				}
 			});
@@ -2384,10 +2409,10 @@ describe("invoke", () => {
 			const countReducer = (
 				count: number,
 				event: CountEvents,
-				{ self }: ActorScope<any, CountEvents>,
+				{ self: itself }: ActorScope<any, CountEvents>,
 			): number => {
 				if (event.type === "INC") {
-					self.send({ type: "DOUBLE" });
+					itself.send({ type: "DOUBLE" });
 					return count + 1;
 				}
 				if (event.type === "DOUBLE") {
@@ -2411,7 +2436,7 @@ describe("invoke", () => {
 
 			const countService = createActor(countMachine);
 			countService.subscribe(state => {
-				if (state.children["count"]?.getSnapshot().context === 2) {
+				if ((state.children["count"]?.getSnapshot() as { context: number }).context === 2) {
 					done();
 				}
 			});
@@ -3338,9 +3363,13 @@ describe("invoke", () => {
 						id: "foo",
 						src: child,
 					},
-					entry: sendTo("foo", ({ self }) => ({ type: "PING", origin: self }), {
-						delay: 1,
-					}),
+					entry: sendTo(
+						"foo",
+						({ self: itself }: { self: unknown }) => ({ type: "PING", origin: itself }),
+						{
+							delay: 1,
+						},
+					),
 					on: {
 						PONG: "c",
 					},
@@ -3420,11 +3449,11 @@ describe("invoke input", () => {
 		const machine = createMachine({
 			invoke: {
 				src: fromCallback(({ input }) => {
-					expect(input.responder.send).toBeDefined();
+					expect((input as { responder: AnyObject }).responder.send).toBeDefined();
 					done();
 				}),
-				input: ({ self }) => ({
-					responder: self,
+				input: ({ self: itself }) => ({
+					responder: itself,
 				}),
 			},
 		});

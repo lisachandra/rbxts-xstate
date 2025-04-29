@@ -8,7 +8,15 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { AnyActor, assign, createMachine, createActor, sendTo, waitFor } from "@rbxts/xstate";
+import {
+	AnyActor,
+	assign,
+	createMachine,
+	createActor,
+	sendTo,
+	waitFor,
+	AnyObject,
+} from "@rbxts/xstate";
 import { raise, sendParent, stopChild } from "@rbxts/xstate/out/actions";
 import { fromCallback } from "@rbxts/xstate/out/actors/index";
 import { fromPromise } from "@rbxts/xstate/out/actors/index";
@@ -75,7 +83,7 @@ describe("predictableExec", () => {
 	});
 
 	it("should call raised transition custom actions with raised event", () => {
-		let eventArg: any;
+		let eventArg: defined = undefined as never;
 		const machine = createMachine({
 			initial: "a",
 			states: {
@@ -100,11 +108,11 @@ describe("predictableExec", () => {
 		const service = createActor(machine).start();
 		service.send({ type: "NEXT" });
 
-		expect(eventArg.type).toBe("RAISED");
+		expect((eventArg as AnyObject).type).toBe("RAISED");
 	});
 
 	it("should call raised transition builtin actions with raised event", () => {
-		let eventArg: any;
+		let eventArg: defined = undefined as never;
 		const machine = createMachine({
 			context: {},
 			initial: "a",
@@ -133,7 +141,7 @@ describe("predictableExec", () => {
 		const service = createActor(machine).start();
 		service.send({ type: "NEXT" });
 
-		expect(eventArg.type).toBe("RAISED");
+		expect((eventArg as AnyObject).type).toBe("RAISED");
 	});
 
 	it("should call invoke creator with raised event", () => {
@@ -156,9 +164,9 @@ describe("predictableExec", () => {
 				c: {
 					invoke: {
 						src: fromCallback(({ input }) => {
-							eventArg = input.event;
+							eventArg = (input as AnyObject).event;
 						}),
-						input: ({ event }: any) => ({ event }),
+						input: ({ event }: AnyObject) => ({ event }),
 					},
 				},
 			},
@@ -167,7 +175,7 @@ describe("predictableExec", () => {
 		const service = createActor(machine).start();
 		service.send({ type: "NEXT" });
 
-		expect(eventArg.type).toBe("RAISED");
+		expect((eventArg as AnyObject).type).toBe("RAISED");
 	});
 
 	it("invoked child should be available on the new state", () => {
@@ -304,8 +312,11 @@ describe("predictableExec", () => {
 							{
 								guard: () => {
 									return (
-										service.getSnapshot().children.myChild.getSnapshot()
-											.value === "b"
+										(
+											service.getSnapshot() as {
+												children: { myChild: { getSnapshot(): AnyObject } };
+											}
+										).children.myChild.getSnapshot().value === "b"
 									);
 								},
 								target: "success",
@@ -328,7 +339,7 @@ describe("predictableExec", () => {
 		service = createActor(machine);
 		service.subscribe({
 			complete: () => {
-				expect(service.getSnapshot().value).toBe("success");
+				expect((service.getSnapshot() as AnyObject).value).toBe("success");
 				done();
 			},
 		});
@@ -384,12 +395,12 @@ describe("predictableExec", () => {
 					entry: assign({ updated: true }),
 					invoke: {
 						src: fromPromise(({ input }) => {
-							expect(input.updated).toBe(true);
+							expect((input as AnyObject).updated).toBe(true);
 							done();
 							return Promise.resolve();
 						}),
-						input: ({ context }: any) => ({
-							updated: context.updated,
+						input: ({ context }: AnyObject) => ({
+							updated: (context as AnyObject).updated,
 						}),
 					},
 				},
@@ -468,8 +479,11 @@ describe("predictableExec", () => {
 						CHILD_UPDATED: [
 							{
 								guard: () =>
-									service.getSnapshot().children.myChild.getSnapshot().value ===
-									"b",
+									(
+										service.getSnapshot() as {
+											children: { myChild: { getSnapshot(): AnyObject } };
+										}
+									).children.myChild.getSnapshot().value === "b",
 								target: "success",
 							},
 							{
@@ -490,7 +504,7 @@ describe("predictableExec", () => {
 		service = createActor(machine);
 		service.subscribe({
 			complete: () => {
-				expect(service.getSnapshot().value).toBe("success");
+				expect((service.getSnapshot() as AnyObject).value).toBe("success");
 				done();
 			},
 		});
@@ -540,7 +554,7 @@ describe("predictableExec", () => {
 						id: "my-service",
 						src: fromCallback(({ receive }) => {
 							receive(event => {
-								if (event.type === "MY_EVENT") {
+								if ((event as AnyObject).type === "MY_EVENT") {
 									done();
 								}
 							});

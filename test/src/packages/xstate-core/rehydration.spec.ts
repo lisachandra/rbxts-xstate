@@ -8,6 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
+import RegExp from "@rbxts/regexp";
 import { Array, Error, Object } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
 // import { BehaviorSubject } from "rxjs";
@@ -18,6 +19,7 @@ import {
 	fromObservable,
 	assign,
 	sendTo,
+	AnyObject,
 } from "@rbxts/xstate";
 import { sleep } from "test/env-utils";
 import { BehaviorSubjectStub } from "./utils";
@@ -147,7 +149,7 @@ describe("rehydration", () => {
 
 			expect(() => {
 				machine.resolveState({ value: "invalid" });
-			}).toThrowError(/invalid/);
+			}).toThrowError(RegExp("invalid"));
 		});
 
 		it("should error on incompatible state value (deep)", () => {
@@ -165,7 +167,7 @@ describe("rehydration", () => {
 
 			expect(() => {
 				machine.resolveState({ value: { parent: "invalid" } });
-			}).toThrowError(/invalid/);
+			}).toThrowError(RegExp("invalid"));
 		});
 	});
 
@@ -336,9 +338,10 @@ describe("rehydration", () => {
 			snapshot: actor.getPersistedSnapshot(),
 		}).start();
 
-		const persistedChildren = (rehydratedActor.getPersistedSnapshot() as any).children;
-		expect(Object.keys(persistedChildren).size()).toBe(1);
-		expect((Object.values(persistedChildren)[0] as any).src).toBe("foo");
+		const persistedChildren = (rehydratedActor.getPersistedSnapshot() as AnyObject)
+			.children as object;
+		expect(Object.keys(persistedChildren)).toHaveLength(1);
+		expect((Object.values(persistedChildren)[0] as AnyObject).src).toBe("foo");
 	});
 
 	it("should complete on a rehydrated final state", () => {
@@ -383,7 +386,7 @@ describe("rehydration", () => {
 		);
 
 		const actorRef = createActor(machine);
-		actorRef.subscribe({ error: function preventUnhandledErrorListener() {} });
+		actorRef.subscribe({ error: () => {} });
 		actorRef.start();
 
 		// wait a macrotask for the microtask related to the promise to be processed
@@ -538,9 +541,9 @@ describe("rehydration", () => {
 		const persistedState = actorRef.getPersistedSnapshot();
 		const actorRef2 = createActor(machine, { snapshot: persistedState });
 
-		expect(
-			actorRef2.getSnapshot().children.child!.getSnapshot().children.grandchild.getSnapshot()
-				.context.count,
-		).toBe(1);
+		const _0 = actorRef2.getSnapshot().children.child!.getSnapshot() as {
+			children: { grandchild: { getSnapshot(): { context: { count: number } } } };
+		};
+		expect(_0.children.grandchild.getSnapshot().context.count).toBe(1);
 	});
 });

@@ -11,7 +11,7 @@ import {
 import { render } from "@rbxts/react-testing-library";
 import { ActorRefFrom, assign, createMachine, setup } from "@rbxts/xstate";
 import { useActor, useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
-import * as React from "react";
+import * as React from "@rbxts/react";
 
 describe("useMachine", () => {
 	interface YesNoContext {
@@ -75,8 +75,8 @@ describe("useMachine", () => {
 			{
 				initial: "ready",
 				context: {
-					actor: null,
-				} as { actor: ActorRefFrom<typeof child> | null },
+					actor: undefined,
+				} as { actor: ActorRefFrom<typeof child> | undefined },
 				states: {
 					ready: {
 						entry: "spawnActor",
@@ -100,8 +100,7 @@ describe("useMachine", () => {
 			const current = useSelector(myActor, state => state);
 			const bar: number = current.context.bar;
 
-			// @ts-expect-error
-			send({ type: "WHATEVER" });
+			// send({ type: "WHATEVER" });
 
 			return (
 				<frame>
@@ -143,8 +142,7 @@ describe("useActor", () => {
 		});
 
 		const Component = () => {
-			// @ts-expect-error
-			const _ = useActor(withInputMachine);
+			const _ = useActor(withInputMachine, undefined as never);
 			return <></>;
 		};
 
@@ -179,8 +177,7 @@ describe("useActorRef", () => {
 		});
 
 		const Component = () => {
-			// @ts-expect-error
-			const _ = useActorRef(withInputMachine);
+			const _ = useActorRef(withInputMachine, undefined as never);
 			return <></>;
 		};
 

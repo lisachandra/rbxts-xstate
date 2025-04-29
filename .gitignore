@@ -25,6 +25,7 @@ asphalt.lock.toml
 !places/*.rbxl
 
 # Build output
+!test/src/include
 include/
 out/
 dist/

@@ -9,7 +9,7 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 // import { of } from "rxjs";
-import { assign, createActor, spawnChild } from "@rbxts/xstate";
+import { AnyObject, assign, createActor, spawnChild } from "@rbxts/xstate";
 import { createMachine } from "@rbxts/xstate/out/createMachine";
 import {
 	fromCallback,
@@ -44,7 +44,7 @@ describe("input", () => {
 	it("initial event should have input property", (_, done) => {
 		const machine = createMachine({
 			entry: ({ event }) => {
-				expect(event.input.greeting).toBe("hello");
+				expect((event.input as AnyObject).greeting).toBe("hello");
 				done();
 			},
 		});
@@ -89,7 +89,7 @@ describe("input", () => {
 			context: ({ input }) => input,
 			entry: ({ context, event }) => {
 				expect(context.greeting).toBe("hello");
-				expect(event.input.greeting).toBe("hello");
+				expect((event.input as AnyObject).greeting).toBe("hello");
 				done();
 			},
 		});
@@ -110,12 +110,12 @@ describe("input", () => {
 				input: { greeting: string };
 				context: { greeting: string };
 			},
-			context({ input }) {
+			context: ({ input }) => {
 				return input;
 			},
 			entry: ({ context, event }) => {
 				expect(context.greeting).toBe("hello");
-				expect(event.input.greeting).toBe("hello");
+				expect((event.input as AnyObject).greeting).toBe("hello");
 				done();
 			},
 		});
@@ -273,7 +273,7 @@ describe("input", () => {
 		const machine = createMachine({
 			invoke: {
 				src: createMachine({}),
-				input: ({ self }: any) => spy(self),
+				input: ({ self: itself }: AnyObject) => spy(itself),
 			},
 		});
 
@@ -288,7 +288,7 @@ describe("input", () => {
 		const machine = createMachine(
 			{
 				entry: spawnChild("child", {
-					input: ({ self }: any) => spy(self),
+					input: ({ self: itself }: AnyObject) => spy(itself),
 				}),
 			},
 			{

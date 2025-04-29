@@ -23,6 +23,7 @@ import {
 	AnyTransitionDefinition,
 	raise,
 	setup,
+	AnyObject,
 } from "@rbxts/xstate";
 import { InspectedActionEvent } from "@rbxts/xstate/out/inspection";
 
@@ -61,7 +62,7 @@ function simplifyEvents(
 		if (inspectionEvent.type === "@xstate.microstep") {
 			return {
 				type: inspectionEvent.type,
-				value: (inspectionEvent.snapshot as any).value,
+				value: (inspectionEvent.snapshot as AnyObject).value,
 				event: inspectionEvent.event,
 				transitions: inspectionEvent._transitions.map(t => ({
 					eventType: t.eventType,
@@ -794,7 +795,7 @@ describe("inspect", () => {
 	});
 
 	it("should inspect microsteps for normal transitions", () => {
-		const events: any[] = [];
+		const events: defined[] = [];
 		const machine = createMachine({
 			initial: "a",
 			states: {
@@ -873,7 +874,7 @@ describe("inspect", () => {
 	});
 
 	it("should inspect microsteps for eventless/always transitions", () => {
-		const events: any[] = [];
+		const events: defined[] = [];
 		const machine = createMachine({
 			initial: "a",
 			states: {
@@ -1063,7 +1064,7 @@ describe("inspect", () => {
 		const actor = createActor(machine, {
 			inspect: ev => {
 				if (ev.type === "@xstate.microstep") {
-					expect(ev._transitions.size()).toBe(0);
+					expect(ev._transitions).toHaveLength(0);
 				}
 			},
 		});

@@ -1,4 +1,4 @@
-import isDevelopment from "../isDevelopment";
+import isDevelopment from "../utils/polyfill/isDevelopment";
 import { Error } from "@rbxts/luau-polyfill";
 import { executingCustomAction } from "../createActor";
 import {

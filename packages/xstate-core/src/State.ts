@@ -1,8 +1,8 @@
-import isDevelopment from "./isDevelopment";
-import { __ACTOR_TYPE } from "./createActor";
+import isDevelopment from "./utils/polyfill/isDevelopment";
+import { __ACTOR_TYPE } from "./constants";
 import type { StateNode } from "./StateNode";
 import type { StateMachine } from "./StateMachine";
-import { getStateValue } from "./stateUtils";
+import { getStateValue } from "utils/state/getStateValue";
 import type {
 	ProvidedActor,
 	AnyMachineSnapshot,
@@ -22,7 +22,8 @@ import type {
 	SnapshotStatus,
 	AnyObject,
 } from "./types";
-import { matchesState, omit } from "./utils";
+import { matchesState } from "utils/misc/matchesState";
+import { omit } from "utils/misc/omit";
 import { Array, Error } from "@rbxts/luau-polyfill";
 
 type ToTestStateValue<TStateValue extends StateValue> = TStateValue extends string
@@ -34,10 +35,6 @@ type ToTestStateValue<TStateValue extends StateValue> = TStateValue extends stri
 				| {
 						[K in keyof TStateValue]?: ToTestStateValue<NonNullable<TStateValue[K]>>;
 				  };
-
-export function isMachineSnapshot(value: unknown): value is AnyMachineSnapshot {
-	return !!value && typeIs(value, "table") && "machine" in value && "value" in value;
-}
 
 interface MachineSnapshotBase<
 	TContext extends MachineContext,

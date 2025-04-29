@@ -103,7 +103,7 @@ describe("AbortController", () => {
 		it("should throw a TypeError if 'signal.aborted' getter is called with non AbortSignal object", () => {
 			/*
 			const getAborted = Object.getOwnPropertyDescriptor(
-				(signal as any).__proto__,
+				(signal as AnyObject).__proto__,
 				"aborted",
 			)!.get;
 			*/

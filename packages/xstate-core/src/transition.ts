@@ -1,4 +1,4 @@
-import { createInertActorScope } from "./getNextSnapshot";
+import { createInertActorScope } from "./utils/state/getNextSnapshot";
 import {
 	AnyActorLogic,
 	EventFromLogic,

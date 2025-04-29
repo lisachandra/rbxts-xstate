@@ -757,7 +757,7 @@ describe("interpreter", () => {
 	});
 
 	it("should be able to log (log action)", () => {
-		const logs: any[] = [];
+		const logs: defined[] = [];
 
 		const logMachine = createMachine({
 			types: {} as { context: { count: number } },
@@ -785,12 +785,12 @@ describe("interpreter", () => {
 		service.send({ type: "LOG" });
 		service.send({ type: "LOG" });
 
-		expect(logs.size()).toBe(2);
+		expect(logs).toHaveLength(2);
 		expect(logs).toEqual([{ count: 1 }, { count: 2 }]);
 	});
 
 	it("should receive correct event (log action)", () => {
-		const logs: any[] = [];
+		const logs: defined[] = [];
 		const logAction = log(({ event }) => event.type);
 
 		const parentMachine = createMachine({
@@ -817,7 +817,7 @@ describe("interpreter", () => {
 
 		service.send({ type: "EXTERNAL_EVENT" });
 
-		expect(logs.size()).toBe(2);
+		expect(logs).toHaveLength(2);
 		expect(logs).toEqual(["EXTERNAL_EVENT", "RAISED_EVENT"]);
 	});
 
@@ -918,7 +918,7 @@ describe("interpreter", () => {
 					if (state.matches("start")) {
 						const childActor = state.children.child;
 
-						expect(typeof childActor!.send).toBe("function");
+						expect(type(childActor!["send" as never])).toBe("function");
 					}
 				},
 				complete: () => done(),
@@ -936,7 +936,7 @@ describe("interpreter", () => {
 					on: {
 						EVENT: {
 							target: "active",
-							guard: ({ event }) => event.id === 42, // TODO: fix unknown event type
+							guard: ({ event }) => (event.id as number) === 42, // TODO: fix unknown event type
 						},
 						ACTIVATE: "active",
 					},
@@ -1806,12 +1806,7 @@ it("should throw if an event is received", () => {
 
 	const actor = createActor(machine).start();
 
-	expect(() =>
-		actor.send(
-			// @ts-ignore
-			"EVENT",
-		),
-	).toThrow();
+	expect(() => actor.send("EVENT" as never)).toThrow();
 });
 
 it("should not process events sent directly to own actor ref before initial entry actions are processed", () => {

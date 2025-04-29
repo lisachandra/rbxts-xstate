@@ -43,7 +43,7 @@ describe("assertion helpers", () => {
 		const actor = createActor(machine);
 
 		actor.subscribe({
-			error(err) {
+			error: err => {
 				/*
 				expect(err).toMatchInlineSnapshot(
 					`[Error: Expected event {"type":"count","value":42} to have type "greet"]`,
@@ -97,7 +97,7 @@ describe("assertion helpers", () => {
 		const actor = createActor(machine);
 
 		actor.subscribe({
-			error(err) {
+			error: err => {
 				/*
 				expect(err).toMatchInlineSnapshot(
 					`[Error: Expected event {"type":"count","value":42} to have one of types "greet", "notify"]`,

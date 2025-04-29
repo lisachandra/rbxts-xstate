@@ -1,4 +1,4 @@
-import { createActor } from "./createActor";
+import { createActor } from "../../createActor";
 import {
 	ActorScope,
 	AnyActorLogic,
@@ -8,7 +8,7 @@ import {
 	EventFromLogic,
 	InputFrom,
 	SnapshotFrom,
-} from "./types";
+} from "../../types";
 
 /** @internal */
 export function createInertActorScope<T extends AnyActorLogic>(actorLogic: T): AnyActorScope {

@@ -49,7 +49,7 @@ const exampleMachine = createMachine({
 				TO_TWO: "two",
 				TO_TWO_MAYBE: {
 					target: "two",
-					guard: function maybe() {
+					guard: () => {
 						return true;
 					},
 				},

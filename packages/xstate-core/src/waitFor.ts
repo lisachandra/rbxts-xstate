@@ -1,5 +1,5 @@
 import { clearTimeout, Error, setTimeout } from "@rbxts/luau-polyfill";
-import isDevelopment from "./isDevelopment";
+import isDevelopment from "./utils/polyfill/isDevelopment";
 import { AnyActorRef, SnapshotFrom, Subscription } from "./types";
 import type { AbortSignal } from "@rbxts/whatwg-abort-controller";
 

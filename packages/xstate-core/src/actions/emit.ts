@@ -1,4 +1,4 @@
-import isDevelopment from "../isDevelopment";
+import isDevelopment from "../utils/polyfill/isDevelopment";
 import { executingCustomAction } from "../createActor";
 import {
 	ActionArgs,

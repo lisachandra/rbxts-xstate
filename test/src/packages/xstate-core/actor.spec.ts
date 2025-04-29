@@ -31,6 +31,7 @@ import {
 	createMachine,
 	waitFor,
 	stopChild,
+	AnyObject,
 } from "@rbxts/xstate";
 import { setup } from "@rbxts/xstate/out/setup";
 import { sleep } from "test/env-utils";
@@ -192,7 +193,7 @@ describe("spawning machines", () => {
 		const parentMachine = createMachine(
 			{
 				context: {
-					ref: null! as AnyActorRef,
+					ref: undefined! as AnyActorRef,
 				},
 				initial: "waiting",
 				states: {
@@ -265,7 +266,8 @@ describe("spawning promises", () => {
 					on: {
 						"xstate.done.actor.my-promise": {
 							target: "success",
-							guard: ({ event }) => event.output === "response",
+							guard: ({ event }) =>
+								(event as never as AnyObject).output === "response",
 						},
 					},
 				},
@@ -307,7 +309,8 @@ describe("spawning promises", () => {
 					on: {
 						"xstate.done.actor.my-promise": {
 							target: "success",
-							guard: ({ event }) => event.output === "response",
+							guard: ({ event }) =>
+								(event as never as AnyObject).output === "response",
 						},
 					},
 				},
@@ -448,7 +451,7 @@ describe("spawning observables", () => {
 					on: {
 						"xstate.snapshot.int": {
 							target: "success",
-							guard: ({ event }) => event.snapshot.context === 5,
+							guard: ({ event }) => (event as never as AnyObject).snapshot.context === 5,
 						},
 					},
 				},
@@ -485,7 +488,7 @@ describe("spawning observables", () => {
 						on: {
 							"xstate.snapshot.int": {
 								target: "success",
-								guard: ({ event }) => event.snapshot.context === 5,
+								guard: ({ event }) => (event as never as AnyObject).snapshot.context === 5,
 							},
 						},
 					},
@@ -695,7 +698,7 @@ describe("spawning event observables", () => {
 					on: {
 						COUNT: {
 							target: "success",
-							guard: ({ event }) => event.val === 5,
+							guard: ({ event }) => (event as never as AnyObject).val === 5,
 						},
 					},
 				},
@@ -731,7 +734,7 @@ describe("spawning event observables", () => {
 						on: {
 							COUNT: {
 								target: "success",
-								guard: ({ event }) => event.val === 5,
+								guard: ({ event }) => (event as never as AnyObject).val === 5,
 							},
 						},
 					},
@@ -804,9 +807,9 @@ describe("communicating with spawned actors", () => {
 						100: {
 							actions: sendTo(
 								({ context }) => context.existingRef!,
-								({ self }) => ({
+								({ self: itself }) => ({
 									type: "ACTIVATE",
-									origin: self,
+									origin: itself,
 								}),
 							),
 						},
@@ -834,7 +837,7 @@ describe("actors", () => {
 		let count = 0;
 
 		const startMachine = createMachine({
-			types: {} as { context: { items: number[]; refs: any[] } },
+			types: {} as { context: { items: number[]; refs: defined[] } },
 			id: "start",
 			initial: "start",
 			context: {
@@ -961,7 +964,9 @@ describe("actors", () => {
 		});
 
 		// expect(createActor(nullActorMachine).getSnapshot().context.ref!.id).toBe('null'); // TODO: identify null actors
-		expect(createActor(nullActorMachine).getSnapshot().context.ref!.send).toBeDefined();
+		expect(
+			createActor(nullActorMachine).getSnapshot().context.ref!["send" as never],
+		).toBeDefined();
 	});
 
 	it("should stop multiple inline spawned actors that have no explicit ids", () => {
@@ -976,7 +981,7 @@ describe("actors", () => {
 		});
 		const actorRef = createActor(parent).start();
 
-		expect(Object.keys(actorRef.getSnapshot().children).size()).toBe(2);
+		expect(Object.keys(actorRef.getSnapshot().children)).toHaveLength(2);
 
 		actorRef.stop();
 
@@ -1004,7 +1009,7 @@ describe("actors", () => {
 		);
 		const actorRef = createActor(parent).start();
 
-		expect(Object.keys(actorRef.getSnapshot().children).size()).toBe(2);
+		expect(Object.keys(actorRef.getSnapshot().children)).toHaveLength(2);
 
 		actorRef.stop();
 
@@ -1014,7 +1019,7 @@ describe("actors", () => {
 
 	describe("with actor logic", () => {
 		it("should work with a transition function logic", (_, done) => {
-			const countLogic = fromTransition((count: number, event: any) => {
+			const countLogic = fromTransition((count: number, event: { type: string }) => {
 				if (event.type === "INC") {
 					return count + 1;
 				} else if (event.type === "DEC") {
@@ -1082,7 +1087,7 @@ describe("actors", () => {
 						on: {
 							"xstate.done.actor.test": {
 								target: "success",
-								guard: ({ event }) => event.output === 42,
+								guard: ({ event }) => (event as never as AnyObject).output === 42,
 							},
 						},
 					},
@@ -1125,7 +1130,7 @@ describe("actors", () => {
 							"xstate.error.actor.test": {
 								target: "success",
 								guard: ({ event }) => {
-									return event.error === errorMessage;
+									return (event as never as AnyObject).error === errorMessage;
 								},
 							},
 						},
@@ -1147,19 +1152,23 @@ describe("actors", () => {
 
 		it("actor logic should have reference to the parent", (_, done) => {
 			const pongLogic: ActorLogic<Snapshot<undefined>, EventObject> = {
-				transition: (state, event, { self }) => {
+				transition(state, event, { self: itself }) {
 					if (event.type === "PING") {
-						self._parent?.send({ type: "PONG" });
+						itself._parent?.send({ type: "PONG" });
 					}
 
 					return state;
 				},
-				getInitialSnapshot: () => ({
-					status: "active",
-					output: undefined,
-					error: undefined,
-				}),
-				getPersistedSnapshot: s => s,
+				getInitialSnapshot() {
+					return {
+						status: "active",
+						output: undefined,
+						error: undefined,
+					};
+				},
+				getPersistedSnapshot(s) {
+					return s;
+				},
 			};
 
 			const pingMachine = createMachine({
@@ -1281,10 +1290,10 @@ describe("actors", () => {
 		const parentMachine = createMachine(
 			{
 				types: {} as {
-					context: { child: ActorRefFrom<typeof childMachine> | null };
+					context: { child: ActorRefFrom<typeof childMachine> | undefined };
 				},
 				context: {
-					child: null,
+					child: undefined,
 				},
 				entry: "setup",
 			},
@@ -1303,13 +1312,15 @@ describe("actors", () => {
 	});
 
 	it("should not crash on child promise-like sync completion during self-initialization", () => {
-		const promiseLogic = fromPromise(() => ({ then: (fn: any) => fn(null) }) as any);
+		const promiseLogic = fromPromise(
+			() => ({ then: (fn: any) => (fn as Callback)(undefined) }) as any,
+		);
 		const parentMachine = createMachine({
 			types: {} as {
-				context: { child: ActorRefFrom<typeof promiseLogic> | null };
+				context: { child: ActorRefFrom<typeof promiseLogic> | undefined };
 			},
 			context: {
-				child: null,
+				child: undefined,
 			},
 			entry: assign({
 				child: ({ spawn }) => spawn(promiseLogic),
@@ -1326,7 +1337,7 @@ describe("actors", () => {
 			subscribe(observer) {
 				(observer as Observer<any>).complete?.();
 
-				return { unsubscribe: () => {} };
+				return { unsubscribe() {} };
 			},
 		});
 
@@ -1334,10 +1345,10 @@ describe("actors", () => {
 
 		const parentMachine = createMachine({
 			types: {} as {
-				context: { child: ActorRefFrom<typeof emptyObservableLogic> | null };
+				context: { child: ActorRefFrom<typeof emptyObservableLogic> | undefined };
 			},
 			context: {
-				child: null,
+				child: undefined,
 			},
 			entry: assign({
 				child: ({ spawn }) => spawn(emptyObservableLogic),
@@ -1357,11 +1368,11 @@ describe("actors", () => {
 		const parentMachine = createMachine({
 			types: {
 				context: {} as {
-					child: ActorRefFrom<typeof emptyObservable> | null;
+					child: ActorRefFrom<typeof emptyObservable> | undefined;
 				},
 			},
 			context: {
-				child: null,
+				child: undefined,
 			},
 			entry: assign({
 				child: ({ spawn }) => spawn(emptyObservable, { id: "myactor" }),
@@ -1712,9 +1723,9 @@ describe("actors", () => {
 		});
 
 		const machine = createMachine({
-			context: ({ spawn, self }) => {
+			context: ({ spawn, self: itself }) => {
 				return {
-					childRef: spawn(child, { input: { parent: self } }),
+					childRef: spawn(child, { input: { parent: itself } }),
 				};
 			},
 			on: {

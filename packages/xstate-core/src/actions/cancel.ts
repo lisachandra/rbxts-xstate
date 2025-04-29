@@ -1,5 +1,5 @@
 import { Error } from "@rbxts/luau-polyfill";
-import isDevelopment from "../isDevelopment";
+import isDevelopment from "../utils/polyfill/isDevelopment";
 import {
 	AnyActorScope,
 	AnyMachineSnapshot,

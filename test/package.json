@@ -17,6 +17,7 @@
 		"@rbxts/react-roblox": "^17.2.3",
 		"@rbxts/react-testing-library": "^12.1.5-rc.1",
 		"@rbxts/react-vendor": "*",
+		"@rbxts/regexp": "^0.2.1-ts.4",
 		"@rbxts/services": "^1.0.0",
 		"@rbxts/whatwg-abort-controller": "^3.0.0-rc.1",
 		"@rbxts/whatwg-event-target": "^6.0.2-rc.1",

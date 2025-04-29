@@ -1,4 +1,4 @@
-import isDevelopment from "../isDevelopment";
+import isDevelopment from "../utils/polyfill/isDevelopment";
 import { cloneMachineSnapshot } from "../State";
 import { ProcessingStatus, createActor } from "../createActor";
 import {
@@ -21,8 +21,8 @@ import {
 	BuiltinActionResolution,
 	UnifiedArg,
 } from "../types";
-import { resolveReferencedActor } from "../utils";
 import { Error } from "@rbxts/luau-polyfill";
+import { resolveReferencedActor } from "utils/misc/resolveReferencedActor";
 
 type ResolvableActorId<
 	TContext extends MachineContext,

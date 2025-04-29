@@ -3,15 +3,13 @@ import { MachineSnapshot } from "./State";
 import type { StateMachine } from "./StateMachine";
 import { NULL_EVENT, STATE_DELIMITER } from "./constants";
 import { evaluateGuard } from "./guards";
-import { memo } from "./memo";
-import {
-	BuiltinAction,
-	formatInitialTransition,
-	formatTransition,
-	formatTransitions,
-	getCandidates,
-	getDelayedTransitions,
-} from "./stateUtils";
+import { memo } from "./utils/misc/memo";
+import { getCandidates } from "./utils/state/getCandidates";
+import { BuiltinAction } from "utils/state/types";
+import { formatInitialTransition } from "utils/state/formatInitialTransition";
+import { formatTransitions } from "utils/state/formatTransitions";
+import { formatTransition } from "utils/state/formatTransition";
+import { getDelayedTransitions } from "utils/state/getDelayedTransitions";
 import type {
 	DelayedTransitionDefinition,
 	EventObject,
@@ -34,7 +32,11 @@ import type {
 	NonReducibleUnknown,
 	EventDescriptor,
 } from "./types";
-import { createInvokeId, is, mapValues, toArray, toTransitionConfigArray } from "./utils";
+import { is } from "utils/polyfill/is";
+import { mapValues } from "utils/misc/mapValues";
+import { toArray } from "utils/polyfill/array";
+import { toTransitionConfigArray } from "utils/misc/toTransitionConfigArray";
+import { createInvokeId } from "utils/misc/createInvokeId";
 
 const EMPTY_OBJECT = {};
 

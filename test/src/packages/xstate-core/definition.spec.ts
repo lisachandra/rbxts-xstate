@@ -32,6 +32,6 @@ describe("definition", () => {
 			},
 		});
 
-		expect(invokeMachine.root.getDefinition().invoke.size()).toBe(2);
+		expect(invokeMachine.root.getDefinition().invoke).toHaveLength(2);
 	});
 });

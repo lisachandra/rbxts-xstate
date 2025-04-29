@@ -208,7 +208,7 @@ describe("Event attribute handlers", () => {
 			setEventAttributeValue(target, "foo", f);
 			target.dispatchEvent(new Event("foo"));
 
-			expect((f.handleEvent.mock.calls as Array<unknown>).size()).toBe(0);
+			expect(f.handleEvent.mock.calls).toHaveLength(0);
 		});
 	});
 });

@@ -1,9 +1,11 @@
-import isDevelopment from "./isDevelopment";
+import isDevelopment from "./utils/polyfill/isDevelopment";
 import { Mailbox } from "./Mailbox";
-import { XSTATE_STOP } from "./constants";
-import { createDoneActorEvent, createErrorActorEvent, createInitEvent } from "./eventUtils";
-import { reportUnhandledError } from "./reportUnhandledError";
-import { symbolObservable } from "./symbolObservable";
+import { __ACTOR_TYPE, XSTATE_STOP } from "./constants";
+import { createDoneActorEvent } from "utils/event/createDoneActorEvent";
+import { createErrorActorEvent } from "utils/event/createErrorActorEvent";
+import { createInitEvent } from "utils/event/createInitEvent";
+import { reportUnhandledError } from "./utils/misc/reportUnhandledError";
+import { symbolObservable } from "./utils/polyfill/symbolObservable";
 import { AnyActorSystem, Clock, createSystem } from "./system";
 
 export let executingCustomAction: boolean = false;
@@ -30,12 +32,10 @@ import {
 	Observer,
 	Subscription,
 } from "./types";
-import { toObserver } from "./utils";
+import { toObserver } from "utils/misc/toObserver";
 import { clearTimeout, Error, Object, setTimeout } from "@rbxts/luau-polyfill";
-import { bind } from "bind";
+import { bind } from "utils/polyfill/bind";
 import { HttpService } from "@rbxts/services";
-
-export const __ACTOR_TYPE = 1;
 
 // those values are currently used by @xstate/react directly so it's important to keep the assigned values in sync
 export enum ProcessingStatus {

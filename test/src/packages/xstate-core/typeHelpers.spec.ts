@@ -201,13 +201,19 @@ describe("SnapshotFrom", () => {
 describe("ActorRefFrom", () => {
 	it("should return `ActorRef` based on actor logic", () => {
 		const logic: ActorLogic<Snapshot<undefined>, { type: "TEST" }> = {
-			transition: state => state,
-			getInitialSnapshot: () => ({
-				status: "active",
-				output: undefined,
-				error: undefined,
-			}),
-			getPersistedSnapshot: s => s,
+			transition(state) {
+				return state;
+			},
+			getInitialSnapshot() {
+				return {
+					status: "active",
+					output: undefined,
+					error: undefined,
+				};
+			},
+			getPersistedSnapshot(s) {
+				return s;
+			},
 		};
 
 		function acceptActorRef(actorRef: ActorRefFrom<typeof logic>) {

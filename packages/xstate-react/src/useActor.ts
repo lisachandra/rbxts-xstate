@@ -25,7 +25,7 @@ export function useActor<TLogic extends AnyActorLogic>(
 		],
 		IsNotNever<RequiredActorOptionsKeys<TLogic>>
 	>
-): [SnapshotFrom<TLogic>, Actor<TLogic>["send"], Actor<TLogic>] {
+): [SnapshotFrom<TLogic>, OmitThisParameter<Actor<TLogic>["send"]>, Actor<TLogic>] {
 	if (isDevelopment && !!logic && "send" in logic && typeIs(logic.send, "function")) {
 		throw new Error(
 			`useActor() expects actor logic (e.g. a machine), but received an ActorRef. Use the useSelector(actorRef, ...) hook instead to read the ActorRef's snapshot.`,

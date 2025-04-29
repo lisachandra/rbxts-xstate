@@ -1,28 +1,11 @@
 {
+	"extends": "../../tsconfig.options.json",
 	"compilerOptions": {
-		"target": "ESNext",
-		"incremental": true,
 		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
+		"typeRoots": ["node_modules/@rbxts", "src/types"],
 		"baseUrl": "src",
 		"rootDir": "src",
-		"outDir": "out",
-		"esModuleInterop": true,
-		"plugins": [],
-		"allowSyntheticDefaultImports": true,
-		"downlevelIteration": true,
-		"jsx": "react",
-		"jsxFactory": "React.createElement",
-		"jsxFragmentFactory": "React.Fragment",
-		"module": "commonjs",
-		"moduleResolution": "Node",
-		"noLib": true,
-		"declaration": true,
-		"resolveJsonModule": true,
-		"experimentalDecorators": true,
-		"forceConsistentCasingInFileNames": true,
-		"moduleDetection": "force",
-		"strict": true,
-		"typeRoots": ["node_modules/@rbxts"]
+		"outDir": "out"
 	},
 	"exclude": ["out"]
 }

@@ -8,6 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
+import RegExp from "@rbxts/regexp";
 import { createMachine, getNextSnapshot } from "@rbxts/xstate";
 
 describe("invalid or resolved states", () => {
@@ -169,6 +170,6 @@ describe("invalid transition", () => {
 					RIGHT_CLICK: "right",
 				},
 			});
-		}).toThrowError(/invalid target/i);
+		}).toThrowError(RegExp("invalid target", "i"));
 	});
 });

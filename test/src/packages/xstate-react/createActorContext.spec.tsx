@@ -9,7 +9,7 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 import { createMachine, assign, fromPromise, Snapshot, InspectionEvent } from "@rbxts/xstate";
-import randomBase36String from "@rbxts/xstate/out/randomBase36String";
+import randomBase36String from "@rbxts/xstate/out/utils/polyfill/randomBase36String";
 import { fireEvent, screen, render, waitFor } from "@rbxts/react-testing-library";
 import { useSelector, createActorContext, shallowEqual } from "@rbxts/xstate-react";
 import * as React from "@rbxts/react";
@@ -330,14 +330,14 @@ describe("createActorContext", () => {
 		const SomeContext = createActorContext(someMachine);
 
 		const Component = () => {
-			const { send } = SomeContext.useActorRef();
+			const ref = SomeContext.useActorRef();
 			const count = SomeContext.useSelector(state => state.context.count);
 			return (
 				<frame>
 					<textlabel Tag="data-testid=count" Text={`${count}`}></textlabel>
 					<textbutton
 						Tag="data-testid=button"
-						Event={{ Activated: () => send({ type: "inc" }) }}
+						Event={{ Activated: () => ref.send({ type: "inc" }) }}
 						Text="Inc"
 					></textbutton>
 				</frame>

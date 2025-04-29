@@ -9,7 +9,7 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 import { fireEvent, screen, waitFor as testWaitFor } from "@rbxts/react-testing-library";
-import * as React from "react";
+import * as React from "@rbxts/react";
 import {
 	ActorRefFrom,
 	AnyStateMachine,
@@ -290,7 +290,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const actor = useActorRef(m, { systemId: "test" });
 
 			React.useEffect(() => {
-				actor.system?.get("test")!.send({ type: "PING" });
+				(actor.system?.get("test")! as { send(_: any): unknown }).send({ type: "PING" });
 			});
 
 			return <></>;
@@ -303,7 +303,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 	it("should work with a transition actor", () => {
 		const someLogic = fromTransition((state, event) => {
-			if (event.type == "inc") {
+			if (event.type === "inc") {
 				return state + 1;
 			}
 			return state;
@@ -643,7 +643,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 			const actorRef = useActorRef(machine);
 			const tag = useSelector(actorRef, state => [...state.tags][0]);
 
-			detectedInconsistency ||= machine.config.tags[0] !== tag;
+			detectedInconsistency ||= (machine.config.tags as Array<unknown>)[0] !== tag;
 
 			return (
 				<frame>
@@ -679,7 +679,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		function Test() {
 			React.useEffect(() => {
-				detectedInconsistency ||= machine.config.tags[0] !== tag;
+				detectedInconsistency ||= (machine.config.tags as Array<unknown>)[0] !== tag;
 			});
 
 			const [machine, setMachine] = React.useState(machine1);
@@ -750,9 +750,11 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 					<textbutton
 						Event={{
 							Activated: () => {
-								const child: any = Object.values(
-									actorRef.getSnapshot().children,
-								)[0];
+								const child = (
+									Object.values(actorRef.getSnapshot().children) as Array<{
+										send(_: any): any;
+									}>
+								)[0]!;
 								child.send({
 									type: "EV",
 								});
@@ -772,7 +774,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 		expect(spy.mock.calls).toHaveLength(1);
 		// we don't have any means to rehydrate an inline actor with a new src (can't locate its new src)
 		// so the best we can do is to reuse the old src
-		expect(spy.mock.calls[0][0]).toBe(1);
+		expect((spy.mock.calls as Array<Array<unknown>>)[0]![0]).toBe(1);
 	});
 
 	it("should execute action bound to a specific machine's instance when the action is provided in render", () => {

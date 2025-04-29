@@ -17,6 +17,7 @@ import {
 	AnyActorLogic,
 	Snapshot,
 	ActorLogic,
+	AnyObject,
 } from "@rbxts/xstate";
 import {
 	fromCallback,
@@ -198,7 +199,7 @@ describe("promise logic (fromPromise)", () => {
 			return Promise.reject(createdPromises);
 		});
 		const actorRef = createActor(promiseLogic);
-		actorRef.subscribe({ error: function preventUnhandledErrorListener() {} });
+		actorRef.subscribe({ error: () => {} });
 		actorRef.start();
 
 		await new Promise(res => setTimeout(res, 5, undefined as never));
@@ -217,7 +218,7 @@ describe("promise logic (fromPromise)", () => {
 		const actorRef2 = createActor(promiseLogic, {
 			snapshot: rejectedPersistedState,
 		});
-		actorRef2.subscribe({ error: function preventUnhandledErrorListener() {} });
+		actorRef2.subscribe({ error: () => {} });
 		actorRef2.start();
 
 		expect(createdPromises).toBe(1);
@@ -236,8 +237,8 @@ describe("promise logic (fromPromise)", () => {
 	it("should have reference to self", () => {
 		expect.assertions(1);
 
-		const promiseLogic = fromPromise(({ self }) => {
-			expect(self.send).toBeDefined();
+		const promiseLogic = fromPromise(({ self: itself }) => {
+			expect(itself["send" as never]).toBeDefined();
 			return Promise.resolve(42);
 		});
 
@@ -295,11 +296,11 @@ describe("promise logic (fromPromise)", () => {
 	it("should not reuse the same signal for different actors with same logic", async () => {
 		let deferredMap: Map<string, PromiseWithResolvers<number>> = new Map();
 		let signalListenerMap: Map<string, jest.Mock> = new Map();
-		const p = fromPromise(({ self, signal }) => {
+		const p = fromPromise(({ self: itself, signal }) => {
 			const deferred = withResolvers<number>();
 			const signalListener = jest.fn();
-			deferredMap.set(self.id, deferred);
-			signalListenerMap.set(self.id, signalListener);
+			deferredMap.set(itself.id, deferred);
+			signalListenerMap.set(itself.id, signalListener);
 			signal.addEventListener("abort", signalListener);
 			return deferred.promise;
 		});
@@ -548,8 +549,8 @@ describe("transition function logic (fromTransition)", () => {
 
 	it("should have reference to self", () => {
 		expect.assertions(1);
-		const transitionLogic = fromTransition((_state, _event, { self }) => {
-			expect(self.send).toBeDefined();
+		const transitionLogic = fromTransition((_state, _event, { self: itself }) => {
+			expect(itself["send" as never]).toBeDefined();
 			return 42;
 		}, 0);
 
@@ -710,8 +711,8 @@ describe("callback logic (fromCallback)", () => {
 
 	it("should have reference to self", () => {
 		expect.assertions(1);
-		const callbackLogic = fromCallback(({ self }) => {
-			expect(self.send).toBeDefined();
+		const callbackLogic = fromCallback(({ self: itself }) => {
+			expect(itself["send" as never]).toBeDefined();
 		});
 
 		createActor(callbackLogic).start();
@@ -723,8 +724,8 @@ describe("callback logic (fromCallback)", () => {
 				events: { type: "PING"; ref: AnyActorRef };
 			},
 			invoke: {
-				src: fromCallback(({ self, sendBack, receive }) => {
-					receive(event => {
+				src: fromCallback(({ self: itself, sendBack, receive }) => {
+					receive((event: AnyObject) => {
 						switch (event.type) {
 							case "PONG": {
 								done();
@@ -734,7 +735,7 @@ describe("callback logic (fromCallback)", () => {
 
 					sendBack({
 						type: "PING",
-						ref: self,
+						ref: itself,
 					});
 				}),
 			},
@@ -850,7 +851,7 @@ describe("machine logic", () => {
 
 		const persistedState = actor.getPersistedSnapshot()!;
 
-		/*expect((persistedState as any).children.a.snapshot).toMatchInlineSnapshot(`
+		/*expect((persistedState as AnyObject).children.a.snapshot).toMatchInlineSnapshot(`
       {
         "error": undefined,
         "input": undefined,
@@ -859,7 +860,7 @@ describe("machine logic", () => {
       }
     `);*/
 
-		expect((persistedState as any).children.b.snapshot).toEqual(
+		expect(((persistedState as AnyObject).children as { b: AnyObject }).b.snapshot).toEqual(
 			expect.objectContaining({
 				context: {
 					count: 55,
@@ -936,14 +937,14 @@ describe("machine logic", () => {
 		}).start();
 		const newSnapshot = newActor.getSnapshot();
 
-		expect(newSnapshot.children.child!.getSnapshot().value).toBe("b");
+		expect((newSnapshot.children.child!.getSnapshot() as AnyObject).value).toBe("b");
 
 		// Ensure that the child actor is started
 		// LAST is sent to parent which sends LAST to child
 		newActor.send({ type: "LAST" });
 		// child is at 'c'
 
-		expect(newActor.getSnapshot().children.child!.getSnapshot().value).toBe("c");
+		expect((newActor.getSnapshot().children.child!.getSnapshot() as AnyObject).value).toBe("c");
 	});
 
 	it("should return the initial persisted state of a non-started actor", () => {
@@ -976,7 +977,10 @@ describe("machine logic", () => {
 
 		const actor = createActor(machine);
 
-		expect((actor.getPersistedSnapshot() as any).children["child"].snapshot).toEqual(
+		expect(
+			((actor.getPersistedSnapshot() as AnyObject).children as { child: AnyObject })["child"]
+				.snapshot,
+		).toEqual(
 			expect.objectContaining({
 				value: "inner",
 			}),
@@ -999,7 +1003,7 @@ describe("machine logic", () => {
 							context: ({ input }) => ({
 								// this is only meant to showcase why we can't invoke this actor when it's missing in the persisted state
 								// because we don't have access to the right input as it depends on the event that was used to enter state `b`
-								value: input.deep.prop,
+								value: (input as { deep: { prop: unknown } }).deep.prop,
 							}),
 						}),
 						input: ({ event }) => event.data,
@@ -1020,19 +1024,19 @@ describe("machine logic", () => {
 		});
 
 		expect(actor.getSnapshot().children.child).never.toBe(undefined);
-		expect(actor.getSnapshot().children.child!.getSnapshot().context).toEqual({
+		expect((actor.getSnapshot().children.child!.getSnapshot() as AnyObject).context).toEqual({
 			value: "value",
 		});
 
 		const persisted: any = actor.getPersistedSnapshot();
 
-		delete persisted.children["child"];
+		delete (persisted as { children: { child: unknown } }).children["child"];
 
 		const rehydratedActor = createActor(machine, {
 			snapshot: persisted,
 		}).start();
 
-		expect(rehydratedActor.getSnapshot().children.child).toBe(undefined);
+		expect((rehydratedActor.getSnapshot().children as AnyObject).child).toBe(undefined);
 	});
 
 	it("should persist a spawned actor with referenced src", () => {
@@ -1061,7 +1065,10 @@ describe("machine logic", () => {
 
 		const persistedSnapshot = actor.getPersistedSnapshot()!;
 
-		expect((persistedSnapshot as any).children.child.snapshot.context).toEqual({
+		expect(
+			(persistedSnapshot as never as { children: { child: { snapshot: AnyObject } } })
+				.children.child.snapshot.context,
+		).toEqual({
 			count: 42,
 		});
 
@@ -1073,7 +1080,9 @@ describe("machine logic", () => {
 
 		expect(snapshot.context.ref).toBe(snapshot.children.child);
 
-		expect(snapshot.context.ref.getSnapshot().context.count).toBe(42);
+		expect((snapshot.context.ref.getSnapshot() as { context: AnyObject }).context.count).toBe(
+			42,
+		);
 	});
 
 	it("should not persist a spawned actor with inline src", () => {
@@ -1111,8 +1120,8 @@ describe("composable actor logic", () => {
 		function withLogs<T extends AnyActorLogic>(actorLogic: T): T {
 			return {
 				...actorLogic,
-				transition: (state, event, actorScope) => {
-					logs.push(event.type);
+				transition(state, event, actorScope) {
+					logs.push((event as AnyObject).type as string);
 
 					return actorLogic.transition(state, event, actorScope);
 				},
@@ -1144,14 +1153,14 @@ describe("composable actor logic", () => {
 	});
 
 	it("should work with promises", async () => {
-		const logs: any[] = [];
+		const logs: defined[] = [];
 
 		function withLogs<T extends AnyActorLogic>(actorLogic: T): T {
 			return {
 				...actorLogic,
-				transition: (state: Snapshot<unknown>, event, actorScope) => {
-					const s = actorLogic.transition(state, event, actorScope);
-					logs.push(s.output);
+				transition(state: Snapshot<unknown>, event, actorScope) {
+					const s = actorLogic.transition(state, event, actorScope) as AnyObject;
+					logs.push(s.output as defined);
 
 					return s;
 				},
@@ -1168,14 +1177,14 @@ describe("composable actor logic", () => {
 	});
 
 	it("should work with functions", () => {
-		const logs: any[] = [];
+		const logs: defined[] = [];
 
 		function withLogs<T extends AnyActorLogic>(actorLogic: T): T {
 			return {
 				...actorLogic,
-				transition: (state: Snapshot<unknown>, event, actorScope) => {
-					const s = actorLogic.transition(state, event, actorScope);
-					logs.push(s.context);
+				transition(state: Snapshot<unknown>, event, actorScope) {
+					const s = actorLogic.transition(state, event, actorScope) as AnyObject;
+					logs.push(s.context as defined);
 
 					return s;
 				},
@@ -1197,13 +1206,13 @@ describe("composable actor logic", () => {
 	/*
 	FIXME: Observables are unsupported
 	it("should work with observables", (_, done) => {
-		const logs: any[] = [];
+		const logs: defined[] = [];
 
 		function withLogs<T extends AnyActorLogic>(actorLogic: T): T {
 			return {
 				...actorLogic,
-				transition: (state: Snapshot<unknown>, event, actorScope) => {
-					const s = actorLogic.transition(state, event, actorScope);
+				transition(state: Snapshot<unknown>, event, actorScope) {
+					const s = actorLogic.transition(state, event, actorScope) as AnyObject;
 
 					if (s.status === "active") {
 						logs.push(s.context);
@@ -1228,12 +1237,12 @@ describe("composable actor logic", () => {
 	*/
 
 	it("higher-level logic wrapping a machine should be able to persist a snapshot", () => {
-		const logged: any[] = [];
+		const logged: defined[] = [];
 		function withLogging<T extends ActorLogic<any, any>>(actorLogic: T) {
 			const enhancedLogic: T = {
 				...actorLogic,
-				transition: (state, event, actorCtx) => {
-					logged.push(event.type);
+				transition(state, event, actorCtx) {
+					logged.push((event as AnyObject).type as defined);
 					return actorLogic.transition(state, event, actorCtx);
 				},
 			};

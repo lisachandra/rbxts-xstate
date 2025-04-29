@@ -1253,7 +1253,7 @@ describe("'EventTarget' class", () => {
 				keys.add(tostring(key));
 			}
 
-			expect(keys.size()).toBe(0); // Check if the set is empty
+			expect(keys).toHaveLength(0); // Check if the set is empty
 		});
 	});
 });

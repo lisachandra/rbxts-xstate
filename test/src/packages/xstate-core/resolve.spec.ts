@@ -9,7 +9,7 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 import { createMachine } from "@rbxts/xstate";
-import { resolveStateValue } from "@rbxts/xstate/out/stateUtils";
+import { resolveStateValue } from "@rbxts/xstate/out/utils/state/resolveStateValue";
 
 // from parallel/test3.scxml
 const flatParallelMachine = createMachine({

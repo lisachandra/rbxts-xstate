@@ -1,4 +1,4 @@
-import { AnyActorRef, AnyObject, OutputFrom } from "./types";
+import { AnyActorRef, AnyObject, OutputFrom } from "../../types";
 
 /**
  * Returns a promise that resolves to the `output` of the actor when it is done.

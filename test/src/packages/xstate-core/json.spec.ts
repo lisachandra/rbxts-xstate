@@ -39,7 +39,7 @@ describe("json", () => {
 							},
 							other: "any",
 						},
-						function actionFunction() {
+						() => {
 							return true;
 						},
 						// TODO: investigate why this had to be casted to any to satisfy TS
@@ -55,7 +55,7 @@ describe("json", () => {
 					on: {
 						TO_FOO: {
 							target: ["foo", "bar"],
-							guard: ({ context }) => !!context.string,
+							guard: ({ context }) => !!(context.string as unknown),
 						},
 					},
 					after: {
@@ -101,10 +101,10 @@ describe("json", () => {
 		try {
 			validate(json);
 		} catch (err: any) {
-			throw new Error(HttpService.JSONEncode(HttpService.JSONDecode(err.message), null, 2));
+			throw new Error(HttpService.JSONEncode(HttpService.JSONDecode(err.message), undefined, 2));
 		}
 
-		expect(validate.errors).toBeNull();
+		expect(validate.errors).toBeundefined();
 		*/
 	});
 
@@ -117,7 +117,7 @@ describe("json", () => {
 		};
 
 		// validate(invalidMachineConfig);
-		// expect(validate.errors).never.toBeNull();
+		// expect(validate.errors).never.toBeundefined();
 	});
 
 	it("should not double-serialize invoke transitions", () => {

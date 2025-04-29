@@ -8,8 +8,8 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { InputFrom, createActor, createMachine, raise } from "@rbxts/xstate";
-import { and, not, or, stateIn } from "@rbxts/xstate";
+import { AnyObject, InputFrom, createActor, createMachine, raise } from "@rbxts/xstate";
+import { andG, notG, orG, stateIn } from "@rbxts/xstate";
 import { trackEntries } from "./utils";
 
 describe("guard conditions", () => {
@@ -120,6 +120,9 @@ describe("guard conditions", () => {
 
 	it("should not transition if no condition is met", () => {
 		const machine = createMachine({
+			types: {
+				events: {} as { type: "TIMER"; elapsed: number },
+			},
 			initial: "a",
 			states: {
 				a: {
@@ -622,7 +625,7 @@ describe("custom guards", () => {
 			},
 			{
 				guards: {
-					myGuard: not((_, params) => {
+					myGuard: notG((_, params) => {
 						spy(params);
 						return true;
 					}),
@@ -657,7 +660,7 @@ describe("custom guards", () => {
 						spy(params);
 						return true;
 					},
-					myGuard: not("other"),
+					myGuard: notG("other"),
 				},
 			},
 		);
@@ -689,7 +692,7 @@ describe("custom guards", () => {
 						spy(params);
 						return true;
 					},
-					myGuard: not({
+					myGuard: notG({
 						type: "other",
 						params: 42,
 					}),
@@ -721,7 +724,7 @@ describe("custom guards", () => {
 			{
 				guards: {
 					other: () => true,
-					myGuard: and([
+					myGuard: andG([
 						"other",
 						(_, params) => {
 							spy(params);
@@ -759,7 +762,7 @@ describe("custom guards", () => {
 						spy(params);
 						return true;
 					},
-					myGuard: and(["other", (_, params) => true]),
+					myGuard: andG(["other", (_, params) => true]),
 				},
 			},
 		);
@@ -791,7 +794,7 @@ describe("custom guards", () => {
 						spy(params);
 						return true;
 					},
-					myGuard: and([
+					myGuard: andG([
 						{
 							type: "other",
 							params: 42,
@@ -920,7 +923,7 @@ describe("referencing guards", () => {
 			},
 			{
 				guards: {
-					referenced: not(() => false),
+					referenced: notG(() => false),
 				},
 			},
 		);
@@ -951,7 +954,7 @@ describe("referencing guards", () => {
 				guards: {
 					truthy: () => true,
 					falsy: () => false,
-					referenced: or([() => false, not("truthy"), and([not("falsy"), "truthy"])]),
+					referenced: orG([() => false, notG("truthy"), andG([notG("falsy"), "truthy"])]),
 				},
 			},
 		);
@@ -1043,7 +1046,7 @@ describe("guards - other", () => {
 			{
 				on: {
 					FOO: {
-						guard: not(() => false),
+						guard: notG(() => false),
 						actions: () => {},
 					},
 				},
@@ -1067,7 +1070,7 @@ describe("not() guard", () => {
 					on: {
 						EVENT: {
 							target: "b",
-							guard: not(() => false),
+							guard: notG(() => false),
 						},
 					},
 				},
@@ -1091,7 +1094,7 @@ describe("not() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: not("falsy"),
+								guard: notG("falsy"),
 							},
 						},
 					},
@@ -1123,7 +1126,7 @@ describe("not() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: not({ type: "greaterThan10", params: { value: 5 } }),
+								guard: notG({ type: "greaterThan10", params: { value: 5 } }),
 							},
 						},
 					},
@@ -1154,7 +1157,7 @@ describe("not() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: not(and([not("truthy"), "truthy"])),
+								guard: notG(andG([notG("truthy"), "truthy"])),
 							},
 						},
 					},
@@ -1182,10 +1185,12 @@ describe("not() guard", () => {
 			{
 				on: {
 					EV: {
-						guard: not({
+						guard: notG({
 							type: "myGuard",
 							// TODO: fix contextual typing here
-							params: ({ event }: any) => ({ secret: event.secret }),
+							params: ({ event }: { event: { secret: unknown } }) => ({
+								secret: event.secret,
+							}),
 						}),
 						actions: () => {},
 					},
@@ -1225,7 +1230,7 @@ describe("and() guard", () => {
 					on: {
 						EVENT: {
 							target: "b",
-							guard: and([() => true, () => 1 + 1 === 2]),
+							guard: andG([() => true, () => 1 + 1 === 2]),
 						},
 					},
 				},
@@ -1248,7 +1253,7 @@ describe("and() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: and(["truthy", "truthy"]),
+								guard: andG(["truthy", "truthy"]),
 							},
 						},
 					},
@@ -1283,7 +1288,7 @@ describe("and() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: and([
+								guard: andG([
 									{ type: "greaterThan10", params: { value: 11 } },
 									{ type: "greaterThan10", params: { value: 50 } },
 								]),
@@ -1317,10 +1322,10 @@ describe("and() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: and([
+								guard: andG([
 									() => true,
-									not("falsy"),
-									and([not("falsy"), "truthy"]),
+									notG("falsy"),
+									andG([notG("falsy"), "truthy"]),
 								]),
 							},
 						},
@@ -1349,11 +1354,13 @@ describe("and() guard", () => {
 			{
 				on: {
 					EV: {
-						guard: and([
+						guard: andG([
 							{
 								type: "myGuard",
 								// TODO: fix contextual typing here
-								params: ({ event }: any) => ({ secret: event.secret }),
+								params: ({ event }: { event: { secret: unknown } }) => ({
+									secret: event.secret,
+								}),
 							},
 							() => true,
 						]),
@@ -1395,7 +1402,7 @@ describe("or() guard", () => {
 					on: {
 						EVENT: {
 							target: "b",
-							guard: or([() => false, () => 1 + 1 === 2]),
+							guard: orG([() => false, () => 1 + 1 === 2]),
 						},
 					},
 				},
@@ -1418,7 +1425,7 @@ describe("or() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: or(["falsy", "truthy"]),
+								guard: orG(["falsy", "truthy"]),
 							},
 						},
 					},
@@ -1454,7 +1461,7 @@ describe("or() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: or([
+								guard: orG([
 									{ type: "greaterThan10", params: { value: 4 } },
 									{ type: "greaterThan10", params: { value: 50 } },
 								]),
@@ -1488,10 +1495,10 @@ describe("or() guard", () => {
 						on: {
 							EVENT: {
 								target: "b",
-								guard: or([
+								guard: orG([
 									() => false,
-									not("truthy"),
-									and([not("falsy"), "truthy"]),
+									notG("truthy"),
+									andG([notG("falsy"), "truthy"]),
 								]),
 							},
 						},
@@ -1520,11 +1527,13 @@ describe("or() guard", () => {
 			{
 				on: {
 					EV: {
-						guard: or([
+						guard: orG([
 							{
 								type: "myGuard",
 								// TODO: fix contextual typing here
-								params: ({ event }: any) => ({ secret: event.secret }),
+								params: ({ event }: { event: { secret: unknown } }) => ({
+									secret: event.secret,
+								}),
 							},
 							() => true,
 						]),

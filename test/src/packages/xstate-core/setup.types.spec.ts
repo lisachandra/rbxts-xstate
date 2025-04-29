@@ -10,7 +10,7 @@ import {
 } from "@rbxts/jest-globals";
 import {
 	ActorRefFrom,
-	and,
+	andG,
 	assign,
 	cancel,
 	ContextFrom,
@@ -23,7 +23,7 @@ import {
 	fromTransition,
 	log,
 	matchesState,
-	not,
+	notG,
 	raise,
 	sendParent,
 	sendTo,
@@ -64,7 +64,7 @@ describe("setup()", () => {
 		setup({
 			guards: {
 				check: () => true,
-				opposite: not("check"),
+				opposite: notG("check"),
 			},
 		});
 	});
@@ -74,7 +74,7 @@ describe("setup()", () => {
 			guards: {
 				check: () => true,
 				// @ts-expect-error
-				opposite: not("unknown"),
+				opposite: notG("unknown"),
 			},
 		});
 	});
@@ -83,7 +83,7 @@ describe("setup()", () => {
 		setup({
 			guards: {
 				check: () => true,
-				opposite: not({
+				opposite: notG({
 					type: "check",
 				}),
 			},
@@ -95,7 +95,7 @@ describe("setup()", () => {
 			guards: {
 				check: () => true,
 				// @ts-expect-error
-				opposite: not({
+				opposite: notG({
 					type: "unknown",
 				}),
 			},
@@ -106,7 +106,7 @@ describe("setup()", () => {
 		setup({
 			guards: {
 				check: (_, params: string) => true,
-				opposite: not({
+				opposite: notG({
 					type: "check",
 					params: "bar",
 				}),
@@ -119,7 +119,7 @@ describe("setup()", () => {
 			guards: {
 				check: (_, params: string) => true,
 				// @ts-expect-error
-				opposite: not("check"),
+				opposite: notG("check"),
 			},
 		});
 	});
@@ -129,7 +129,7 @@ describe("setup()", () => {
 			guards: {
 				check: (_, params: string) => true,
 				// @ts-expect-error
-				opposite: not({
+				opposite: notG({
 					type: "check",
 				}),
 			},
@@ -140,7 +140,7 @@ describe("setup()", () => {
 		setup({
 			guards: {
 				check: (_, params: string[]) => true,
-				opposite: not({
+				opposite: notG({
 					type: "check",
 					params: ["bar", "baz"],
 				}),
@@ -151,7 +151,7 @@ describe("setup()", () => {
 	it("should be able to define a `not` guard that embeds an inline function guard", () => {
 		setup({
 			guards: {
-				opposite: not(() => true),
+				opposite: notG(() => true),
 			},
 		});
 	});
@@ -162,7 +162,7 @@ describe("setup()", () => {
 				context: { enabled: boolean };
 			},
 			guards: {
-				opposite: not(({ context }) => context.enabled),
+				opposite: notG(({ context }) => context.enabled),
 			},
 		});
 	});
@@ -176,7 +176,7 @@ describe("setup()", () => {
 				context: { counter: number };
 			},
 			guards: {
-				opposite: not(
+				opposite: notG(
 					// @ts-expect-error
 					(_, params: string) => true,
 				),
@@ -189,7 +189,7 @@ describe("setup()", () => {
 			guards: {
 				check1: () => true,
 				check2: () => true,
-				combinedCheck: and(["check1", "check2"]),
+				combinedCheck: andG(["check1", "check2"]),
 			},
 		});
 	});
@@ -200,7 +200,7 @@ describe("setup()", () => {
 				check1: () => true,
 				check2: () => true,
 				// @ts-expect-error
-				combinedCheck: and(["check1", "unknown"]),
+				combinedCheck: andG(["check1", "unknown"]),
 			},
 		});
 	});
@@ -210,7 +210,7 @@ describe("setup()", () => {
 			guards: {
 				check1: (_, params: string) => true,
 				check2: (_, params: number) => true,
-				combinedCheck: and([
+				combinedCheck: andG([
 					{
 						type: "check1",
 						params: "bar",
@@ -229,7 +229,7 @@ describe("setup()", () => {
 			guards: {
 				check1: _ => true,
 				check2: (_, params: number) => true,
-				combinedCheck: and([
+				combinedCheck: andG([
 					"check1",
 					{
 						type: "check2",
@@ -246,7 +246,7 @@ describe("setup()", () => {
 				check1: _ => true,
 				check2: (_, params: number) => true,
 				// @ts-expect-error
-				combinedCheck: and(["check1", "check2"]),
+				combinedCheck: andG(["check1", "check2"]),
 			},
 		});
 	});
@@ -257,7 +257,7 @@ describe("setup()", () => {
 				check1: _ => true,
 				check2: (_, params: number) => true,
 				// @ts-expect-error
-				combinedCheck: and([
+				combinedCheck: andG([
 					"check1",
 					{
 						type: "check2",
@@ -272,7 +272,7 @@ describe("setup()", () => {
 			guards: {
 				check1: _ => true,
 				check2: _ => true,
-				combinedCheck: and(["check1", not("check2")]),
+				combinedCheck: andG(["check1", notG("check2")]),
 			},
 		});
 	});
@@ -283,7 +283,7 @@ describe("setup()", () => {
 				check1: _ => true,
 				check2: _ => true,
 				// @ts-expect-error
-				combinedCheck: and(["check1", not("unknown")]),
+				combinedCheck: andG(["check1", notG("unknown")]),
 			},
 		});
 	});
@@ -293,9 +293,9 @@ describe("setup()", () => {
 			guards: {
 				check1: _ => true,
 				check2: _ => true,
-				combinedCheck: and([
+				combinedCheck: andG([
 					"check1",
-					not({
+					notG({
 						type: "check2",
 					}),
 				]),
@@ -309,9 +309,9 @@ describe("setup()", () => {
 				check1: _ => true,
 				check2: _ => true,
 				// @ts-expect-error
-				combinedCheck: and([
+				combinedCheck: andG([
 					"check1",
-					not({
+					notG({
 						type: "unknown",
 					}),
 				]),
@@ -324,7 +324,7 @@ describe("setup()", () => {
 			guards: {
 				check1: _ => true,
 				check2: _ => true,
-				combinedCheck: and(["check1", not(() => true)]),
+				combinedCheck: andG(["check1", notG(() => true)]),
 			},
 		});
 	});
@@ -702,7 +702,7 @@ describe("setup()", () => {
 			},
 			actions: {
 				sendFoo: sendTo(
-					({ self }) => self,
+					({ self: itself }) => itself,
 					{
 						type: "FOO",
 					},
@@ -730,7 +730,7 @@ describe("setup()", () => {
 			},
 			actions: {
 				sendFoo: sendTo(
-					({ self }) => self,
+					({ self: itself }) => itself,
 					{
 						type: "FOO",
 					},
@@ -759,7 +759,7 @@ describe("setup()", () => {
 			},
 			actions: {
 				sendFoo: sendTo(
-					({ self }) => self,
+					({ self: itself }) => itself,
 					{
 						type: "FOO",
 					},
@@ -784,7 +784,7 @@ describe("setup()", () => {
 					  };
 			},
 			actions: {
-				sendFoo: sendTo(({ self }) => self, {
+				sendFoo: sendTo(({ self: itself }) => itself, {
 					type: "FOO",
 				}),
 			},
@@ -1713,7 +1713,7 @@ describe("setup()", () => {
 			}
 		}
 		// Nested state exhaustiveness
-		if (typeof value === "object" && "red" in value) {
+		if (typeIs(value, "table") && "red" in value) {
 			// @ts-expect-error
 			value satisfies "green";
 			// @ts-expect-error

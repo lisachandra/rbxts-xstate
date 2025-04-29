@@ -14,6 +14,7 @@ import {
 	ActorRef,
 	ActorRefFrom,
 	AnyActorRef,
+	AnyObject,
 	AnyStateMachine,
 	EventObject,
 	Snapshot,
@@ -48,7 +49,7 @@ describe("system", () => {
 						{
 							src: fromCallback(({ receive }) => {
 								receive(event => {
-									expect(event.type).toBe("HELLO");
+									expect((event as AnyObject).type).toBe("HELLO");
 									done();
 								});
 							}),
@@ -408,7 +409,7 @@ describe("system", () => {
 		expect(actor.system.get("test")).toBeDefined();
 
 		// The assertion won't be checked until the transition function gets an event
-		actor.system.get("reducer")!.send({ type: "a" });
+		(actor.system.get("reducer")! as { send(a: unknown): unknown }).send({ type: "a" });
 	});
 
 	/*
@@ -514,7 +515,7 @@ describe("system", () => {
 		const actorRef = createActor(machine).start();
 
 		actorRef.send({ type: "RESTART" });
-		actorRef.system.get("listener")!.send({ type: "a" });
+		(actorRef.system.get("listener")! as { send(a: unknown): unknown }).send({ type: "a" });
 
 		expect(spy.mock.calls).toEqual([
 			[

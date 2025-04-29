@@ -9,7 +9,7 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 import { act, fireEvent, screen } from "@rbxts/react-testing-library";
-import * as React from "react";
+import * as React from "@rbxts/react";
 import {
 	ActorRef,
 	ActorRefFrom,
@@ -23,6 +23,7 @@ import {
 	TransitionSnapshot,
 	AnyEventObject,
 	setup,
+	AnyObject,
 } from "@rbxts/xstate";
 import { shallowEqual, useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
 import { describeEachReactMode } from "./utils";
@@ -357,7 +358,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const [state] = useMachine(parentMachine);
 			const actor = state.context.childActor;
 
-			const value = useSelector(actor, identitySelector);
+			const value = useSelector(actor, identitySelector) as { context: string };
 
 			return <textlabel Text={value.context} />;
 		};
@@ -488,9 +489,9 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 			const [state] = useMachine(parentMachine);
 			const actor = state.context.childActor;
 
-			const value = useSelector(actor, identitySelector);
+			const value = useSelector(actor, identitySelector) as { context: string };
 
-			return <>{value.context}</>;
+			return <textlabel Text={value.context} />;
 		};
 
 		const { container } = render(<App />);
@@ -507,9 +508,11 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		const identitySelector = (value: any) => value;
 
 		const App = ({ prop }: { prop: string }) => {
-			const value = useSelector(prop === "first" ? actor1 : actor2, identitySelector);
+			const value = useSelector(prop === "first" ? actor1 : actor2, identitySelector) as {
+				context: string;
+			};
 
-			return <>{value.context}</>;
+			return <textlabel Text={value.context} />;
 		};
 
 		const { container, rerender } = render(<App prop="first" />);
@@ -521,7 +524,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 	it("should keep rendering a new selected value after selector change when the actor doesn't emit", async () => {
 		const actor = createActor(fromTransition(s => s, undefined));
-		actor.subscribe = () => ({ unsubscribe: () => {} });
+		actor.subscribe = () => ({ unsubscribe() {} });
 
 		const App = ({ selector }: { selector: any }) => {
 			const [, forceRerender] = React.useState(0);
@@ -548,7 +551,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 	});
 
 	it("should only rerender once when the selected value changes", () => {
-		const selector = (state: any) => state.context.foo;
+		const selector = (state: { context: AnyObject }) => state.context.foo;
 
 		const machine = createMachine({
 			types: {} as { context: { foo: number }; events: { type: "INC" } },
@@ -716,8 +719,7 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		}) => {
 			const state = useSelector(props.actor, s => s);
 
-			// @ts-expect-error
-			((_accept: { count: number }) => {})(state?.context);
+			((_accept: { count: number }) => {})(state?.context!);
 			((_accept: { count: number } | undefined) => {})(state?.context);
 
 			return (

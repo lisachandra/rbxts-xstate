@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from "@rbxts/react";
 import * as RTL from "@rbxts/react-testing-library";
 import { describe } from "@rbxts/jest-globals";
 

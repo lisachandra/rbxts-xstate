@@ -584,7 +584,7 @@ describe("entry/exit actions", () => {
 					on: {
 						EV: {
 							// it's important for this test to use a named function
-							actions: function myFn() {
+							actions: () => {
 								called = true;
 							},
 						},
@@ -2792,8 +2792,8 @@ describe("enqueueActions", () => {
 	it("should provide self", () => {
 		expect.assertions(1);
 		const machine = createMachine({
-			entry: enqueueActions(({ self }) => {
-				expect(self.send).toBeDefined();
+			entry: enqueueActions(({ self: itself }) => {
+				expect(itself["send" as never]).toBeDefined();
 			}),
 		});
 
@@ -2847,7 +2847,7 @@ describe("enqueueActions", () => {
 			},
 			invoke: {
 				src: "child",
-				input: ({ self }) => ({ parent: self }),
+				input: ({ self: itself }) => ({ parent: itself }),
 			},
 		});
 
@@ -3164,10 +3164,13 @@ describe("sendTo", () => {
 					on: { NEXT: "b" },
 				},
 				b: {
-					entry: [assign({ counter: 1 }), sendTo(({ self }) => self, { type: "EVENT" })],
+					entry: [
+						assign({ counter: 1 }),
+						sendTo(({ self: itself }) => itself, { type: "EVENT" }),
+					],
 					on: {
 						EVENT: {
-							actions: ({ self }) => spy(self.getSnapshot().context),
+							actions: ({ self: itself }) => spy(itself.getSnapshot().context),
 							target: "c",
 						},
 					},
@@ -3514,10 +3517,7 @@ describe("raise", () => {
 
 	it("should error if given a string", () => {
 		const machine = createMachine({
-			entry: raise(
-				// @ts-ignore
-				"a string",
-			),
+			entry: raise("a string" as never),
 		});
 
 		const errorSpy = jest.fn();
@@ -3683,8 +3683,8 @@ describe("cancel", () => {
 
 		const actorRef = createActor(machine, {
 			clock: {
-				setTimeout,
-				clearTimeout: spy,
+				setTimeout: setTimeout as never,
+				clearTimeout: spy as never,
 			},
 		}).start();
 
@@ -3692,7 +3692,7 @@ describe("cancel", () => {
 			type: "FOO",
 		});
 
-		expect(spy.mock.calls.size()).toBe(0);
+		expect(spy.mock.calls).toHaveLength(0);
 	});
 
 	it("should be able to cancel a just scheduled delayed event to a just invoked child", async () => {
@@ -3738,7 +3738,7 @@ describe("cancel", () => {
 		});
 
 		await sleep(10);
-		expect(spy.mock.calls.size()).toBe(0);
+		expect(spy.mock.calls).toHaveLength(0);
 	});
 
 	it("should not be able to cancel a just scheduled non-delayed event to a just invoked child", async () => {
@@ -3783,7 +3783,7 @@ describe("cancel", () => {
 			type: "START",
 		});
 
-		expect(spy.mock.calls.size()).toBe(1);
+		expect(spy.mock.calls).toHaveLength(1);
 	});
 });
 
@@ -3932,8 +3932,8 @@ describe("action meta", () => {
 		expect.assertions(1);
 
 		const machine = createMachine({
-			entry: ({ self }) => {
-				expect(self.send).toBeDefined();
+			entry: ({ self: itself }) => {
+				expect(itself["send" as never]).toBeDefined();
 			},
 		});
 

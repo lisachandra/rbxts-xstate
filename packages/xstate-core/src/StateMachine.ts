@@ -1,22 +1,20 @@
-import isDevelopment from "./isDevelopment";
+import isDevelopment from "./utils/polyfill/isDevelopment";
 import { assign } from "./actions";
-import { __ACTOR_TYPE, createActor } from "./createActor";
-import { createInitEvent } from "./eventUtils";
+import { createActor } from "./createActor";
+import { createInitEvent } from "utils/event/createInitEvent";
 import { createMachineSnapshot, getPersistedSnapshot, MachineSnapshot } from "./State";
 import { StateNode } from "./StateNode";
-import {
-	getAllStateNodes,
-	getInitialStateNodes,
-	getStateNodeByPath,
-	getStateNodes,
-	isInFinalState,
-	isStateId,
-	macrostep,
-	microstep,
-	resolveActionsAndContext,
-	resolveStateValue,
-	transitionNode,
-} from "./stateUtils";
+import { resolveStateValue } from "utils/state/resolveStateValue";
+import { macrostep } from "utils/state/macrostep";
+import { resolveActionsAndContext } from "utils/state/resolveActionsAndContext";
+import { microstep } from "utils/state/microstep";
+import { transitionNode } from "utils/state/transitionNode";
+import { getStateNodes } from "utils/state/getStateNodes";
+import { getStateNodeByPath } from "utils/state/getStateNodeByPath";
+import { getInitialStateNodes } from "utils/state/getInitialStateNodes";
+import { isInFinalState } from "utils/state/isInFinalState";
+import { isStateId } from "utils/state/isStateId";
+import { getAllStateNodes } from "utils/state/getAllStateNodes";
 import { AnyActorSystem } from "./system";
 import type {
 	ActorLogic,
@@ -47,9 +45,11 @@ import type {
 	SnapshotStatus,
 	AnyObject,
 } from "./types";
-import { resolveReferencedActor, toStatePath } from "./utils";
-import { bind } from "bind";
+import { toStatePath } from "utils/misc/toStatePath";
+import { bind } from "utils/polyfill/bind";
 import { Array, Error, Object, String } from "@rbxts/luau-polyfill";
+import { __ACTOR_TYPE } from "constants";
+import { resolveReferencedActor } from "utils/misc/resolveReferencedActor";
 
 const STATE_IDENTIFIER = "#";
 

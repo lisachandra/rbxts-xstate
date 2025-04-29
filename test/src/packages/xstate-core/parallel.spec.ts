@@ -1053,7 +1053,7 @@ describe("parallel states", () => {
 				type: "GOTO_FOOBAZ",
 			});
 
-			expect(actorRef.getSnapshot().context.log.size()).toBe(2);
+			expect(actorRef.getSnapshot().context.log).toHaveLength(2);
 		});
 	});
 

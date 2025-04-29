@@ -31,7 +31,7 @@ import {
 	createActor,
 	createMachine,
 	enqueueActions,
-	not,
+	notG,
 	sendTo,
 	setup,
 	spawnChild,
@@ -223,7 +223,7 @@ describe("output", () => {
 			},
 		});
 
-		const state = machine.getInitialSnapshot(null as any);
+		const state = machine.getInitialSnapshot(undefined as any);
 
 		((_accept: number | undefined) => {})(state.output);
 		// @ts-expect-error
@@ -2795,12 +2795,12 @@ describe("actions", () => {
 				},
 				context: {} as {
 					count: number;
-					mode: "foo" | "bar" | null;
+					mode: "foo" | "bar" | undefined;
 				},
 			},
 			context: {
 				count: 0,
-				mode: null,
+				mode: undefined,
 			},
 			entry: assign({ mode: "foo" }),
 		});
@@ -2946,7 +2946,7 @@ describe("actions", () => {
 			types: {} as {
 				actions: { type: "greet"; params: { name: string } } | { type: "poke" };
 			},
-			entry: (_, params) => {
+			entry: (_: any, params) => {
 				((_accept: undefined) => {})(params);
 				// @ts-expect-error
 				((_accept: "not any") => {})(params);
@@ -2959,7 +2959,7 @@ describe("actions", () => {
 			types: {} as {
 				actions: { type: "greet"; params: { name: string } } | { type: "poke" };
 			},
-			entry: assign((_, params) => {
+			entry: assign((_: any, params) => {
 				((_accept: undefined) => {})(params);
 				// @ts-expect-error
 				((_accept: "not any") => {})(params);
@@ -2977,7 +2977,7 @@ describe("actions", () => {
 			},
 			{
 				actions: {
-					greet: (_, params) => {
+					greet: (_: any, params) => {
 						((_accept: string) => {})(params.name);
 						// @ts-expect-error
 						((_accept: "not any") => {})(params.name);
@@ -2996,7 +2996,7 @@ describe("actions", () => {
 			},
 			{
 				actions: {
-					greet: assign((_, params) => {
+					greet: assign((_: any, params) => {
 						((_accept: string) => {})(params.name);
 						// @ts-expect-error
 						((_accept: "not any") => {})(params.name);
@@ -3280,7 +3280,7 @@ describe("enqueueActions", () => {
 					| { type: "plainGuard" },
 			},
 			entry: enqueueActions(({ check }) => {
-				check((_, params) => {
+				check((_: any, params) => {
 					params satisfies undefined;
 					undefined satisfies typeof params;
 					// @ts-expect-error
@@ -3309,7 +3309,7 @@ describe("enqueueActions", () => {
 			{
 				actions: {
 					someGuard: enqueueActions(({ check }) => {
-						check((_, params) => {
+						check((_: any, params) => {
 							params satisfies undefined;
 							undefined satisfies typeof params;
 							// @ts-expect-error
@@ -3495,7 +3495,7 @@ describe("guards", () => {
 				on: {
 					EVENT: {
 						target: "#b",
-						guard: not("falsy"),
+						guard: notG("falsy"),
 					},
 				},
 			},
@@ -3727,7 +3727,7 @@ describe("guards", () => {
 			},
 			on: {
 				EV: {
-					guard: (_, params) => {
+					guard: (_: any, params) => {
 						((_accept: undefined) => {})(params);
 						// @ts-expect-error
 						((_accept: "not any") => {})(params);
@@ -3755,7 +3755,7 @@ describe("guards", () => {
 			},
 			on: {
 				EV: {
-					guard: not((_, params) => {
+					guard: notG((_: any, params) => {
 						params satisfies unknown;
 						// @ts-expect-error
 						params satisfies undefined;
@@ -3784,7 +3784,7 @@ describe("guards", () => {
 			},
 			{
 				guards: {
-					isGreaterThan: (_, params) => {
+					isGreaterThan: (_: any, params) => {
 						((_accept: number) => {})(params.count);
 						// @ts-expect-error
 						((_accept: "not any") => {})(params);
@@ -3814,7 +3814,7 @@ describe("guards", () => {
 			},
 			{
 				guards: {
-					isGreaterThan: not((_, params) => {
+					isGreaterThan: notG((_: any, params) => {
 						params satisfies unknown;
 						// @ts-expect-error
 						params satisfies undefined;
@@ -3864,7 +3864,7 @@ describe("guards", () => {
 			},
 			on: {
 				EV: {
-					guard: not(() => {
+					guard: notG(() => {
 						return true;
 					}),
 				},
@@ -3888,7 +3888,7 @@ describe("guards", () => {
 			},
 			{
 				guards: {
-					isGreaterThan: not(() => {
+					isGreaterThan: notG(() => {
 						return true;
 					}),
 				},
@@ -4280,12 +4280,9 @@ describe("fromCallback", () => {
 	it("should reject a start callback that returns an explicit promise", () => {
 		createMachine({
 			invoke: {
-				src: fromCallback(
-					// @ts-ignore
-					() => {
-						return new Promise(() => {});
-					},
-				),
+				src: fromCallback((() => {
+					return new Promise(() => {});
+				}) as never),
 			},
 		});
 	});
@@ -4306,10 +4303,7 @@ describe("fromCallback", () => {
 		// })
 		createMachine({
 			invoke: {
-				src: fromCallback(
-					// @ts-ignore
-					async () => {},
-				),
+				src: fromCallback((async () => {}) as never),
 			},
 		});
 	});
@@ -4317,12 +4311,9 @@ describe("fromCallback", () => {
 	it("should reject a start callback that returns a non-function and non-undefined value", () => {
 		createMachine({
 			invoke: {
-				src: fromCallback(
-					// @ts-ignore
-					() => {
-						return 42;
-					},
-				),
+				src: fromCallback((() => {
+					return 42;
+				}) as never),
 			},
 		});
 	});
@@ -4362,11 +4353,11 @@ describe("self", () => {
 			types: {} as {
 				events: { type: "FOO" } | { type: "BAR" };
 			},
-			entry: ({ self }) => {
-				self.send({ type: "FOO" });
-				self.send({ type: "BAR" });
+			entry: ({ self: itself }) => {
+				itself.send({ type: "FOO" });
+				itself.send({ type: "BAR" });
 				// @ts-expect-error
-				self.send({ type: "BAZ" });
+				itself.send({ type: "BAZ" });
 			},
 		});
 	});
@@ -4376,11 +4367,11 @@ describe("self", () => {
 			types: {} as {
 				events: { type: "FOO" } | { type: "BAR" };
 			},
-			entry: assign(({ self }) => {
-				self.send({ type: "FOO" });
-				self.send({ type: "BAR" });
+			entry: assign(({ self: itself }) => {
+				itself.send({ type: "FOO" });
+				itself.send({ type: "BAR" });
 				// @ts-expect-error
-				self.send({ type: "BAZ" });
+				itself.send({ type: "BAZ" });
 				return {};
 			}),
 		});
@@ -4393,11 +4384,11 @@ describe("self", () => {
 			},
 			on: {
 				FOO: {
-					actions: ({ self }) => {
-						self.send({ type: "FOO" });
-						self.send({ type: "BAR" });
+					actions: ({ self: itself }) => {
+						itself.send({ type: "FOO" });
+						itself.send({ type: "BAR" });
 						// @ts-expect-error
-						self.send({ type: "BAZ" });
+						itself.send({ type: "BAZ" });
 					},
 				},
 			},
@@ -4411,11 +4402,11 @@ describe("self", () => {
 			},
 			on: {
 				FOO: {
-					actions: assign(({ self }) => {
-						self.send({ type: "FOO" });
-						self.send({ type: "BAR" });
+					actions: assign(({ self: itself }) => {
+						itself.send({ type: "FOO" });
+						itself.send({ type: "BAR" });
 						// @ts-expect-error
-						self.send({ type: "BAZ" });
+						itself.send({ type: "BAZ" });
 						return {};
 					}),
 				},
@@ -4429,10 +4420,10 @@ describe("self", () => {
 				context: { count: number };
 			},
 			context: { count: 0 },
-			entry: ({ self }) => {
-				((_accept: number) => {})(self.getSnapshot().context.count);
+			entry: ({ self: itself }) => {
+				((_accept: number) => {})(itself.getSnapshot().context.count);
 				// @ts-expect-error
-				((_accept: string) => {})(self.getSnapshot().context.count);
+				((_accept: string) => {})(itself.getSnapshot().context.count);
 			},
 		});
 	});
@@ -4443,10 +4434,10 @@ describe("self", () => {
 				context: { count: number };
 			},
 			context: { count: 0 },
-			entry: assign(({ self }) => {
-				((_accept: number) => {})(self.getSnapshot().context.count);
+			entry: assign(({ self: itself }) => {
+				((_accept: number) => {})(itself.getSnapshot().context.count);
 				// @ts-expect-error
-				((_accept: string) => {})(self.getSnapshot().context.count);
+				((_accept: string) => {})(itself.getSnapshot().context.count);
 				return {};
 			}),
 		});

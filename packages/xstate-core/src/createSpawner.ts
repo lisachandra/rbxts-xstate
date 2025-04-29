@@ -18,7 +18,7 @@ import {
 	TODO,
 	type RequiredLogicInput,
 } from "./types";
-import { resolveReferencedActor } from "./utils";
+import { resolveReferencedActor } from "utils/misc/resolveReferencedActor";
 
 type SpawnOptions<TActor extends ProvidedActor, TSrc extends TActor["src"]> = TActor extends {
 	src: TSrc;
