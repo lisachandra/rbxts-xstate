@@ -13,6 +13,7 @@ import {
 	AnyObject,
 } from "../types";
 import { Error } from "@rbxts/luau-polyfill";
+import { callable } from "utils/polyfill/callable";
 
 type ResolvableActorRef<
 	TContext extends MachineContext,
@@ -105,6 +106,8 @@ export function stopChild<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	stop = callable(stop);
 	stop.type = "xstate.stopChild";
 	stop.actorRef = actorRef;
 

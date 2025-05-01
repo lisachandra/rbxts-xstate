@@ -1,5 +1,4 @@
 import { Error } from "@rbxts/luau-polyfill";
-import { Element } from "./elements";
 
 export interface Config {
 	testIdAttribute: string;
@@ -19,7 +18,7 @@ export interface Config {
 	defaultIgnore: string;
 	showOriginalStackTrace: boolean;
 	throwSuggestions: boolean;
-	getElementError: (message: string | undefined, container: Element) => Error;
+	getElementError: (message: string | undefined, container: Instance) => Error;
 }
 
 export interface ConfigFn {

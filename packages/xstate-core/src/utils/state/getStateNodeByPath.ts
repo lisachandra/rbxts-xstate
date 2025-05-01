@@ -9,7 +9,6 @@ import { isStateId } from "./isStateId";
  *
  * @param statePath The string or string array relative path to the state node.
  */
-
 export function getStateNodeByPath(
 	stateNode: AnyStateNode,
 	statePath: string | string[],

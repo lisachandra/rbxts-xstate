@@ -10,6 +10,7 @@ import {
 	ParameterizedObject,
 	BuiltinActionResolution,
 } from "../types";
+import { callable } from "utils/polyfill/callable";
 
 type ResolvableLogValue<
 	TContext extends MachineContext,
@@ -88,6 +89,8 @@ export function log<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	log = callable(log);
 	log.type = "xstate.log";
 	log.value = value;
 	log.label = label;

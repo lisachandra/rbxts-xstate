@@ -14,6 +14,7 @@ import {
 	BuiltinActionResolution,
 } from "../types";
 import { Error } from "@rbxts/luau-polyfill";
+import { callable } from "utils/polyfill/callable";
 
 function resolveEmit(
 	_: AnyActorScope,
@@ -132,6 +133,8 @@ export function emit<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	emit = callable(emit);
 	emit.type = "xstate.emit";
 	emit.event = eventOrExpr;
 

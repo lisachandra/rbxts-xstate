@@ -3,8 +3,7 @@ import { getEffectiveTargetStates } from "./getEffectiveTargetStates";
 import { getProperAncestors } from "./getProperAncestors";
 import { getTransitionDomain } from "./getTransitionDomain";
 import { isHistoryNode } from "./isHistoryNode";
-import { addAncestorStatesToEnter } from "./addAncestorStatesToEnter";
-import { addDescendantStatesToEnter } from "./addDescendantStatesToEnter";
+import { addAncestorStatesToEnter, addDescendantStatesToEnter } from "./addStatesToEnter";
 
 export function computeEntrySet(
 	transitions: Array<AnyTransitionDefinition>,

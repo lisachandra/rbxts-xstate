@@ -15,7 +15,7 @@ import { getInitialStateNodes } from "utils/state/getInitialStateNodes";
 import { isInFinalState } from "utils/state/isInFinalState";
 import { isStateId } from "utils/state/isStateId";
 import { getAllStateNodes } from "utils/state/getAllStateNodes";
-import { AnyActorSystem } from "./system";
+import { AnyActorSystem } from "./createSystem";
 import type {
 	ActorLogic,
 	ActorScope,
@@ -135,11 +135,11 @@ export class StateMachine<
 		this.version = this.config.version;
 		this.schemas = this.config.schemas;
 
-		this.transition = bind(this["transition" as never], this);
-		this.getInitialSnapshot = bind(this["getInitialSnapshot" as never], this);
-		this.getPersistedSnapshot = bind(this["getPersistedSnapshot" as never], this);
-		this.restoreSnapshot = bind(this["restoreSnapshot" as never], this);
-		this.start = bind(this["start" as never], this);
+		this.transition = bind(true, this["transition" as never], this);
+		this.getInitialSnapshot = bind(true, this["getInitialSnapshot" as never], this);
+		this.getPersistedSnapshot = bind(true, this["getPersistedSnapshot" as never], this);
+		this.restoreSnapshot = bind(true, this["restoreSnapshot" as never], this);
+		this.start = bind(true, this["start" as never], this);
 
 		this.root = new StateNode(config, {
 			_key: this.id,
@@ -426,9 +426,9 @@ export class StateMachine<
 
 	public getStateNodeById(stateId: string): StateNode<TContext, TEvent> {
 		const fullPath = toStatePath(stateId);
-		const relativePath = Array.slice(fullPath, 1);
+		const relativePath = Array.slice(fullPath, 1 + 1);
 		const resolvedStateId = isStateId(fullPath[0])
-			? String.slice(fullPath[0], STATE_IDENTIFIER.size())
+			? String.slice(fullPath[0], STATE_IDENTIFIER.size() + 1)
 			: fullPath[0];
 
 		const stateNode = this.idMap.get(resolvedStateId);

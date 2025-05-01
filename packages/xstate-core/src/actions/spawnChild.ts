@@ -23,6 +23,7 @@ import {
 } from "../types";
 import { Error } from "@rbxts/luau-polyfill";
 import { resolveReferencedActor } from "utils/misc/resolveReferencedActor";
+import { callable } from "utils/polyfill/callable";
 
 type ResolvableActorId<
 	TContext extends MachineContext,
@@ -197,6 +198,8 @@ export function spawnChild<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	spawnChild = callable(spawnChild);
 	spawnChild.type = "xstate.spawnChild";
 	spawnChild.id = id;
 	spawnChild.systemId = systemId;

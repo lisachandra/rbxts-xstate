@@ -5,7 +5,7 @@ import { NULL_EVENT, STATE_DELIMITER } from "./constants";
 import { evaluateGuard } from "./guards";
 import { memo } from "./utils/misc/memo";
 import { getCandidates } from "./utils/state/getCandidates";
-import { BuiltinAction } from "utils/state/types";
+import { BuiltInAction } from "utils/state/types";
 import { formatInitialTransition } from "utils/state/formatInitialTransition";
 import { formatTransitions } from "utils/state/formatTransitions";
 import { formatTransition } from "utils/state/formatTransition";
@@ -44,9 +44,9 @@ const toSerializableAction = (action: UnknownAction) => {
 	if (typeIs(action, "string")) {
 		return { type: action };
 	}
-	if (typeIs(action, "function")) {
+	if (typeIs(action, "table")) {
 		if ("resolve" in action) {
-			return { type: (action as BuiltinAction).type };
+			return { type: (action as BuiltInAction).type };
 		}
 		return {
 			type: action["name" as never],
@@ -390,9 +390,7 @@ export class StateNode<
 				throw new Error(
 					`Unable to evaluate guard ${
 						guardType ? `'${guardType}' ` : ""
-					}in transition for event '${eventType}' in state node '${
-						this.id
-					}':\n${(err as object)["message" as never]}`,
+					}in transition for event '${eventType}' in state node '${this.id}':\n${err}`,
 				);
 			}
 

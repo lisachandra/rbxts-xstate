@@ -11,12 +11,12 @@ export function toStatePath(stateId: string | string[]): string[] {
 	let segment = "";
 
 	for (let i = 0; i < stateId.size(); i++) {
-		const char = String.charCodeAt(stateId, i);
+		const char = String.charCodeAt(stateId, i + 1);
 		switch (char) {
 			// \
 			case 92:
 				// consume the next character
-				segment += indexString(stateId, i + 1);
+				segment += indexString(stateId, i + 1 + 1);
 				// and skip over it
 				i++;
 				continue;
@@ -24,9 +24,10 @@ export function toStatePath(stateId: string | string[]): string[] {
 			case 46:
 				result.push(segment);
 				segment = "";
+				i++;
 				continue;
 		}
-		segment += indexString(stateId, i);
+		segment += indexString(stateId, i + 1);
 	}
 
 	result.push(segment);

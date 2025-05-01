@@ -26,6 +26,7 @@ import {
 	AnyObject,
 } from "../types";
 import { Error, String } from "@rbxts/luau-polyfill";
+import { callable } from "utils/polyfill/callable";
 
 function resolveSendTo(
 	actorScope: AnyActorScope,
@@ -104,7 +105,7 @@ function resolveSendTo(
 			// SCXML compatibility: https://www.w3.org/TR/scxml/#SCXMLEventProcessor
 			// #_invokeid. If the target is the special term '#_invokeid', where invokeid is the invokeid of an SCXML session that the sending session has created by <invoke>, the Processor must add the event to the external queue Is(that, ion.)
 			targetActorRef = (snapshot.children as AnyObject)[
-				String.slice(resolvedTarget, 2)
+				String.slice(resolvedTarget, 2 + 1)
 			] as never;
 		} else {
 			targetActorRef = extra.deferredActorIds?.includes(resolvedTarget)
@@ -143,8 +144,8 @@ function retryResolveSendTo(
 		delay: number | undefined;
 	},
 ) {
-	if (typeIs(params, "string")) {
-		params.to = (snapshot.children as AnyObject)[params.to as never] as never;
+	if (typeIs(params.to, "string")) {
+		params.to = (snapshot.children as AnyObject)[params.to] as AnyActorRef;
 	}
 }
 
@@ -244,6 +245,8 @@ export function sendTo<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	sendTo = callable(sendTo);
 	sendTo.type = "xstate.sendTo";
 	sendTo.to = to;
 	sendTo.event = eventOrExpr;

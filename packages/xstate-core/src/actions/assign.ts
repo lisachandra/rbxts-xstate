@@ -19,6 +19,7 @@ import type {
 	BuiltinActionResolution,
 } from "../types";
 import { Error, Object } from "@rbxts/luau-polyfill";
+import { callable } from "utils/polyfill/callable";
 
 export interface AssignArgs<
 	TContext extends MachineContext,
@@ -151,6 +152,8 @@ export function assign<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	assign = callable(assign);
 	assign.type = "xstate.assign";
 	assign.assignment = assignment;
 

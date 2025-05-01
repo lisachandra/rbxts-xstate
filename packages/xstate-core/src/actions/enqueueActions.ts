@@ -24,6 +24,7 @@ import { sendParent, sendTo } from "./send";
 import { spawnChild } from "./spawnChild";
 import { stopChild } from "./stopChild";
 import { Error } from "@rbxts/luau-polyfill";
+import { callable } from "utils/polyfill/callable";
 
 interface ActionEnqueuer<
 	TContext extends MachineContext,
@@ -123,6 +124,8 @@ function resolveEnqueueActions(
 	const enqueue: Parameters<typeof collect>[0]["enqueue"] = function (action) {
 		actions.push(action);
 	};
+	// @ts-expect-error -- lua polyfill
+	enqueue = callable(enqueue);
 	enqueue.assign = (...args) => {
 		actions.push(assign(...args));
 	};
@@ -302,6 +305,8 @@ export function enqueueActions<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	enqueueActions = callable(enqueueActions);
 	enqueueActions.type = "xstate.enqueueActions";
 	enqueueActions.collect = collect;
 	enqueueActions.resolve = resolveEnqueueActions;

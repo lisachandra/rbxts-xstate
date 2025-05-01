@@ -1,4 +1,4 @@
-import { EventTarget } from "./event-target"; // Used as only type, so no circular.
+import type { EventTarget } from "./event-target"; // Used as only type, so no circular.
 import { Warning } from "./warning-handler";
 
 export const InitEventWasCalledWhileDispatching = new Warning<[]>(

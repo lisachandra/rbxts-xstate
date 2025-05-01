@@ -9,6 +9,7 @@ import {
 	ParameterizedObject,
 	BuiltinActionResolution,
 } from "../types";
+import { callable } from "utils/polyfill/callable";
 
 type ResolvableSendId<
 	TContext extends MachineContext,
@@ -89,6 +90,8 @@ export function cancel<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	cancel = callable(cancel);
 	cancel.type = "xstate.cancel";
 	cancel.sendId = sendId;
 

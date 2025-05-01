@@ -4,8 +4,8 @@
 	"private": true,
 	"license": "MIT",
 	"scripts": {
-		"build": "shx rm -rf out && rbxtsc --includePath out/include --noInclude --allowCommentDirectives --verbose",
-		"dev": "shx rm -rf out && rbxtsc --includePath out/include --noInclude --allowCommentDirectives -w"
+		"build": "shx rm -rf out && rbxtsc --rojo ../default.project.json --includePath out/include --noInclude --allowCommentDirectives --verbose",
+		"dev": "shx rm -rf out && rbxtsc --rojo ../default.project.json --includePath out/include --noInclude --allowCommentDirectives -w"
 	},
 	"dependencies": {
 		"@rbxts/dom-testing-library": "^8.14.0-rc.1",

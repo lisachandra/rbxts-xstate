@@ -202,7 +202,7 @@ function defineRedirectDescriptor(obj: any, key: string) {
 			const original: unknown = _(obj).original;
 			const value = (original as { [K: string]: unknown })[key];
 			if (typeIs(value, "function")) {
-				return bind(value, original);
+				return bind(true, value, original);
 			}
 			return value;
 		},

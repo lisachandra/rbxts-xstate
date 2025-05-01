@@ -21,6 +21,7 @@ import type {
 	StateId,
 	SnapshotStatus,
 	AnyObject,
+	AnyActor,
 } from "./types";
 import { matchesState } from "utils/misc/matchesState";
 import { omit } from "utils/misc/omit";
@@ -386,17 +387,17 @@ export function getPersistedSnapshot<
 	const childrenJson: Record<string, unknown> = {};
 
 	for (const [_, id] of pairs(children)) {
-		const child = children[id as never] as object;
+		const child = children[id as never] as AnyActor;
 		if (
 			isDevelopment &&
-			!typeIs(child["src" as never], "string") &&
+			!typeIs(child["src"], "string") &&
 			(!options || !("__unsafeAllowInlineActors" in (options as object)))
 		) {
 			throw new Error("An inline child actor cannot be persisted.");
 		}
 		childrenJson[id as keyof typeof childrenJson] = {
-			snapshot: (child["getPersistedSnapshot" as never] as Callback)(options),
-			src: child["src" as never],
+			snapshot: child.getPersistedSnapshot(options),
+			src: child["src"],
 			systemId: child["_systemId" as never],
 			syncSnapshot: child["_syncSnapshot" as never],
 		};

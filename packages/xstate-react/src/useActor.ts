@@ -42,6 +42,7 @@ export function useActor<TLogic extends AnyActorLogic>(
 		(handleStoreChange: () => void) => {
 			const subscription = actorRef.subscribe(handleStoreChange);
 			return bind(
+				false,
 				subscription["unsubscribe"] as never,
 				subscription,
 			) as typeof subscription.unsubscribe;
@@ -61,7 +62,7 @@ export function useActor<TLogic extends AnyActorLogic>(
 
 	return [
 		actorSnapshot,
-		bind(actorRef["send"] as never, actorRef) as typeof actorRef.send,
+		bind(false, actorRef["send"] as never, actorRef) as typeof actorRef.send,
 		actorRef,
 	];
 }

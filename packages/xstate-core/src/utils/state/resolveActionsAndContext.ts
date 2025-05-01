@@ -1,6 +1,6 @@
 import { AnyMachineSnapshot, AnyEventObject, AnyActorScope, UnknownAction } from "types";
 import { resolveAndExecuteActionsWithContext } from "./resolveAndExecuteActionsWithContext";
-import { BuiltinAction } from "./types";
+import { BuiltInAction } from "./types";
 
 export function resolveActionsAndContext(
 	currentSnapshot: AnyMachineSnapshot,
@@ -10,7 +10,7 @@ export function resolveActionsAndContext(
 	internalQueue: AnyEventObject[],
 	deferredActorIds: string[] | undefined,
 ): AnyMachineSnapshot {
-	const retries: (readonly [BuiltinAction, unknown])[] | undefined = deferredActorIds
+	const retries: (readonly [BuiltInAction, unknown])[] | undefined = deferredActorIds
 		? []
 		: undefined;
 	const nextState = resolveAndExecuteActionsWithContext(

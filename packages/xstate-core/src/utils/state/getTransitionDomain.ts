@@ -23,7 +23,7 @@ export function getTransitionDomain(
 		return transition.source;
 	}
 
-	const lca = findLeastCommonAncestor(Array.concat(targetStates, transition.source));
+	const lca = findLeastCommonAncestor(Array.concat(targetStates, [transition.source]));
 
 	if (lca) {
 		return lca;

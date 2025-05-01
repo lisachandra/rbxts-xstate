@@ -1,21 +1,32 @@
 // @ts-check
 import tseslint from "typescript-eslint";
+import tsparser from "@typescript-eslint/parser"
 import eslint from "@eslint/js";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import eslintPluginRoblox from "isentinel-eslint-plugin-roblox-ts";
 import prettierConfig from "./prettier.config.mjs";
-import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 import * as eslintPluginImportX from "eslint-plugin-import-x"
 
 export default tseslint.config(
 	{
 		ignores: [
 			"**/out/**",
-			"**/*.spec.*",
 			"pnpm-lock.yaml",
 			"eslint.config.mjs",
 			"prettier.config.mjs",
 		],
+	},
+	{
+		languageOptions: {
+			parser: tsparser,
+			parserOptions: {
+				projectService: true,
+				tsconfigRootDir: import.meta.dirname,
+			},
+		},
+		linterOptions: {
+			reportUnusedDisableDirectives: "error",
+		},
 	},
 	eslint.configs.recommended,
 	...tseslint.configs.recommendedTypeChecked,
@@ -23,11 +34,6 @@ export default tseslint.config(
 	eslintPluginImportX.flatConfigs.recommended,
 	eslintPluginImportX.flatConfigs.typescript,
 	{
-		settings: {
-			"import-x/resolver-next": createTypeScriptImportResolver({
-				project: "tsconfig.json"
-			})
-		},
 		plugins: {
 			"roblox-ts": eslintPluginRoblox,
 		},
@@ -54,6 +60,8 @@ export default tseslint.config(
 			"@typescript-eslint/no-unsafe-call": "off",
 			"@typescript-eslint/no-unsafe-member-access": "off",
 			"@typescript-eslint/no-unsafe-return": "off",
+			"@typescript-eslint/no-unused-vars": "off",
+			/*
 			"@typescript-eslint/no-unused-vars": [
 				"error",
 				{
@@ -66,11 +74,14 @@ export default tseslint.config(
 					ignoreRestSiblings: true,
 				},
 			],
+			*/
 			"@typescript-eslint/unbound-method": "off",
 			"@typescript-eslint/no-redundant-type-constituents": "off",
 			"@typescript-eslint/only-throw-error": "off",
 			"@typescript-eslint/prefer-promise-reject-errors": "off",
 			"@typescript-eslint/restrict-template-expressions": "off",
+			"@typescript-eslint/ban-ts-comment": "off",
+			"@typescript-eslint/require-await": "off",
 			"prefer-const": [
 				"error",
 				{
@@ -80,20 +91,18 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: ["packages/event-target/**"],
+		files: ["test/src/shared/**"],
 		rules: {
-			"@typescript-eslint/no-unsafe-enum-comparison": "off",
+			"@typescript-eslint/no-unused-expressions": "off",
+			"@typescript-eslint/no-floating-promises": "off",
+			"@typescript-eslint/no-unnecessary-type-assertion": "off",
+			"no-empty-pattern": "off",
 		},
 	},
 	{
-		languageOptions: {
-			parserOptions: {
-				projectService: true,
-				tsconfigRootDir: import.meta.dirname,
-			},
-		},
-		linterOptions: {
-			reportUnusedDisableDirectives: "error",
+		files: ["packages/event-target/**"],
+		rules: {
+			"@typescript-eslint/no-unsafe-enum-comparison": "off",
 		},
 	},
 );

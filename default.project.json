@@ -10,23 +10,23 @@
 				"node_modules": {
 					"$className": "Folder",
 					"@rbxts": {
-						"$path": "test/node_modules/@rbxts"
+						"$path": "test\\node_modules\\@rbxts"
 					}
 				},
 				"include": {
-					"$path": "test/out/include"
+					"$path": "test\\out\\include"
 				},
-				"packages": {
-					"$path": "test/out/packages"
+				"shared": {
+					"$path": "test\\out\\shared"
 				}
 			}
 		},
 		"TestService": {
 			"$properties": {
 				"ExecuteWithStudioRun": true,
-				"Timeout": 30
+				"Timeout": 300
 			},
-			"$path": "test/out/test"
+			"$path": "test\\out\\test"
 		}
 	}
 }

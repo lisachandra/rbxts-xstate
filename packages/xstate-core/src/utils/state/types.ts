@@ -1,5 +1,5 @@
 import type { StateNode } from "StateNode";
-import {
+import type {
 	MachineContext,
 	EventObject,
 	AnyStateNode,
@@ -16,26 +16,8 @@ export type StateNodeIterable<TContext extends MachineContext, TE extends EventO
 export type AnyStateNodeIterable = StateNodeIterable<any, any>;
 
 export type AdjList = Map<AnyStateNode, Array<AnyStateNode>>;
-export interface BuiltinAction {
-	(): void;
-	type: `xstate.${string}`;
-	resolve: (
-		actorScope: AnyActorScope,
-		snapshot: AnyMachineSnapshot,
-		actionArgs: ActionArgs<any, any, any>,
-		actionParams: ParameterizedObject["params"] | undefined,
-		action: unknown,
-		extra: unknown,
-	) => [newState: AnyMachineSnapshot, params: unknown, actions?: UnknownAction[]];
-	retryResolve: (
-		actorScope: AnyActorScope,
-		snapshot: AnyMachineSnapshot,
-		params: unknown,
-	) => void;
-	execute: (actorScope: AnyActorScope, params: unknown) => void;
-}
 
-export interface BuiltinAction {
+export interface BuiltInAction {
 	(): void;
 	type: `xstate.${string}`;
 	resolve: (

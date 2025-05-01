@@ -1,6 +1,6 @@
 import { reportError } from "./error-handler";
-import { Event } from "./event"; // Used as only type, so no circular.
-import { EventTarget } from "./event-target"; // Used as only type, so no circular.
+import type { Event } from "./event"; // Used as only type, so no circular.
+import type { EventTarget } from "./event-target"; // Used as only type, so no circular.
 
 /**
  * The event listener concept.

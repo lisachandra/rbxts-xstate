@@ -13,6 +13,8 @@ import type {
 } from "./types";
 import { isStateId } from "utils/state/isStateId";
 import { Error } from "@rbxts/luau-polyfill";
+import { callable } from "utils/polyfill/callable";
+import { isInlineFn } from "utils/polyfill/isInlineFn";
 
 type SingleGuardArg<
 	TContext extends MachineContext,
@@ -114,6 +116,8 @@ export function stateIn<
 		return false;
 	}
 
+	// @ts-expect-error -- lua polyfill
+	stateIn = callable(stateIn);
 	stateIn.check = checkStateIn;
 	stateIn.stateValue = stateValue;
 
@@ -167,6 +171,8 @@ export function notG<TContext extends MachineContext, TExpressionEvent extends E
 		return false;
 	}
 
+	// @ts-expect-error -- lua polyfill
+	notG = callable(notG);
 	notG.check = checkNot;
 	notG.guards = [guard];
 
@@ -231,6 +237,8 @@ export function andG<
 		return false;
 	}
 
+	// @ts-expect-error -- lua polyfill
+	andG = callable(andG);
 	andG.check = checkAnd;
 	andG.guards = guards;
 
@@ -295,6 +303,8 @@ export function orG<
 		return false;
 	}
 
+	// @ts-expect-error -- lua polyfill
+	orG = callable(orG);
 	orG.check = checkOr;
 	orG.guards = guards;
 
@@ -312,7 +322,7 @@ export function evaluateGuard<
 	snapshot: AnyMachineSnapshot,
 ): boolean {
 	const { machine } = snapshot;
-	const isInline = typeIs(guard, "function");
+	const isInline = isInlineFn(guard);
 
 	const resolved = isInline
 		? guard
@@ -324,7 +334,7 @@ export function evaluateGuard<
 		);
 	}
 
-	if (!typeIs(resolved, "function")) {
+	if (!isInlineFn(resolved)) {
 		return evaluateGuard(resolved!, context, event, snapshot);
 	}
 
@@ -342,11 +352,11 @@ export function evaluateGuard<
 					: guard.params
 				: undefined;
 
-	if (resolved !== undefined && !("check" in resolved)) {
+	if (resolved !== undefined && (typeIs(resolved, "function") || !("check" in resolved))) {
 		// the existing type of `.guards` assumes non-nullable `TExpressionGuard`
 		// inline guards expect `TExpressionGuard` to be set to `undefined`
 		// it's fine to cast this here, our logic makes sure that we call those 2 "variants" correctly
-		return (resolved as Callback)(guardArgs, guardParams as never);
+		return resolved(guardArgs, guardParams as never);
 	}
 
 	const builtinGuard = resolved as unknown as BuiltinGuard;

@@ -1,17 +1,13 @@
-import { MachineContext, EventObject, AnyStateNode } from "types";
+import { MachineContext, EventObject } from "types";
 import { StateNodeIterable, AdjList } from "./types";
-import { is } from "utils/polyfill/is";
+import type { StateNode } from "StateNode";
 
 export function getAdjList<TContext extends MachineContext, TE extends EventObject>(
 	stateNodes: StateNodeIterable<TContext, TE>,
 ): AdjList {
 	const adjList: AdjList = new Map();
 
-	for (const [_, s] of pairs(stateNodes)) {
-		if (!is<AnyStateNode>(s)) {
-			continue;
-		}
-
+	for (const s of stateNodes as never as Set<StateNode<TContext, TE>>) {
 		if (!adjList.has(s)) {
 			adjList.set(s, []);
 		}

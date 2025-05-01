@@ -26,6 +26,7 @@ export function useSelector<
 			}
 			const subscription = actor.subscribe(handleStoreChange);
 			return bind(
+				false,
 				subscription["unsubscribe"] as never,
 				subscription,
 			) as typeof subscription.unsubscribe;

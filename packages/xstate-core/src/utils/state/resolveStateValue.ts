@@ -9,7 +9,6 @@ import { getStateValue } from "./getStateValue";
  *
  * @param stateValue The partial state value to resolve.
  */
-
 export function resolveStateValue(rootNode: AnyStateNode, stateValue: StateValue): StateValue {
 	const allStateNodes = getAllStateNodes(getStateNodes(rootNode, stateValue));
 	return getStateValue(rootNode, [...allStateNodes]);

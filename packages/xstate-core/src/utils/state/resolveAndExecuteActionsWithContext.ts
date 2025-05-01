@@ -1,8 +1,8 @@
 import { AnyMachineSnapshot, AnyEventObject, AnyActorScope, UnknownAction } from "types";
 import { bind } from "utils/polyfill/bind";
-import { is } from "utils/polyfill/is";
 import { getAction } from "./getAction";
-import { BuiltinAction } from "./types";
+import { BuiltInAction } from "./types";
+import { isInlineFn } from "utils/polyfill/isInlineFn";
 
 export function resolveAndExecuteActionsWithContext(
 	currentSnapshot: AnyMachineSnapshot,
@@ -13,13 +13,13 @@ export function resolveAndExecuteActionsWithContext(
 		internalQueue: AnyEventObject[];
 		deferredActorIds: string[] | undefined;
 	},
-	retries: (readonly [BuiltinAction, unknown])[] | undefined,
+	retries: (readonly [BuiltInAction, unknown])[] | undefined,
 ): AnyMachineSnapshot {
 	const { machine } = currentSnapshot;
 	let intermediateSnapshot = currentSnapshot;
 
 	for (const action of actions) {
-		const isInline = typeIs(action, "function");
+		const isInline = isInlineFn(action);
 		const resolvedAction = isInline
 			? action
 			: // the existing type of `.actions` assumes non-nullable `TExpressionAction`
@@ -43,13 +43,17 @@ export function resolveAndExecuteActionsWithContext(
 						: action.params
 					: undefined;
 
-		if (!resolvedAction || !("resolve" in resolvedAction)) {
+		if (
+			!resolvedAction ||
+			typeIs(resolvedAction, "function") ||
+			!("resolve" in resolvedAction)
+		) {
 			actorScope.actionExecutor({
 				type: typeIs(action, "string")
 					? action
-					: typeIs(action, "table") && !is<Callback>(action)
-						? action.type
-						: action["name" as never] || "(anonymous)",
+					: typeIs(action, "table")
+						? (action["type" as never] ?? action["name" as never])
+						: "(anonymous)",
 				info: actionArgs,
 				params: actionParams,
 				exec: resolvedAction,
@@ -57,7 +61,7 @@ export function resolveAndExecuteActionsWithContext(
 			continue;
 		}
 
-		const builtinAction = resolvedAction as BuiltinAction;
+		const builtinAction = resolvedAction as BuiltInAction;
 
 		const [nextState, params, actions] = builtinAction.resolve(
 			actorScope,
@@ -78,7 +82,7 @@ export function resolveAndExecuteActionsWithContext(
 				type: builtinAction.type,
 				info: actionArgs,
 				params: params,
-				exec: bind(builtinAction.execute, undefined, actorScope, params) as never,
+				exec: bind(false, builtinAction.execute, actorScope, params) as never,
 			});
 		}
 

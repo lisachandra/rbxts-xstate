@@ -6,7 +6,7 @@ import { createErrorActorEvent } from "utils/event/createErrorActorEvent";
 import { createInitEvent } from "utils/event/createInitEvent";
 import { reportUnhandledError } from "./utils/misc/reportUnhandledError";
 import { symbolObservable } from "./utils/polyfill/symbolObservable";
-import { AnyActorSystem, Clock, createSystem } from "./system";
+import { AnyActorSystem, Clock, createSystem } from "./createSystem";
 
 export let executingCustomAction: boolean = false;
 
@@ -78,7 +78,7 @@ export class Actor<TLogic extends AnyActorLogic>
 	public id: string;
 
 	private mailbox: Mailbox<EventFromLogic<TLogic>> = new Mailbox(
-		bind(this["_process" as never], this),
+		bind(false, this["_process" as never], this),
 	);
 
 	private observers: Set<Observer<SnapshotFrom<TLogic>>> = new Set();
@@ -167,7 +167,7 @@ export class Actor<TLogic extends AnyActorLogic>
 						`Cannot stop child actor ${child.id} of ${this.id} because it is not a child`,
 					);
 				}
-				(child["_stop" as never] as Callback)();
+				(child["_stop" as never] as Callback)(child);
 			},
 			emit: emittedEvent => {
 				const listeners = this.eventListeners.get(
@@ -216,7 +216,7 @@ export class Actor<TLogic extends AnyActorLogic>
 
 		// Ensure that the send method is bound to this Actor instance
 		// if destructured
-		this.send = bind(this["send" as never], this);
+		this.send = bind(true, this["send" as never], this);
 
 		this.system._sendInspectionEvent({
 			type: "@xstate.actor",
@@ -450,12 +450,11 @@ export class Actor<TLogic extends AnyActorLogic>
 			listeners = new Set();
 			this.eventListeners.set(kind, listeners);
 		}
-		const wrappedHandler = bind(handler, undefined);
-		listeners.add(wrappedHandler);
+		listeners.add(handler);
 
 		return {
 			unsubscribe() {
-				listeners.delete(wrappedHandler);
+				listeners.delete(handler);
 			},
 		};
 	}
@@ -613,10 +612,10 @@ export class Actor<TLogic extends AnyActorLogic>
 		let reportError = false;
 
 		for (const observer of this.observers) {
-			const errorListener = observer.error;
+			const errorListener = observer["error" as never] as Callback;
 			reportError ||= !errorListener;
 			try {
-				errorListener?.(err);
+				errorListener?.(observer, err);
 			} catch (err2) {
 				reportUnhandledError(err2);
 			}
@@ -653,7 +652,7 @@ export class Actor<TLogic extends AnyActorLogic>
 		// events sent *after* stop signal must be queued
 		// it seems like this should be the common behavior for all of our consumers
 		// so perhaps this should be unified somehow for all of them
-		this.mailbox = new Mailbox(bind(this["_process" as never], this));
+		this.mailbox = new Mailbox(bind(false, this["_process" as never], this));
 
 		this._processingStatus = ProcessingStatus.Stopped;
 		this.system._unregister(this);
@@ -712,7 +711,6 @@ export class Actor<TLogic extends AnyActorLogic>
 	 * Can be restored with {@link ActorOptions.state}
 	 * @see https://stately.ai/docs/persistence
 	 */
-	public getPersistedSnapshot(): Snapshot<unknown>;
 	public getPersistedSnapshot(options?: unknown): Snapshot<unknown> {
 		return this.logic.getPersistedSnapshot(this._snapshot, options);
 	}

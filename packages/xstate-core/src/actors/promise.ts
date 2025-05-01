@@ -1,5 +1,5 @@
 import { XSTATE_STOP } from "../constants";
-import { AnyActorSystem } from "../system";
+import { AnyActorSystem } from "../createSystem";
 import {
 	ActorLogic,
 	ActorRefFromLogic,

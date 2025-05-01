@@ -21,11 +21,11 @@ export function resolveTarget(
 			return stateNode.machine.getStateNodeById(target);
 		}
 
-		const isInternalTarget = indexString(target, 0) === STATE_DELIMITER;
+		const isInternalTarget = indexString(target, 0 + 1) === STATE_DELIMITER;
 		// If internal target is defined on machine,
 		// do not include machine key on target
 		if (isInternalTarget && !stateNode.parent) {
-			return getStateNodeByPath(stateNode, String.slice(target, 1));
+			return getStateNodeByPath(stateNode, String.slice(target, 1 + 1));
 		}
 		const resolvedTarget = isInternalTarget ? stateNode.key + target : target;
 		if (stateNode.parent) {
@@ -34,7 +34,7 @@ export function resolveTarget(
 				return targetStateNode;
 			} catch (err: any) {
 				throw new Error(
-					`Invalid transition definition for state node '${stateNode.id}':\n${(err as object)["message" as never]}`,
+					`Invalid transition definition for state node '${stateNode.id}':\n${err}`,
 				);
 			}
 		} else {

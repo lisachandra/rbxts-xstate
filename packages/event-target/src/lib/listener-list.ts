@@ -56,7 +56,7 @@ export function addListener(
 ): Listener {
 	let signalListener: (() => void) | undefined;
 	if (signal) {
-		signalListener = bind(removeListener, list, callback, capture) as Callback;
+		signalListener = bind(false, removeListener, list, callback, capture) as Callback;
 		signal.addEventListener("abort", signalListener);
 	}
 

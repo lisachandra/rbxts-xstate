@@ -1,4 +1,3 @@
-import { bind } from "utils/polyfill/bind";
 import type { Observer } from "types";
 import { is } from "../polyfill/is";
 
@@ -8,11 +7,11 @@ export function toObserver<T>(
 	completionHandler?: () => void,
 ): Observer<T> {
 	const isObserver = typeIs(nextHandler, "table") && is<Observer<T>>(nextHandler);
-	const itself = isObserver ? nextHandler : undefined;
+	// const itself = isObserver ? nextHandler : undefined;
 
 	return {
-		next: bind((isObserver ? nextHandler.next : nextHandler)!, itself),
-		error: bind((isObserver ? nextHandler.error : errorHandler)!, itself),
-		complete: bind((isObserver ? nextHandler.complete : completionHandler)!, itself),
+		next: isObserver ? nextHandler.next : nextHandler,
+		error: isObserver ? nextHandler.error : errorHandler,
+		complete: isObserver ? nextHandler.complete : completionHandler,
 	};
 }

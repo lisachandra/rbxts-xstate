@@ -19,8 +19,8 @@
 		"interpreter"
 	],
 	"scripts": {
-		"build": "shx rm -rf out && rbxtsc --verbose",
-		"dev": "shx rm -rf out && rbxtsc -w"
+		"build": "shx rm -rf out && rbxtsc --verbose --allowCommentDirectives",
+		"dev": "shx rm -rf out && rbxtsc -w --allowCommentDirectives"
 	},
 	"repository": {
 		"type": "git",

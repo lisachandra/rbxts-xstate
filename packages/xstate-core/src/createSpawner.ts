@@ -7,7 +7,6 @@ import {
 	AnyActorScope,
 	AnyEventObject,
 	AnyMachineSnapshot,
-	AnyObject,
 	ConditionalRequired,
 	GetConcreteByKey,
 	InputFrom,
@@ -15,7 +14,6 @@ import {
 	IsNotNever,
 	ProvidedActor,
 	RequiredActorOptions,
-	TODO,
 	type RequiredLogicInput,
 } from "./types";
 import { resolveReferencedActor } from "utils/misc/resolveReferencedActor";
@@ -102,9 +100,9 @@ export function createSpawner(
 					: options?.input,
 				src,
 				systemId: options?.systemId,
-			}) as never;
+			}) as AnyActorRef;
 
-			spawnedChildren[actorRef["id"]] = actorRef;
+			spawnedChildren[actorRef.id] = actorRef;
 
 			return actorRef;
 		} else {
@@ -121,13 +119,13 @@ export function createSpawner(
 		}
 	}) as Spawner<any>;
 	return ((src, options) => {
-		const actorRef = spawn(src, options) as TODO; // TODO: fix types
-		spawnedChildren[(actorRef as AnyObject).id as string] = actorRef;
+		const actorRef = spawn(src, options) as AnyActorRef; // TODO: fix types
+		spawnedChildren[actorRef.id] = actorRef;
 		actorScope.defer(() => {
-			if ((actorRef as AnyObject)._processingStatus === ProcessingStatus.Stopped) {
+			if (actorRef._processingStatus === ProcessingStatus.Stopped) {
 				return;
 			}
-			((actorRef as AnyObject).start as Callback)();
+			actorRef.start();
 		});
 		return actorRef;
 	}) as Spawner<any>;

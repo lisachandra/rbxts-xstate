@@ -17,6 +17,7 @@ import {
 	SendExpr,
 	BuiltinActionResolution,
 } from "../types";
+import { callable } from "utils/polyfill/callable";
 
 function resolveRaise(
 	_: AnyActorScope,
@@ -152,6 +153,8 @@ export function raise<
 		}
 	}
 
+	// @ts-expect-error -- lua polyfill
+	raise = callable(raise);
 	raise.type = "xstate.raise";
 	raise.event = eventOrExpr;
 	raise.id = options?.id;
