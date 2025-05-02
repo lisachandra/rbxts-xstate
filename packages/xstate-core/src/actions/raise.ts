@@ -72,7 +72,7 @@ function resolveRaise(
 	} else {
 		resolvedDelay = typeIs(delay, "function") ? delay(args, actionParams) : delay;
 	}
-	if (typeIs(resolvedDelay, "number")) {
+	if (!typeIs(resolvedDelay, "number")) {
 		internalQueue.push(resolvedEvent);
 	}
 	return [

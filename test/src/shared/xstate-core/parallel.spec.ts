@@ -8,6 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 import { createMachine, createActor, StateValue } from "@rbxts/xstate";
 import { assign } from "@rbxts/xstate/out/actions/assign";
 import { raise } from "@rbxts/xstate/out/actions/raise";
@@ -532,7 +533,7 @@ describe("parallel states", () => {
 				list: "none",
 			},
 		},
-		[HttpService.JSONEncode({
+		[JSON.stringify({
 			bold: "off",
 			italics: "off",
 			underline: "on",
@@ -557,7 +558,7 @@ describe("parallel states", () => {
 		Object.keys(expected[fromState]).forEach(eventTypes => {
 			const toState = expected[fromState][eventTypes];
 
-			it(`should go from ${fromState} to ${HttpService.JSONEncode(toState)} on ${eventTypes}`, () => {
+			it(`should go from ${fromState} to ${JSON.stringify(toState)} on ${eventTypes}`, () => {
 				const resultState = testMultiTransition(wordMachine, fromState, eventTypes);
 
 				expect(resultState.value).toEqual(toState);

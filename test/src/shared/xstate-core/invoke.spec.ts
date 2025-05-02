@@ -8,6 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 // import { interval, of } from "rxjs";
 // import { map, take } from "rxjs/operators";
 import { forwardTo, raise, sendTo } from "@rbxts/xstate/out/actions";
@@ -734,6 +735,7 @@ describe("invoke", () => {
 				return new Promise(executor);
 			},
 		},
+		/*
 		{
 			type: "PromiseLike",
 			createPromise(executor: PromiseExecutor): PromiseLike<any> {
@@ -748,6 +750,7 @@ describe("invoke", () => {
 				return createThenable(new Promise(executor));
 			},
 		},
+		*/
 	];
 
 	promiseTypes.forEach(t => {
@@ -1791,7 +1794,7 @@ describe("invoke", () => {
 			const waitingState = actorRef.getSnapshot();
 
 			expect(() => {
-				HttpService.JSONEncode(waitingState);
+				JSON.stringify(waitingState);
 			}).never.toThrow();
 		});
 

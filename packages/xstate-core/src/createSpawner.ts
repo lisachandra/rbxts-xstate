@@ -6,6 +6,7 @@ import {
 	AnyActorRef,
 	AnyActorScope,
 	AnyEventObject,
+	AnyFunction,
 	AnyMachineSnapshot,
 	ConditionalRequired,
 	GetConcreteByKey,
@@ -96,7 +97,7 @@ export function createSpawner(
 							context,
 							event,
 							self: actorScope.self,
-						} as never)
+						})
 					: options?.input,
 				src,
 				systemId: options?.systemId,

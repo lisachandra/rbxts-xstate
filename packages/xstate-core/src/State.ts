@@ -386,8 +386,7 @@ export function getPersistedSnapshot<
 
 	const childrenJson: Record<string, unknown> = {};
 
-	for (const [_, id] of pairs(children)) {
-		const child = children[id as never] as AnyActor;
+	for (const [id, child] of pairs(children as Record<string, AnyActorRef>)) {
 		if (
 			isDevelopment &&
 			!typeIs(child["src"], "string") &&
@@ -395,7 +394,7 @@ export function getPersistedSnapshot<
 		) {
 			throw new Error("An inline child actor cannot be persisted.");
 		}
-		childrenJson[id as keyof typeof childrenJson] = {
+		childrenJson[id] = {
 			snapshot: child.getPersistedSnapshot(options),
 			src: child["src"],
 			systemId: child["_systemId" as never],
@@ -405,23 +404,22 @@ export function getPersistedSnapshot<
 
 	const persisted = {
 		...jsonValues,
-		context: persistContext(context) as never,
+		context: persistContext(context) as any,
 		children: childrenJson,
 	};
 
-	return persisted as never;
+	return persisted as any;
 }
 
 function persistContext(contextPart: Record<string, unknown>) {
 	let copy: typeof contextPart | undefined;
-	for (const [_, key] of pairs(contextPart)) {
-		const value = contextPart[key as never];
+	for (const [key, value] of pairs(contextPart)) {
 		if (value && typeIs(value, "table")) {
 			if ("sessionId" in value && "send" in value && "ref" in value) {
 				copy ??= Array.isArray(contextPart)
 					? (Array.slice(contextPart) as typeof contextPart)
 					: { ...contextPart };
-				copy[key as never] = {
+				copy[key] = {
 					xstate$$type: __ACTOR_TYPE,
 					id: (value as never as AnyActorRef).id,
 				};
@@ -431,7 +429,7 @@ function persistContext(contextPart: Record<string, unknown>) {
 					copy ??= Array.isArray(contextPart)
 						? (Array.slice(contextPart) as typeof contextPart)
 						: { ...contextPart };
-					copy[key as never] = result;
+					copy[key] = result;
 				}
 			}
 		}

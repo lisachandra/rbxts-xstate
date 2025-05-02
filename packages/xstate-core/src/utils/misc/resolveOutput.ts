@@ -11,8 +11,8 @@ export function resolveOutput<
 	event: TExpressionEvent,
 	itself: AnyActorRef,
 ): unknown {
-	if (typeIs(mapper, "function")) {
-		return mapper({ context, event, self: itself });
+	if (typeIs(mapper, "function") || (typeIs(mapper, "table") && "_isMockFunction" in mapper)) {
+		return (mapper as Callback)({ context, event, self: itself });
 	}
 
 	if (

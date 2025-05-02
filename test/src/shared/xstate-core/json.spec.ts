@@ -2,6 +2,7 @@ import { describe, beforeEach, it, expect, afterAll, beforeAll } from "@rbxts/je
 import { Array, Object } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
 import { createMachine, assign } from "@rbxts/xstate";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 // import * as machineSchema from "@rbxts/xstate/out/machine.schema.json";
 
 // import Ajv from "ajv";
@@ -95,13 +96,13 @@ describe("json", () => {
 			output: { result: 42 },
 		});
 
-		const json = HttpService.JSONDecode(HttpService.JSONEncode(machine.getDefinition()));
+		const json = JSON.parse(JSON.stringify(machine.getDefinition()));
 
 		/*
 		try {
 			validate(json);
 		} catch (err: any) {
-			throw new Error(HttpService.JSONEncode(HttpService.JSONDecode(err.message), undefined, 2));
+			throw new Error(JSON.stringify(JSON.parse(err.message), undefined, 2));
 		}
 
 		expect(validate.errors).toBeundefined();
@@ -140,9 +141,9 @@ describe("json", () => {
 			},
 		});
 
-		const machineJSON = HttpService.JSONEncode(machine);
+		const machineJSON = JSON.stringify(machine);
 
-		const machineObject = HttpService.JSONDecode(machineJSON);
+		const machineObject = JSON.parse(machineJSON);
 
 		const revivedMachine = createMachine(machineObject as never);
 

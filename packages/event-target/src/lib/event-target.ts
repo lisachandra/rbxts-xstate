@@ -314,6 +314,7 @@ export namespace EventTarget {
 	export interface AbortSignal extends EventTarget<{ abort: Event }> {
 		getAborted(): boolean;
 		getOnabort: () => CallbackFunction<this, Event> | undefined;
+		setOnabort: (value: any) => void;
 	}
 
 	/** The event data to dispatch in strict mode. */

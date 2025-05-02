@@ -1,4 +1,4 @@
-import { setTimeout } from "@rbxts/luau-polyfill";
+import { Error, setTimeout } from "@rbxts/luau-polyfill";
 
 /**
  * This function makes sure that unhandled errors are thrown in a separate
@@ -9,9 +9,9 @@ import { setTimeout } from "@rbxts/luau-polyfill";
  * @param err Error to be thrown
  */
 export function reportUnhandledError(err: unknown) {
-	const trace = debug.traceback("\n");
+	// const trace = debug.traceback("\n");
 	setTimeout(() => {
-		const message = typeIs(err, "table") && "message" in err ? err.message : `${err}`;
-		throw `${message}\n${trace}`;
+		const message = typeIs(err, "table") && "message" in err ? err : new Error(`${err}`);
+		throw message;
 	});
 }

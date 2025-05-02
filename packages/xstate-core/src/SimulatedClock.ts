@@ -1,4 +1,4 @@
-import { Error } from "@rbxts/luau-polyfill";
+import { Array, Error } from "@rbxts/luau-polyfill";
 import { Clock } from "./createSystem";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -52,18 +52,16 @@ export class SimulatedClock implements SimulatedClock {
 	private flushTimeouts() {
 		if (this._flushing) {
 			this._flushingInvalidated = true;
-			print("returning");
 			return;
 		}
 		this._flushing = true;
 
-		const sorted = [...this.timeouts].sort(([_idA, timeoutA], [_idB, timeoutB]) => {
+		const sorted = Array.sort([...this.timeouts], ([_idA, timeoutA], [_idB, timeoutB]) => {
 			const endA = timeoutA.start + timeoutA.timeout;
 			const endB = timeoutB.start + timeoutB.timeout;
-			return endB < endA;
+			return endB > endA ? -1 : 1;
 		});
 
-		print(sorted);
 		for (const [id, timeout] of sorted) {
 			if (this._flushingInvalidated) {
 				this._flushingInvalidated = false;
@@ -72,7 +70,6 @@ export class SimulatedClock implements SimulatedClock {
 				return;
 			}
 			if (this.now() - timeout.start >= timeout.timeout) {
-				print(timeout.fn);
 				this.timeouts.delete(id);
 				timeout.fn();
 			}

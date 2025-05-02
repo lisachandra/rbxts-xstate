@@ -1828,7 +1828,7 @@ export interface ActorRef<
 	send(event: TEvent): void;
 	start(): void;
 	getSnapshot(): TSnapshot;
-	getPersistedSnapshot(): Snapshot<unknown>;
+	getPersistedSnapshot(options?: any): Snapshot<unknown>;
 	stop(): void;
 	toJSON(): any;
 	// TODO: figure out how to hide this externally as `sendTo(ctx => ctx.actorRef._parent._parent._parent._parent)` shouldn't be allowed

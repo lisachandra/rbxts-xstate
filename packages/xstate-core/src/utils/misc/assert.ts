@@ -1,7 +1,7 @@
 import { Error } from "@rbxts/luau-polyfill";
 import { EventObject } from "../../types";
 import { toArray } from "utils/polyfill/array";
-import { HttpService } from "@rbxts/services";
+import { JSON } from "utils/polyfill/json";
 
 /**
  * Asserts that the given event object is of the specified type or types. Throws
@@ -34,6 +34,6 @@ export function assertEvent<TEvent extends EventObject, TAssertedType extends TE
 	if (!types.includes(event.type as never)) {
 		const typesText =
 			types.size() === 1 ? `type "${types[0]}"` : `one of types "${types.join('", "')}"`;
-		throw new Error(`Expected event ${HttpService.JSONEncode(event)} to have ${typesText}`);
+		throw new Error(`Expected event ${JSON.stringify(event)} to have ${typesText}`);
 	}
 }

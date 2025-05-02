@@ -8,7 +8,7 @@ export function toStateValue(stateValue: StateLike<any> | StateValue): StateValu
 		return stateValue.value;
 	}
 
-	if (typeIs(stateValue, "string")) {
+	if (!typeIs(stateValue, "string")) {
 		return stateValue as StateValue;
 	}
 

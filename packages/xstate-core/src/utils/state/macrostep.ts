@@ -8,7 +8,7 @@ import {
 	AnyEventObject,
 	AnyTransitionDefinition,
 } from "types";
-import { isErrorActorEvent } from "utils/misc/isErrorActorEvent";
+import { isErrorActorEvent } from "utils/event/isErrorActorEvent";
 import isDevelopment from "utils/polyfill/isDevelopment";
 import { microstep } from "./microstep";
 import { selectEventlessTransitions } from "./selectEventlessTransitions";

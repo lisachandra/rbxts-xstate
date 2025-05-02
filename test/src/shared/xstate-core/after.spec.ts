@@ -9,6 +9,7 @@ import {
 	test,
 	afterEach,
 } from "@rbxts/jest-globals";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 import { sleep } from "test/env-utils";
 import { createMachine, createActor, cancel, Snapshot } from "@rbxts/xstate";
 import { Object, setTimeout } from "@rbxts/luau-polyfill";
@@ -73,9 +74,12 @@ describe("delayed transitions", () => {
 			},
 		});
 
+		const luaUnpack: Callback = getfenv(0)["unpack" as never];
 		const actorRef = createActor(machine, {
 			clock: {
-				setTimeout: setTimeout as never,
+				setTimeout(...args: defined[]) {
+					return setTimeout(luaUnpack(args));
+				},
 				clearTimeout: spy as never,
 			},
 		}).start();
@@ -258,9 +262,7 @@ describe("delayed transitions", () => {
 
 		let service = createActor(createMyMachine()).start();
 
-		const persistedSnapshot = HttpService.JSONDecode(
-			HttpService.JSONEncode(service.getSnapshot()),
-		);
+		const persistedSnapshot = JSON.parse(JSON.stringify(service.getSnapshot()));
 
 		service = createActor(createMyMachine(), {
 			snapshot: persistedSnapshot as Snapshot<unknown>,

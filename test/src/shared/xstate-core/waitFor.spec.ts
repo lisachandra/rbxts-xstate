@@ -10,8 +10,7 @@ import {
 } from "@rbxts/jest-globals";
 import { Error, setTimeout } from "@rbxts/luau-polyfill";
 import { AbortController } from "@rbxts/whatwg-abort-controller";
-import { createActor, waitFor } from "@rbxts/xstate";
-import { createMachine } from "@rbxts/xstate";
+import { createActor, waitFor, createMachine } from "@rbxts/xstate";
 
 describe("waitFor", () => {
 	it("should wait for a condition to be true and return the emitted value", async () => {
@@ -53,7 +52,8 @@ describe("waitFor", () => {
 		try {
 			await waitFor(service, state => state.matches("c"), { timeout: 10 });
 		} catch (e) {
-			expect(e).toBeInstanceOf(Error);
+			expect(e).toHaveProperty("name", "Error");
+			expect(e).toHaveProperty("message");
 		}
 	});
 
@@ -266,7 +266,7 @@ describe("waitFor", () => {
 		const signal = controller.getSignal();
 		controller.abort(/* new Error("Aborted!") */);
 		const spy = jest.fn();
-		signal.addEventListener = spy;
+		rawset(signal, "addEventListener", spy);
 
 		try {
 			await waitFor(service, state => state.matches("b"), { signal });
@@ -298,7 +298,7 @@ describe("waitFor", () => {
 		const signal = controller.getSignal();
 
 		const spy = jest.fn();
-		signal.addEventListener = spy;
+		rawset(signal, "addEventListener", spy);
 
 		await waitFor(service, state => state.matches("b"), { signal });
 		expect(spy).never.toHaveBeenCalled();
@@ -379,7 +379,7 @@ describe("waitFor", () => {
 		const controller = new AbortController();
 		const signal = controller.getSignal();
 		const spy = jest.fn();
-		signal.removeEventListener = spy;
+		rawset(signal, "removeEventListener", spy);
 
 		await waitFor(service, state => state.matches("b"), { signal });
 
@@ -408,7 +408,7 @@ describe("waitFor", () => {
 		const controller = new AbortController();
 		const signal = controller.getSignal();
 		const spy = jest.fn();
-		signal.removeEventListener = spy;
+		rawset(signal, "removeEventListener", spy);
 
 		try {
 			await waitFor(service, state => state.matches("never"), { signal });

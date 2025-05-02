@@ -128,8 +128,7 @@ export function createSystem<T extends ActorSystemInfo>(
 		},
 		cancelAll: actorRef => {
 			// eslint-disable-next-line roblox-ts/no-array-pairs
-			for (const [scheduledEventId] of pairs(system._snapshot._scheduledEvents)) {
-				const scheduledEvent = system._snapshot._scheduledEvents[scheduledEventId];
+			for (const [_, scheduledEvent] of pairs(system._snapshot._scheduledEvents)) {
 				if (scheduledEvent.source === actorRef) {
 					scheduler.cancel(actorRef, scheduledEvent.id);
 				}
@@ -209,8 +208,7 @@ export function createSystem<T extends ActorSystemInfo>(
 			const scheduledEvents = system._snapshot._scheduledEvents;
 			system._snapshot._scheduledEvents = {};
 			// eslint-disable-next-line roblox-ts/no-array-pairs
-			for (const [scheduledId] of pairs(scheduledEvents)) {
-				const { source, target, event, delay, id } = scheduledEvents[scheduledId];
+			for (const [_, { source, target, event, delay, id }] of pairs(scheduledEvents)) {
 				scheduler.schedule(source, target, event, delay, id);
 			}
 		},

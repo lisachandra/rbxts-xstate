@@ -8,7 +8,6 @@ import { exitStates } from "./exitStates";
 import { enterStates } from "./enterStates";
 
 /** https://www.w3.org/TR/scxml/#microstepProcedure */
-
 export function microstep(
 	transitions: Array<AnyTransitionDefinition>,
 	currentSnapshot: AnyMachineSnapshot,

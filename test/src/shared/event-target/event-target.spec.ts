@@ -820,11 +820,11 @@ describe("'EventTarget' class", () => {
 
 		describe("if the argument is a plain object, the event object in the listener", () => {
 			class MyEvent extends Event {
+				// @ts-expect-error
 				writable: number;
 				constructor(kind: string, writable: number) {
-					// Added type to constructor
 					super(kind);
-					this.writable = writable;
+					rawset(this, "writable", writable);
 				}
 			}
 

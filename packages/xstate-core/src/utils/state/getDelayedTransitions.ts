@@ -6,7 +6,6 @@ import { formatTransition } from "./formatTransition";
 import { toArray } from "utils/polyfill/array";
 
 /** All delayed transitions from the config. */
-
 export function getDelayedTransitions(
 	stateNode: AnyStateNode,
 ): Array<DelayedTransitionDefinition<MachineContext, EventObject>> {

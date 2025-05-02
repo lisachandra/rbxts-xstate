@@ -9,6 +9,7 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 import RegExp from "@rbxts/regexp";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 import { Array, Error, Object } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
 // import { BehaviorSubject } from "rxjs";
@@ -37,11 +38,11 @@ describe("rehydration", () => {
 			});
 
 			const actorRef = createActor(machine).start();
-			const persistedState = HttpService.JSONEncode(actorRef.getPersistedSnapshot());
+			const persistedState = JSON.stringify(actorRef.getPersistedSnapshot());
 			actorRef.stop();
 
 			const service = createActor(machine, {
-				snapshot: HttpService.JSONDecode(persistedState) as never,
+				snapshot: JSON.parse(persistedState) as never,
 			}).start();
 
 			expect(service.getSnapshot().hasTag("foo")).toBe(true);
@@ -60,10 +61,10 @@ describe("rehydration", () => {
 			});
 
 			const actorRef = createActor(machine).start();
-			const persistedState = HttpService.JSONEncode(actorRef.getPersistedSnapshot());
+			const persistedState = JSON.stringify(actorRef.getPersistedSnapshot());
 			actorRef.stop();
 
-			createActor(machine, { snapshot: HttpService.JSONDecode(persistedState) as never })
+			createActor(machine, { snapshot: JSON.parse(persistedState) as never })
 				.start()
 				.stop();
 
@@ -79,10 +80,8 @@ describe("rehydration", () => {
 				},
 			});
 
-			const persistedState = HttpService.JSONEncode(
-				createActor(machine).start().getSnapshot(),
-			);
-			const restoredState = HttpService.JSONDecode(persistedState) as never;
+			const persistedState = JSON.stringify(createActor(machine).start().getSnapshot());
+			const restoredState = JSON.parse(persistedState) as never;
 			const service = createActor(machine, {
 				snapshot: restoredState,
 			}).start();

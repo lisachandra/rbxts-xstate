@@ -9,6 +9,7 @@ import {
 	test,
 	afterEach,
 } from "@rbxts/jest-globals";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 import { act, fireEvent, screen } from "@rbxts/react-testing-library";
 import * as React from "@rbxts/react";
 import { useState } from "@rbxts/react";
@@ -165,8 +166,8 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 	});
 
 	it("should work with the useMachine hook (rehydrated state config)", async () => {
-		const persistedFetchStateConfig = HttpService.JSONDecode(
-			HttpService.JSONEncode(persistedSuccessFetchState),
+		const persistedFetchStateConfig = JSON.parse(
+			JSON.stringify(persistedSuccessFetchState),
 		) as never;
 		render(
 			<Fetcher
@@ -948,14 +949,14 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		});
 
 		const actorRef = createActor(testMachine).start();
-		const persistedState = HttpService.JSONEncode(actorRef.getPersistedSnapshot());
+		const persistedState = JSON.stringify(actorRef.getPersistedSnapshot());
 		actorRef.stop();
 
 		let currentState: StateFrom<typeof testMachine>;
 
 		const Test = () => {
 			const [state, send] = useActor(testMachine, {
-				snapshot: HttpService.JSONDecode(persistedState) as never,
+				snapshot: JSON.parse(persistedState) as never,
 			});
 
 			currentState = state;

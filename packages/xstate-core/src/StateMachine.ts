@@ -544,12 +544,10 @@ export class StateMachine<
 				return;
 			}
 			seen.add(contextPart);
-			for (const [_, key] of pairs(contextPart)) {
-				const value: unknown = contextPart[key as never];
-
+			for (const [key, value] of pairs(contextPart)) {
 				if (value && typeIs(value, "table")) {
 					if ("xstate$$type" in value && value.xstate$$type === __ACTOR_TYPE) {
-						contextPart[key as never] = children[value["id" as never]];
+						contextPart[key] = children[value["id" as never]];
 						continue;
 					}
 					reviveContext(value as typeof contextPart, children);

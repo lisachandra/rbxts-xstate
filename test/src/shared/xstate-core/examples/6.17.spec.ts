@@ -3,6 +3,7 @@ import { createMachine, StateValue } from "@rbxts/xstate";
 import { testMultiTransition } from "../utils";
 import { Object } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 
 describe("Example 6.17", () => {
 	const machine = createMachine({
@@ -57,7 +58,7 @@ describe("Example 6.17", () => {
 		Object.keys(expected[fromState]).forEach(eventTypes => {
 			const toState = expected[fromState][eventTypes];
 
-			it(`should go from ${fromState} to ${HttpService.JSONEncode(toState)} on ${eventTypes}`, () => {
+			it(`should go from ${fromState} to ${JSON.stringify(toState)} on ${eventTypes}`, () => {
 				const resultState = testMultiTransition(machine, fromState, eventTypes);
 
 				expect(resultState.value).toEqual(toState);
@@ -120,7 +121,7 @@ describe("Jump to ID", () => {
 		Object.keys(expected[fromState]).forEach(eventTypes => {
 			const toState = expected[fromState][eventTypes];
 
-			it(`should go from ${fromState} to ${HttpService.JSONEncode(toState)} on ${eventTypes}`, () => {
+			it(`should go from ${fromState} to ${JSON.stringify(toState)} on ${eventTypes}`, () => {
 				const resultState = testMultiTransition(machine, fromState, eventTypes);
 
 				expect(resultState.value).toEqual(toState);

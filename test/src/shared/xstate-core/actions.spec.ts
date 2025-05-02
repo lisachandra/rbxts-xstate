@@ -3681,9 +3681,12 @@ describe("cancel", () => {
 			},
 		});
 
+		const luaUnpack: Callback = getfenv(0)["unpack" as never];
 		const actorRef = createActor(machine, {
 			clock: {
-				setTimeout: setTimeout as never,
+				setTimeout(...args: defined[]) {
+					return setTimeout(luaUnpack(args));
+				},
 				clearTimeout: spy as never,
 			},
 		}).start();

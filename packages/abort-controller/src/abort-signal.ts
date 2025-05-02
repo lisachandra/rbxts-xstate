@@ -7,10 +7,12 @@ import {
 } from "@rbxts/whatwg-event-target";
 
 type Events = {
-	abort: Event<"abort">;
+	// abort: Event<"abort">;
+	abort: any;
 };
 type EventAttributes = {
-	getOnabort(): Event<"abort">;
+	// getOnabort(): Event<"abort">;
+	getOnabort(): any;
 };
 
 /**
@@ -26,10 +28,9 @@ export default class AbortSignal extends EventTarget<Events> implements EventAtt
 	}
 
 	public getOnabort() {
-		return getEventAttributeValue<EventTarget.AbortSignal, Event>(
-			this as never,
-			"abort",
-		) as never;
+		return getEventAttributeValue<EventTarget.AbortSignal, Event>(this as never, "abort") as
+			| EventTarget.CallbackFunction<this, Event>
+			| undefined;
 	}
 
 	public setOnabort(value: any) {

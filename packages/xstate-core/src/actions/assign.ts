@@ -41,7 +41,7 @@ function resolveAssign(
 		assignment: Assigner<any, any, any, any, any> | PropertyAssigner<any, any, any, any, any>;
 	},
 ): BuiltinActionResolution {
-	if (!(snapshot as object)["context" as never]) {
+	if (!(snapshot.context as unknown)) {
 		throw new Error(
 			"Cannot assign to undefined `context`. Ensure that `context` is defined in the machine config.",
 		);
@@ -60,8 +60,8 @@ function resolveAssign(
 		partialUpdate = assignment(assignArgs, actionParams);
 	} else {
 		for (const key of Object.keys(assignment)) {
-			const propAssignment = assignment[key as never];
-			partialUpdate[key as never] = typeIs(propAssignment, "function")
+			const propAssignment = assignment[key as string];
+			partialUpdate[key as string] = typeIs(propAssignment, "function")
 				? propAssignment(assignArgs, actionParams)
 				: propAssignment;
 		}

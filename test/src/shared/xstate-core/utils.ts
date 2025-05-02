@@ -12,6 +12,7 @@ import {
 	Subscribable,
 	Subscription,
 } from "@rbxts/xstate";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 import { symbolObservable } from "@rbxts/xstate/out/utils/polyfill/symbolObservable";
 import { indexString } from "@rbxts/xstate/out/utils/polyfill/indexString";
 import { callable } from "@rbxts/xstate/out/utils/polyfill/callable";
@@ -19,7 +20,7 @@ import { callable } from "@rbxts/xstate/out/utils/polyfill/callable";
 const resolveSerializedStateValue = (machine: AnyStateMachine, serialized: string) =>
 	indexString(serialized, 0 + 1) === "{"
 		? machine.resolveState({
-				value: HttpService.JSONDecode(serialized) as StateValue,
+				value: JSON.parse(serialized) as StateValue,
 				context: {},
 			})
 		: machine.resolveState({ value: serialized, context: {} });
@@ -39,7 +40,7 @@ export function testMultiTransition(
 		return nextState;
 	};
 
-	const restEvents = String.split(eventTypes, ",%s?");
+	const restEvents = eventTypes.split(",%s?");
 	const firstEventType = restEvents.remove(0)!;
 
 	const resultState = restEvents.reduce<AnyMachineSnapshot>(
@@ -58,7 +59,7 @@ export function testAll(
 		Object.keys(expected[fromState]).forEach(eventTypes => {
 			const toState = expected[fromState][eventTypes];
 
-			it(`should go from ${fromState} to ${HttpService.JSONEncode(toState)} on ${eventTypes}`, () => {
+			it(`should go from ${fromState} to ${JSON.stringify(toState)} on ${eventTypes}`, () => {
 				const resultState = testMultiTransition(machine, fromState, eventTypes);
 
 				if (toState === undefined) {

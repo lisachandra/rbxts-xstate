@@ -8,6 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 import { sleep } from "test/env-utils";
 import {
 	assign,
@@ -459,7 +460,7 @@ describe("transition function", () => {
 		async function postStart() {
 			const [state, actions] = initialTransition(machine);
 
-			db.state = HttpService.JSONEncode(state);
+			db.state = JSON.stringify(state);
 
 			// execute actions
 			for (const action of actions) {
@@ -471,11 +472,11 @@ describe("transition function", () => {
 		async function postEvent(event: EventFrom<typeof machine>) {
 			const [nextState, actions] = transition(
 				machine,
-				machine.resolveState(HttpService.JSONDecode(db.state) as never),
+				machine.resolveState(JSON.parse(db.state) as never),
 				event,
 			);
 
-			db.state = HttpService.JSONEncode(nextState);
+			db.state = JSON.stringify(nextState);
 
 			for (const action of actions) {
 				await execute(action);
@@ -486,7 +487,7 @@ describe("transition function", () => {
 		postEvent({ type: "next" });
 
 		await sleep(15);
-		expect((HttpService.JSONDecode(db.state) as { status: unknown }).status).toBe("done");
+		expect((JSON.parse(db.state) as { status: unknown }).status).toBe("done");
 	});
 
 	it("serverless workflow example (experimental)", async () => {
@@ -541,7 +542,7 @@ describe("transition function", () => {
 		async function postStart() {
 			const [state, actions] = initialTransition(machine);
 
-			db.state = HttpService.JSONEncode(state);
+			db.state = JSON.stringify(state);
 
 			// execute actions
 			for (const action of actions) {
@@ -553,11 +554,11 @@ describe("transition function", () => {
 		async function postEvent(event: EventFrom<typeof machine>) {
 			const [nextState, actions] = transition(
 				machine,
-				machine.resolveState(HttpService.JSONDecode(db.state) as never),
+				machine.resolveState(JSON.parse(db.state) as never),
 				event,
 			);
 
-			db.state = HttpService.JSONEncode(nextState);
+			db.state = JSON.stringify(nextState);
 
 			// "sync" built-in actions: assign, raise, cancel, stop
 			// "external" built-in actions: sendTo, raise w/delay, log
@@ -572,6 +573,6 @@ describe("transition function", () => {
 		expect(calls).toEqual(["sendWelcomeEmail"]);
 
 		await sleep(10);
-		expect((HttpService.JSONDecode(db.state) as { value: unknown }).value).toBe("finish");
+		expect((JSON.parse(db.state) as { value: unknown }).value).toBe("finish");
 	});
 });

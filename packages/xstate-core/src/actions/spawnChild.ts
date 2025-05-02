@@ -185,7 +185,7 @@ export function spawnChild<
 	TEvent extends EventObject,
 	TActor extends ProvidedActor,
 >(
-	...[src, { id, systemId, input, syncSnapshot = false } = {} as never]: SpawnArguments<
+	...[src, { id, systemId, input, syncSnapshot = false } = {} as any]: SpawnArguments<
 		TContext,
 		TExpressionEvent,
 		TEvent,

@@ -32,6 +32,7 @@ import {
 	Observer,
 	Subscription,
 } from "./types";
+import { JSON } from "utils/polyfill/json";
 import { toObserver } from "utils/misc/toObserver";
 import { clearTimeout, Error, Object, setTimeout } from "@rbxts/luau-polyfill";
 import { bind } from "utils/polyfill/bind";
@@ -612,10 +613,10 @@ export class Actor<TLogic extends AnyActorLogic>
 		let reportError = false;
 
 		for (const observer of this.observers) {
-			const errorListener = observer["error" as never] as Callback;
+			const errorListener = observer.error;
 			reportError ||= !errorListener;
 			try {
-				errorListener?.(observer, err);
+				errorListener?.(err);
 			} catch (err2) {
 				reportUnhandledError(err2);
 			}
@@ -665,7 +666,7 @@ export class Actor<TLogic extends AnyActorLogic>
 		if (this._processingStatus === ProcessingStatus.Stopped) {
 			// do nothing
 			if (isDevelopment) {
-				const eventString = HttpService.JSONEncode(event);
+				const eventString = JSON.stringify(event);
 
 				warn(
 					`Event "${(event as object)["type" as never]}" was sent to stopped actor "${this.id} (${this.sessionId})". This actor has already reached its final state, and will not transition.\nEvent: ${eventString}`,
