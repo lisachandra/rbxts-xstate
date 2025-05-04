@@ -1,1 +1,0 @@
-# @rbxts/whatwg-event-target

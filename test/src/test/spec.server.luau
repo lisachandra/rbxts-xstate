@@ -14,11 +14,10 @@ local status, result = Jest.runCLI(script, {
 	setupFiles = { TestService.setup },
 	setupFilesAfterEnv = { TestService["setup-env"] },
 }, {
-	-- ReplicatedStorage.TS.shared["xstate-core"],
+	ReplicatedStorage.TS.shared["xstate-core"],
 	ReplicatedStorage.TS.shared["xstate-react"],
 }):awaitStatus()
 
-task.wait(9999999)
 if status == "Rejected" or result.results.numFailedTestSuites > 0 or result.results.numFailedTests > 0 then
 	error("Tests failed!")
 else

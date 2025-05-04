@@ -61,7 +61,7 @@ export function createActorContext<TLogic extends AnyActorLogic>(
 		if (!actor) {
 			throw new Error(
 				// `You used a hook from "${Provider.displayName}" but it's not inside a <${Provider.displayName}> component.`,
-				`You used a hook from "${Provider}" but it's not inside a <${Provider}> component.`,
+				`You used a hook from "ActorProvider" but it's not inside a <ActorProvider> component.`,
 			);
 		}
 

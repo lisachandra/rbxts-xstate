@@ -2,10 +2,6 @@
 	"extends": "./tsconfig.options.json",
 	"files": [],
 	"references": [
-		{ "path": "packages/abort-controller" },
-		{ "path": "packages/event-target" },
-		{ "path": "packages/dom-testing-library" },
-		{ "path": "packages/react-testing-library" },
 		{ "path": "packages/xstate-core" },
 		{ "path": "packages/xstate-react" },
 		{ "path": "test" }

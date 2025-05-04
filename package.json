@@ -20,8 +20,8 @@
 		"type": "git",
 		"url": "git+https://github.com/lisachandra/rbxts-xstate.git"
 	},
-	"author": "David Khourshid <davidkpiano@gmail.com>",
 	"contributors": [
+		"David Khourshid <davidkpiano@gmail.com>",
 		"lisachandra <lisachandra@proton.me>"
 	],
 	"license": "MIT",

@@ -1,1 +1,0 @@
-# @rbxts/whatwg-abort-controller
