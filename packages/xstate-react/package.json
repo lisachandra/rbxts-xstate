@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/xstate-react",
-	"version": "5.0.3-rc.1",
+	"version": "5.0.3-rc.2",
 	"description": "XState tools for React. (Ported to Roblox-TS)",
 	"main": "out/init.luau",
 	"types": "out/index.d.ts",
@@ -37,11 +37,6 @@
 		"url": "https://github.com/lisachandra/rbxts-xstate/issues"
 	},
 	"homepage": "https://github.com/lisachandra/rbxts-xstate/tree/main/packages/xstate-react#readme",
-	"peerDependenciesMeta": {
-		"xstate": {
-			"optional": true
-		}
-	},
 	"dependencies": {
 		"@rbxts/luau-polyfill": "^1.0.0",
 		"@rbxts/services": "^1.0.0",
@@ -49,7 +44,6 @@
 	},
 	"peerDependencies": {
 		"@rbxts/react": "^17.2.3",
-		"@rbxts/react-vendor": "^17.2.3",
 		"@rbxts/xstate": "^5.19.2-rc.1"
 	},
 	"devDependencies": {
