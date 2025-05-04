@@ -6,6 +6,7 @@
 	"types": "out/index.d.ts",
 	"files": [
 		"out",
+		"default.project.json",
 		"!**/*.tsbuildinfo",
 		"!**/__tests__"
 	],
@@ -47,12 +48,14 @@
 		"@rbxts/use-sync-external-store": "^1.0.0"
 	},
 	"peerDependencies": {
-		"@rbxts/react": "^17.0.0",
+		"@rbxts/react": "^17.2.3",
+		"@rbxts/react-vendor": "^17.2.3",
 		"@rbxts/xstate": "^5.19.2-rc.1"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",
 		"@rbxts/react": "^17.2.3",
+		"@rbxts/react-vendor": "*",
 		"@rbxts/types": "^1.0.844",
 		"@rbxts/xstate": "workspace:^",
 		"ajv": "^8.12.0",

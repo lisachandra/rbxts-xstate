@@ -160,6 +160,7 @@ export function fromPromise<
 						...state,
 						status: "error",
 						error: event["data"] as never,
+						trace: debug.traceback("\n"),
 						input: undefined,
 					};
 				case XSTATE_STOP: {
@@ -223,6 +224,7 @@ export function fromPromise<
 				status: "active",
 				output: undefined,
 				error: undefined,
+				trace: undefined,
 				input,
 			};
 		},

@@ -26,6 +26,7 @@ import type {
 import { matchesState } from "utils/misc/matchesState";
 import { omit } from "utils/misc/omit";
 import { Array, Error } from "@rbxts/luau-polyfill";
+import { bind } from "utils/polyfill/bind";
 
 type ToTestStateValue<TStateValue extends StateValue> = TStateValue extends string
 	? TStateValue
@@ -158,6 +159,7 @@ interface ActiveMachineSnapshot<
 	status: "active";
 	output: undefined;
 	error: undefined;
+	trace: undefined;
 }
 
 interface DoneMachineSnapshot<
@@ -182,6 +184,7 @@ interface DoneMachineSnapshot<
 	status: "done";
 	output: TOutput;
 	error: undefined;
+	trace: undefined;
 }
 
 interface ErrorMachineSnapshot<
@@ -206,6 +209,7 @@ interface ErrorMachineSnapshot<
 	status: "error";
 	output: undefined;
 	error: unknown;
+	trace: string;
 }
 
 interface StoppedMachineSnapshot<
@@ -230,6 +234,7 @@ interface StoppedMachineSnapshot<
 	status: "stopped";
 	output: undefined;
 	error: undefined;
+	trace: undefined;
 }
 
 export type MachineSnapshot<
@@ -285,13 +290,11 @@ const machineSnapshotToJSON = function (this: AnyMachineSnapshot) {
 		"_nodes",
 		"tags",
 		"machine",
-		"children",
-		"context",
+		"getMeta",
+		"toJSON",
 		"can",
 		"hasTag",
 		"matches",
-		"getMeta",
-		"toJSON",
 	]);
 	return { ...jsonValues, tags: [...this.tags] };
 };
@@ -324,6 +327,7 @@ export function createMachineSnapshot<
 		status: config.status as never,
 		output: config.output,
 		error: config.error,
+		trace: undefined as never,
 		machine,
 		context: config.context,
 		_nodes: config._nodes,

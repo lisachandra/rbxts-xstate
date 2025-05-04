@@ -10,9 +10,11 @@ import {
 } from "@rbxts/jest-globals";
 import { createMachine, assign, fromPromise, Snapshot, InspectionEvent } from "@rbxts/xstate";
 import randomBase36String from "@rbxts/xstate/out/utils/polyfill/randomBase36String";
-import { fireEvent, screen, render, waitFor } from "@rbxts/react-testing-library";
+import { screen, render, waitFor } from "@rbxts/react-testing-library";
 import { useSelector, createActorContext, shallowEqual } from "@rbxts/xstate-react";
 import * as React from "@rbxts/react";
+import RegExp from "@rbxts/regexp";
+import { fireClickEvent } from "./utils";
 
 describe("createActorContext", () => {
 	it("should work with useSelector", () => {
@@ -86,7 +88,7 @@ describe("createActorContext", () => {
 
 		expect((screen.getByTestId("value") as TextLabel).Text).toBe("a");
 
-		fireEvent.click(screen.getByTestId("next"));
+		fireClickEvent(screen.getByTestId("next") as TextButton);
 
 		expect((screen.getByTestId("value") as TextLabel).Text).toBe("b");
 	});
@@ -159,16 +161,16 @@ describe("createActorContext", () => {
 		expect((screen.getByTestId("value") as TextLabel).Text).toBe("0");
 		expect(rerenders).toBe(1);
 
-		fireEvent.click(screen.getByText("Inc"));
+		fireClickEvent(screen.getByText("Inc") as TextButton);
 
 		expect((screen.getByTestId("value") as TextLabel).Text).toBe("1");
 		expect(rerenders).toBe(2);
 
-		fireEvent.click(screen.getByText("Push"));
+		fireClickEvent(screen.getByText("Push") as TextButton);
 
 		expect(rerenders).toBe(2);
 
-		fireEvent.click(screen.getByText("Inc"));
+		fireClickEvent(screen.getByText("Inc") as TextButton);
 
 		expect((screen.getByTestId("value") as TextLabel).Text).toBe("2");
 		expect(rerenders).toBe(3);
@@ -240,8 +242,10 @@ describe("createActorContext", () => {
 			return <></>;
 		};
 
-		expect(() => render(<App />)).toThrowErrorMatchingInlineSnapshot(
-			`"You used a hook from "ActorProvider" but it's not inside a <ActorProvider> component."`,
+		expect(() => render(<App />)).toThrow(
+			RegExp(
+				`"You used a hook from "ActorProvider" but it's not inside a <ActorProvider> component\\."`,
+			),
 		);
 	});
 
@@ -253,8 +257,10 @@ describe("createActorContext", () => {
 			return <></>;
 		};
 
-		expect(() => render(<App />)).toThrowErrorMatchingInlineSnapshot(
-			`"You used a hook from "ActorProvider" but it's not inside a <ActorProvider> component."`,
+		expect(() => render(<App />)).toThrow(
+			RegExp(
+				`"You used a hook from "ActorProvider" but it's not inside a <ActorProvider> component\\."`,
+			),
 		);
 	});
 
@@ -361,11 +367,11 @@ describe("createActorContext", () => {
 		render(<App />);
 
 		expect((screen.getByTestId("count") as TextLabel).Text).toBe("0");
-		fireEvent.click(screen.getByTestId("button"));
+		fireClickEvent(screen.getByTestId("button") as TextButton);
 
 		expect((screen.getByTestId("count") as TextLabel).Text).toBe("1");
 
-		fireEvent.click(screen.getByTestId("button"));
+		fireClickEvent(screen.getByTestId("button") as TextButton);
 
 		expect((screen.getByTestId("count") as TextLabel).Text).toBe("2");
 	});
@@ -416,7 +422,7 @@ describe("createActorContext", () => {
 
 		expect((screen.getByTestId("value") as TextLabel).Text).toBe("a");
 
-		fireEvent.click(screen.getByTestId("value"));
+		fireClickEvent(screen.getByTestId("value") as TextButton);
 
 		// Ensure that the state machine without restored state functions as normal
 		expect((screen.getByTestId("value") as TextLabel).Text).toBe("b");

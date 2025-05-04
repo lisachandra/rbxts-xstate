@@ -80,7 +80,8 @@ describe("rehydration", () => {
 				},
 			});
 
-			const persistedState = JSON.stringify(createActor(machine).start().getSnapshot());
+			const state = createActor(machine).start().getSnapshot();
+			const persistedState = JSON.stringify(state);
 			const restoredState = JSON.parse(persistedState) as never;
 			const service = createActor(machine, {
 				snapshot: restoredState,
@@ -148,7 +149,7 @@ describe("rehydration", () => {
 
 			expect(() => {
 				machine.resolveState({ value: "invalid" });
-			}).toThrowError(RegExp("invalid"));
+			}).toThrow(RegExp("invalid"));
 		});
 
 		it("should error on incompatible state value (deep)", () => {
@@ -166,7 +167,7 @@ describe("rehydration", () => {
 
 			expect(() => {
 				machine.resolveState({ value: { parent: "invalid" } });
-			}).toThrowError(RegExp("invalid"));
+			}).toThrow(RegExp("invalid"));
 		});
 	});
 

@@ -86,9 +86,7 @@ export function transitionParallelNode<TContext extends MachineContext, TEvent e
 ): Array<TransitionDefinition<TContext, TEvent>> | undefined {
 	const allInnerTransitions: Array<TransitionDefinition<TContext, TEvent>> = [];
 
-	for (const subStateKey of Object.keys(stateValue)) {
-		const subStateValue = stateValue[subStateKey];
-
+	for (const [subStateKey, subStateValue] of pairs(stateValue)) {
 		if (!subStateValue) {
 			continue;
 		}

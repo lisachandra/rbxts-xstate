@@ -170,6 +170,6 @@ describe("invalid transition", () => {
 					RIGHT_CLICK: "right",
 				},
 			});
-		}).toThrowError(RegExp("invalid target", "i"));
+		}).toThrow(RegExp("invalid target", "i"));
 	});
 });

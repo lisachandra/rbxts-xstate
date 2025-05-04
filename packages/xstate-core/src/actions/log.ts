@@ -8,7 +8,7 @@ import {
 	LogExpr,
 	MachineContext,
 	ParameterizedObject,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 } from "../types";
 import { callable } from "utils/polyfill/callable";
 
@@ -31,7 +31,7 @@ function resolveLog(
 		value: ResolvableLogValue<any, any, any, any>;
 		label: string | undefined;
 	},
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	return [
 		snapshot,
 		{

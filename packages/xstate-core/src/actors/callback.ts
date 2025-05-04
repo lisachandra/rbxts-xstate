@@ -221,6 +221,7 @@ export function fromCallback<
 					...state,
 					status: "stopped",
 					error: undefined,
+					trace: undefined,
 				};
 
 				callbackState.dispose?.();
@@ -236,6 +237,7 @@ export function fromCallback<
 				status: "active",
 				output: undefined,
 				error: undefined,
+				trace: undefined,
 				input,
 			};
 		},

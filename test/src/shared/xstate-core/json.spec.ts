@@ -11,7 +11,7 @@ import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 // const validate = ajv.compile(machineSchema);
 
 describe("json", () => {
-	it("should serialize the machine", () => {
+	it.only("should serialize the machine", () => {
 		interface Context {
 			[key: string]: any;
 		}

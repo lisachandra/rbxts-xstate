@@ -150,6 +150,7 @@ export function fromObservable<
 						...snapshot,
 						status: "error",
 						error: event["data"] as never,
+						trace: debug.traceback("\n"),
 						input: undefined,
 						_subscription: undefined,
 					};
@@ -178,6 +179,7 @@ export function fromObservable<
 				output: undefined,
 				error: undefined,
 				context: undefined,
+				trace: undefined,
 				input,
 				_subscription: undefined,
 			};
@@ -310,6 +312,7 @@ export function fromEventObservable<
 						...state,
 						status: "error",
 						error: event["data"] as never,
+						trace: debug.traceback("\n"),
 						input: undefined,
 						_subscription: undefined,
 					};
@@ -338,6 +341,7 @@ export function fromEventObservable<
 				output: undefined,
 				error: undefined,
 				context: undefined,
+				trace: undefined,
 				input,
 				_subscription: undefined,
 			};

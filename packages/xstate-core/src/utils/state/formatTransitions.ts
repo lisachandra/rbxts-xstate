@@ -15,7 +15,7 @@ export function formatTransitions<TContext extends MachineContext, TEvent extend
 ): Map<string, TransitionDefinition<TContext, TEvent>[]> {
 	const transitions = new Map<string, TransitionDefinition<TContext, AnyEventObject>[]>();
 	if (stateNode.config.on) {
-		for (const descriptor of Object.keys(stateNode.config.on)) {
+		for (const [descriptor] of pairs(stateNode.config.on)) {
 			if ((descriptor as unknown) === NULL_EVENT) {
 				throw new Error(
 					'Null events ("") cannot be specified as a transition key. Use `always: { ... }` instead.',

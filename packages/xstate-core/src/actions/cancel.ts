@@ -7,7 +7,7 @@ import {
 	MachineContext,
 	ActionArgs,
 	ParameterizedObject,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 } from "../types";
 import { callable } from "utils/polyfill/callable";
 
@@ -24,7 +24,7 @@ function resolveCancel(
 	actionArgs: ActionArgs<any, any, any>,
 	actionParams: ParameterizedObject["params"] | undefined,
 	{ sendId }: { sendId: ResolvableSendId<any, any, any, any> },
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	const resolvedSendId = typeIs(sendId, "function") ? sendId(actionArgs, actionParams) : sendId;
 	return [snapshot, { sendId: resolvedSendId }, undefined];
 }

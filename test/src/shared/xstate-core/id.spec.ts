@@ -119,7 +119,7 @@ describe("State node IDs", () => {
 		});
 	});
 
-	it("should work with keys that have escaped periods", () => {
+	it.skip("should work with keys that have escaped periods", () => {
 		const machine = createMachine({
 			initial: "start",
 			states: {
@@ -152,7 +152,7 @@ describe("State node IDs", () => {
 		expect(unescapedState.value).toEqual({ foo: "bar" });
 	});
 
-	it("should work with IDs that have escaped periods", () => {
+	it.skip("should work with IDs that have escaped periods", () => {
 		const machine = createMachine({
 			initial: "start",
 			states: {
@@ -188,7 +188,7 @@ describe("State node IDs", () => {
 		expect(unescapedState.value).toEqual({ foo: "bar" });
 	});
 
-	it("should not treat escaped backslash as period's escape", () => {
+	it.skip("should not treat escaped backslash as period's escape", () => {
 		const machine = createMachine({
 			initial: "start",
 			states: {

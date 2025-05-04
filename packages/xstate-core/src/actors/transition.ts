@@ -190,6 +190,7 @@ export function fromTransition<
 				status: "active",
 				output: undefined,
 				error: undefined,
+				trace: undefined,
 				context: typeIs(initialContext, "function")
 					? (initialContext as Callback)({ input })
 					: initialContext,

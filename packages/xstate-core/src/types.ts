@@ -1382,6 +1382,7 @@ export interface ErrorActorEvent<TErrorData = unknown, TId extends string = stri
 	extends EventObject {
 	type: `xstate.error.actor.${TId}`;
 	error: TErrorData;
+	trace: string;
 	actorId: TId;
 }
 
@@ -1593,6 +1594,7 @@ export interface StateConfig<TContext extends MachineContext, TEvent extends Eve
 	status: SnapshotStatus;
 	output?: any;
 	error?: unknown;
+	trace?: string;
 	machine?: StateMachine<
 		TContext,
 		TEvent,
@@ -2035,21 +2037,25 @@ export type Snapshot<TOutput> =
 			status: "active";
 			output: undefined;
 			error: undefined;
+			trace: undefined;
 	  }
 	| {
 			status: "done";
 			output: TOutput;
 			error: undefined;
+			trace: undefined;
 	  }
 	| {
 			status: "error";
 			output: undefined;
 			error: unknown;
+			trace: string;
 	  }
 	| {
 			status: "stopped";
 			output: undefined;
 			error: undefined;
+			trace: undefined;
 	  };
 
 /**
@@ -2512,7 +2518,7 @@ export type ExecutableActionsFrom<T extends AnyActorLogic> =
 
 export type ActionExecutor = (actionToExecute: ExecutableActionObject) => void;
 
-export type BuiltinActionResolution = [
+export type BuiltInActionResolution = [
 	AnyMachineSnapshot,
 	NonReducibleUnknown, // params
 	UnknownAction[] | undefined,

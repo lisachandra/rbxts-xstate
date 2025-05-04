@@ -1,0 +1,43 @@
+{
+	"name": "@rbxts/react-roblox-fire",
+	"version": "0.0.1",
+	"description": "Fires react events by patching react-roblox. (Ported to Roblox-TS)",
+	"main": "out/init.luau",
+	"types": "out/index.d.ts",
+	"files": [
+		"out",
+		"default.project.json",
+		"!**/*.tsbuildinfo",
+		"!**/__tests__"
+	],
+	"scripts": {
+		"build": "shx rm -rf out && rbxtsc --verbose --allowCommentDirectives",
+		"dev": "shx rm -rf out && rbxtsc -w --allowCommentDirectives"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lisachandra/rbxts-jsdotlua.git"
+	},
+	"author": "Kampfkarren",
+	"contributors": [
+		"lisachandra <lisachandra@proton.me>"
+	],
+	"license": "MPL-2.0",
+	"bugs": {
+		"url": "https://github.com/lisachandra/rbxts-jsdotlua/issues"
+	},
+	"homepage": "https://github.com/lisachandra/rbxts-jsdotlua/tree/main/packages/react-roblox-fire#readme",
+	"dependencies": {
+		"@rbxts/react": "^17.2.3",
+		"@rbxts/react-roblox": "^17.2.3",
+		"@rbxts/services": "^1.0.0"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.844",
+		"ajv": "^8.12.0",
+		"pkg-up": "^3.1.0",
+		"roblox-ts": "^3.0.0",
+		"shx": "^0.3.4"
+	}
+}

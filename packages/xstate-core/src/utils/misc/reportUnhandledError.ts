@@ -8,10 +8,9 @@ import { Error, setTimeout } from "@rbxts/luau-polyfill";
  *
  * @param err Error to be thrown
  */
-export function reportUnhandledError(err: unknown) {
-	// const trace = debug.traceback("\n");
+export function reportUnhandledError(err: unknown, trace = debug.traceback("\n")) {
 	setTimeout(() => {
 		const message = typeIs(err, "table") && "message" in err ? err : new Error(`${err}`);
-		throw message;
+		throw message + trace;
 	});
 }

@@ -52,7 +52,7 @@ const toSerializableAction = (action: UnknownAction) => {
 			type: action["name" as never],
 		};
 	}
-	return action;
+	return `${action}`;
 };
 
 interface StateNodeOptions<TContext extends MachineContext, TEvent extends EventObject> {
@@ -413,8 +413,7 @@ export class StateNode<
 			const events = new Set(this.getOwnEvents());
 
 			if (states) {
-				for (const stateId of Object.keys(states)) {
-					const state = states[stateId];
+				for (const [_, state] of pairs(states)) {
 					if (state.states) {
 						for (const event of state.getEvents()) {
 							events.add(`${event}`);

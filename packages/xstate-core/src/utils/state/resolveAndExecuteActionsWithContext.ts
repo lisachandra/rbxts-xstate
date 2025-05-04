@@ -71,6 +71,7 @@ export function resolveAndExecuteActionsWithContext(
 			resolvedAction, // this holds all params
 			extra,
 		);
+		const s = intermediateSnapshot;
 		intermediateSnapshot = nextState;
 
 		if ("retryResolve" in builtinAction) {
@@ -78,6 +79,11 @@ export function resolveAndExecuteActionsWithContext(
 		}
 
 		if ("execute" in builtinAction) {
+			if (builtinAction.type === "xstate.stopChild") {
+				// @ts-expect-error
+				params ??= 0;
+			}
+
 			actorScope.actionExecutor({
 				type: builtinAction.type,
 				info: actionArgs,

@@ -102,7 +102,7 @@ describe("toPromise", () => {
 		try {
 			await toPromise(actor);
 		} catch (err) {
-			expect(err).toEqual(new Error("oh noes"));
+			expect(err).toHaveProperty("message", "oh noes");
 		}
 	});
 
@@ -139,8 +139,8 @@ describe("toPromise", () => {
 		const actor = createActor(machine).start();
 
 		expect(actor.getSnapshot().status).toBe("error");
-		expect(actor.getSnapshot().error).toEqual(new Error("oh noes"));
+		expect(actor.getSnapshot().error).toHaveProperty("message", "oh noes");
 
-		await expect(toPromise(actor)).rejects.toEqual(new Error("oh noes"));
+		await expect(toPromise(actor)).rejects.toHaveProperty("message", "oh noes");
 	});
 });

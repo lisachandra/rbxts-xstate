@@ -9,7 +9,7 @@ import {
 	EventObject,
 	MachineContext,
 	ParameterizedObject,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 	AnyObject,
 } from "../types";
 import { Error } from "@rbxts/luau-polyfill";
@@ -34,7 +34,7 @@ function resolveStop(
 	args: ActionArgs<any, any, any>,
 	actionParams: ParameterizedObject["params"] | undefined,
 	{ actorRef }: { actorRef: ResolvableActorRef<any, any, any, any> },
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	const actorRefOrString = typeIs(actorRef, "function") ? actorRef(args, actionParams) : actorRef;
 	const resolvedActorRef: AnyActorRef | undefined = typeIs(actorRefOrString, "string")
 		? ((snapshot.children as AnyObject)[actorRefOrString] as never)
@@ -45,6 +45,7 @@ function resolveStop(
 		children = { ...children };
 		delete (children as AnyObject)[resolvedActorRef.id];
 	}
+
 	return [
 		cloneMachineSnapshot(snapshot, {
 			children,
@@ -53,7 +54,7 @@ function resolveStop(
 		undefined,
 	];
 }
-function executeStop(actorScope: AnyActorScope, actorRef: AnyActorRef | undefined) {
+function executeStop(actorScope: AnyActorScope, actorRef: AnyActorRef | 0 | undefined) {
 	if (!actorRef) {
 		return;
 	}

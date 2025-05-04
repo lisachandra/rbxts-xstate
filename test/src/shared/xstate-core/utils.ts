@@ -101,7 +101,7 @@ export function trackEntries(machine: AnyStateMachine) {
 	}
 
 	function addTrackingActionsRecursively(state: StateNode<any, any>) {
-		for (const child of Object.values(state.states)) {
+		for (const [_, child] of pairs(state.states)) {
 			addTrackingActions(child, child.path.join("."));
 			addTrackingActionsRecursively(child);
 		}

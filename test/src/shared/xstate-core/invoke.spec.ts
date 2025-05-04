@@ -2286,6 +2286,7 @@ describe("invoke", () => {
 						status: "active",
 						output: undefined,
 						error: undefined,
+						trace: undefined,
 						context: 0,
 					};
 				},
@@ -2332,6 +2333,7 @@ describe("invoke", () => {
 						status: "active",
 						output: undefined,
 						error: undefined,
+						trace: undefined,
 					};
 				},
 				getPersistedSnapshot(s) {

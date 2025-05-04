@@ -1,6 +1,7 @@
 import * as React from "@rbxts/react";
 import * as RTL from "@rbxts/react-testing-library";
 import { describe } from "@rbxts/jest-globals";
+import fireEvent from "@rbxts/react-roblox-fire";
 
 // TS trips over signatures with generic overloads when using bare `typeof RTL.render`
 // conditional types just resolve the last overload
@@ -35,4 +36,23 @@ export function describeEachReactMode(
 			},
 		});
 	});
+}
+
+export function createMockInputObject(properties: Partial<InputObject>): InputObject {
+	return {
+		Delta: Vector3.zero,
+		Position: Vector3.zero,
+		KeyCode: Enum.KeyCode.Unknown,
+		UserInputState: Enum.UserInputState.End,
+		UserInputType: Enum.UserInputType.MouseButton1,
+		...properties,
+	} satisfies Partial<InputObject> as never;
+}
+
+export function fireClickEvent<T extends GuiButton>(
+	instance: T,
+	inputObject: InputObject = createMockInputObject({}),
+	clickCount = 1,
+) {
+	fireEvent(instance as GuiButton, "Activated", inputObject, clickCount);
 }

@@ -10,7 +10,7 @@ import {
 	afterEach,
 } from "@rbxts/jest-globals";
 import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
-import { act, fireEvent, screen } from "@rbxts/react-testing-library";
+import { act, screen } from "@rbxts/react-testing-library";
 import * as React from "@rbxts/react";
 import { useState } from "@rbxts/react";
 // import { BehaviorSubject } from "rxjs";
@@ -27,12 +27,13 @@ import {
 	createMachine,
 	raise,
 	setup,
+	fromCallback,
+	fromObservable,
+	fromPromise,
 } from "@rbxts/xstate";
-import { fromCallback, fromObservable, fromPromise } from "@rbxts/xstate";
 import { useActor, useSelector } from "@rbxts/xstate-react";
-import { describeEachReactMode } from "./utils";
+import { describeEachReactMode, fireClickEvent } from "./utils";
 import { sleep } from "test/env-utils";
-import { HttpService } from "@rbxts/services";
 import { BehaviorSubjectStub } from "shared/xstate-core/utils";
 import { Error } from "@rbxts/luau-polyfill";
 
@@ -144,8 +145,8 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 	it("should work with the useActor hook", async () => {
 		render(<Fetcher onFetch={() => new Promise(res => res("fake data"))} />);
-		const button = screen.getByText("Fetch");
-		fireEvent.click(button);
+		const button: TextButton = screen.getByText("Fetch");
+		fireClickEvent(button);
 		screen.getByText("Loading...");
 		await screen.findByText("Success! Data:");
 		const dataEl: TextLabel = screen.getByTestId("data");
@@ -329,11 +330,11 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		render(<Component />);
 
-		const button = screen.getByTestId("button");
-		const extButton = screen.getByTestId("extbutton");
-		fireEvent.click(extButton);
+		const button: TextButton = screen.getByTestId("button");
+		const extButton: TextButton = screen.getByTestId("extbutton");
+		fireClickEvent(extButton);
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 	});
 
 	it("actions should not use stale data in a builtin entry action", (_, done) => {
@@ -396,11 +397,11 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		render(<Component />);
 
-		const button = screen.getByTestId("button");
-		const extButton = screen.getByTestId("extbutton");
-		fireEvent.click(extButton);
+		const button: TextButton = screen.getByTestId("button");
+		const extButton: TextButton = screen.getByTestId("extbutton");
+		fireClickEvent(extButton);
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 	});
 
 	it("actions should not use stale data in a custom entry action", (_, done) => {
@@ -459,11 +460,11 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		render(<Toggle />);
 
-		const button = screen.getByTestId("button");
-		const extButton = screen.getByTestId("extbutton");
-		fireEvent.click(extButton);
+		const button: TextButton = screen.getByTestId("button");
+		const extButton: TextButton = screen.getByTestId("extbutton");
+		fireClickEvent(extButton);
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 	});
 
 	it("should only render once when initial microsteps are involved", () => {
@@ -556,8 +557,8 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		expect(effectsFired).toBe(suiteKey === "strict" ? 2 : 1);
 
-		const button = getByText("Increase");
-		fireEvent.click(button);
+		const button = getByText("Increase") as TextButton;
+		fireClickEvent(button);
 
 		expect(effectsFired).toBe(suiteKey === "strict" ? 2 : 1);
 	});
@@ -740,8 +741,8 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		const btn = screen.getByTestId("button");
-		fireEvent.click(btn);
+		const btn: TextButton = screen.getByTestId("button");
+		fireClickEvent(btn);
 
 		expect((screen.getByTestId("result") as TextLabel).Text).toBe("b");
 
@@ -794,8 +795,8 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		const { rerender } = render(<App isAwesome={false} />);
 		rerender(<App isAwesome={true} />);
 
-		const btn = screen.getByTestId("button");
-		fireEvent.click(btn);
+		const btn: TextButton = screen.getByTestId("button");
+		fireClickEvent(btn);
 
 		expect((screen.getByTestId("result") as TextLabel).Text).toBe("b");
 	});
@@ -865,8 +866,9 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<Test />);
+		const label = container.FindFirstChildOfClass("TextLabel")!;
 
-		expect((container as TextLabel).Text).toBe("success");
+		expect(label.Text).toBe("success");
 	});
 
 	it("custom data should be available right away for the invoked actor", () => {
@@ -971,9 +973,9 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		const button = screen.getByTestId("button");
+		const button: TextButton = screen.getByTestId("button");
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 		act(() => {
 			jest.advanceTimersByTime(110);
 		});
@@ -1008,8 +1010,9 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<App />);
+		const label = container.FindFirstChildOfClass("TextLabel")!;
 
-		expect((container as TextLabel).Text).toBe("2");
+		expect(label.Text).toBe("2");
 	});
 
 	it("should deliver messages sent from an effect to an actor registered in the system", () => {
@@ -1092,13 +1095,14 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<App />);
+		const label = container.FindFirstChildOfClass("TextLabel")!;
 
-		expect((container as TextLabel).Text).toBe("one");
+		expect(label.Text).toBe("one");
 
 		await act(async () => {
 			await sleep(10);
 		});
 
-		expect((container as TextLabel).Text).toBe("two");
+		expect(label.Text).toBe("two");
 	});
 });

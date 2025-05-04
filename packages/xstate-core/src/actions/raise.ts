@@ -15,7 +15,7 @@ import {
 	ParameterizedObject,
 	RaiseActionOptions,
 	SendExpr,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 } from "../types";
 import { callable } from "utils/polyfill/callable";
 
@@ -51,7 +51,7 @@ function resolveRaise(
 			| undefined;
 	},
 	{ internalQueue }: { internalQueue: AnyEventObject[] },
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	const delaysMap = snapshot.machine.implementations.delays;
 
 	if (typeIs(eventOrExpr, "string")) {

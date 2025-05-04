@@ -1,6 +1,6 @@
 {
 	"name": "test",
-	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
+	"globIgnorePaths": ["**/package.json", "**/tsconfig.json", "**/*.tsbuildinfo"],
 	"emitLegacyScripts": false,
 	"tree": {
 		"$className": "DataModel",

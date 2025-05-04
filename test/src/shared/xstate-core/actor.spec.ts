@@ -1164,6 +1164,7 @@ describe("actors", () => {
 						status: "active",
 						output: undefined,
 						error: undefined,
+						trace: undefined,
 					};
 				},
 				getPersistedSnapshot(s) {

@@ -11,7 +11,7 @@ import {
 	MachineContext,
 	ParameterizedObject,
 	SendExpr,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 } from "../types";
 import { Error } from "@rbxts/luau-polyfill";
 import { callable } from "utils/polyfill/callable";
@@ -34,7 +34,7 @@ function resolveEmit(
 					EventObject
 			  >;
 	},
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	const resolvedEvent = typeIs(eventOrExpr, "function")
 		? eventOrExpr(args, actionParams)
 		: eventOrExpr;

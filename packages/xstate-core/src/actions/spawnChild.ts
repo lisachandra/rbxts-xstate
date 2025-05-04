@@ -18,7 +18,7 @@ import {
 	ParameterizedObject,
 	ProvidedActor,
 	RequiredActorOptions,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 	UnifiedArg,
 } from "../types";
 import { Error } from "@rbxts/luau-polyfill";
@@ -50,7 +50,7 @@ function resolveSpawn(
 		input?: unknown;
 		syncSnapshot: boolean;
 	},
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	const logic = typeIs(src, "string") ? resolveReferencedActor(snapshot.machine, src) : src;
 	const resolvedId = typeIs(id, "function") ? id(actionArgs) : id;
 	let actorRef: AnyActorRef | undefined;

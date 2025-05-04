@@ -5,7 +5,9 @@
 		"typeRoots": ["node_modules/@rbxts", "src/types"],
 		"baseUrl": "src",
 		"rootDir": "src",
-		"outDir": "out"
+		"outDir": "out",
+		"declaration": false,
+		"declarationMap": false
 	},
 	"exclude": ["out"]
 }

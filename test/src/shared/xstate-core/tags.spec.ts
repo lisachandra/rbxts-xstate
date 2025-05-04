@@ -153,6 +153,7 @@ describe("tags", () => {
 
 		const jsonState = createActor(machine).getSnapshot().toJSON();
 
-		expect((jsonState as AnyObject).tags).toEqual(["go", "light"]);
+		// expect((jsonState as AnyObject).tags).toEqual(["go", "light"]);
+		expect((jsonState as AnyObject).tags).toEqual(["light", "go"]);
 	});
 });

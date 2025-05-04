@@ -8,7 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { fireEvent, screen, waitFor as testWaitFor } from "@rbxts/react-testing-library";
+import { screen, waitFor as testWaitFor } from "@rbxts/react-testing-library";
 import * as React from "@rbxts/react";
 import {
 	ActorRefFrom,
@@ -21,7 +21,7 @@ import {
 	sendTo,
 } from "@rbxts/xstate";
 import { useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
-import { describeEachReactMode } from "./utils";
+import { describeEachReactMode, fireClickEvent } from "./utils";
 import { Object, setTimeout } from "@rbxts/luau-polyfill";
 
 describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
@@ -62,9 +62,9 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 		};
 
 		render(<App />);
-		const button = screen.getByTestId("button");
+		const button: TextButton = screen.getByTestId("button");
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 	});
 
 	it("actions created by a layout effect should access the latest closure values", () => {
@@ -154,7 +154,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		fireEvent.click(screen.getByTestId("button"));
+		fireClickEvent(screen.getByTestId("button") as TextButton);
 
 		expect(screen.getByText("2")).toBeTruthy();
 	});
@@ -206,12 +206,12 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		const button: TextLabel = screen.getByTestId("button");
+		const button: TextButton = screen.getByTestId("button");
 		const childState: TextLabel = screen.getByTestId("child-state");
 
 		expect(childState.Text).toBe("waiting");
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 
 		expect(childState.Text).toBe("received");
 	});
@@ -266,12 +266,12 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		const button: TextLabel = screen.getByTestId("button");
+		const button: TextButton = screen.getByTestId("button");
 		const childState: TextLabel = screen.getByTestId("child-state");
 
 		expect(childState.Text).toBe("waiting");
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 
 		expect(childState.Text).toBe("received");
 	});
@@ -324,11 +324,11 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		const count: TextLabel = screen.getByTestId("count");
+		const count: TextButton = screen.getByTestId("count");
 
 		expect(count.Text).toBe("0");
 
-		fireEvent.click(count);
+		fireClickEvent(count);
 
 		expect(count.Text).toBe("1");
 	});
@@ -523,8 +523,8 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		fireEvent.click(screen.getByText("Reload machine"));
-		fireEvent.click(screen.getByText("Send event"));
+		fireClickEvent(screen.getByText("Reload machine") as TextButton);
+		fireClickEvent(screen.getByText("Send event") as TextButton);
 
 		expect(screen.getByText("b")).toBeTruthy();
 	});
@@ -582,9 +582,9 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		fireEvent.click(screen.getByText("Send event"));
-		fireEvent.click(screen.getByText("Reload machine"));
-		fireEvent.click(screen.getByText("Send event"));
+		fireClickEvent(screen.getByText("Send event") as TextButton);
+		fireClickEvent(screen.getByText("Reload machine") as TextButton);
+		fireClickEvent(screen.getByText("Send event") as TextButton);
 
 		expect(screen.getByText("c")).toBeTruthy();
 	});
@@ -618,7 +618,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		fireEvent.click(screen.getByText("Reload machine"));
+		fireClickEvent(screen.getByText("Reload machine") as TextButton);
 
 		// while those numbers might be a little bit surprising at first glance they are actually correct
 		// we are using the "derive state from props pattern" here and that involves 2 renders
@@ -661,7 +661,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		fireEvent.click(screen.getByText("Reload machine"));
+		fireClickEvent(screen.getByText("Reload machine") as TextButton);
 
 		expect(detectedInconsistency).toBe(false);
 	});
@@ -702,7 +702,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		fireEvent.click(screen.getByText("Reload machine"));
+		fireClickEvent(screen.getByText("Reload machine") as TextButton);
 
 		expect(detectedInconsistency).toBe(false);
 	});
@@ -768,8 +768,8 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		fireEvent.click(screen.getByText("Reload machine"));
-		fireEvent.click(screen.getByText("Send event"));
+		fireClickEvent(screen.getByText("Reload machine") as TextButton);
+		fireClickEvent(screen.getByText("Send event") as TextButton);
 
 		expect(spy.mock.calls).toHaveLength(1);
 		// we don't have any means to rehydrate an inline actor with a new src (can't locate its new src)
@@ -822,7 +822,7 @@ describeEachReactMode("useActorRef (%s)", ({ suiteKey, render }) => {
 
 		render(<Test />);
 
-		fireEvent.click(screen.getByTestId("button"));
+		fireClickEvent(screen.getByTestId("button") as TextButton);
 
 		expect(spy1).toHaveBeenCalledTimes(1);
 		expect(spy2).never.toHaveBeenCalled();

@@ -53,14 +53,15 @@ export function createActorContext<TLogic extends AnyActorLogic>(
 	}
 
 	// TODO: add properties to actor ref to make more descriptive
-	Provider.displayName = `ActorProvider`;
+	// Provider.displayName = `ActorProvider`;
 
 	function useContext(): Actor<TLogic> {
 		const actor = React.useContext(ReactContext);
 
 		if (!actor) {
 			throw new Error(
-				`You used a hook from "${Provider.displayName}" but it's not inside a <${Provider.displayName}> component.`,
+				// `You used a hook from "${Provider.displayName}" but it's not inside a <${Provider.displayName}> component.`,
+				`You used a hook from "${Provider}" but it's not inside a <${Provider}> component.`,
 			);
 		}
 

@@ -16,7 +16,7 @@ import type {
 	PropertyAssigner,
 	ProvidedActor,
 	ActionFunction,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 } from "../types";
 import { Error, Object } from "@rbxts/luau-polyfill";
 import { callable } from "utils/polyfill/callable";
@@ -40,7 +40,7 @@ function resolveAssign(
 	}: {
 		assignment: Assigner<any, any, any, any, any> | PropertyAssigner<any, any, any, any, any>;
 	},
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	if (!(snapshot.context as unknown)) {
 		throw new Error(
 			"Cannot assign to undefined `context`. Ensure that `context` is defined in the machine config.",
@@ -59,7 +59,7 @@ function resolveAssign(
 	if (typeIs(assignment, "function")) {
 		partialUpdate = assignment(assignArgs, actionParams);
 	} else {
-		for (const key of Object.keys(assignment)) {
+		for (const [key] of pairs(assignment)) {
 			const propAssignment = assignment[key as string];
 			partialUpdate[key as string] = typeIs(propAssignment, "function")
 				? propAssignment(assignArgs, actionParams)

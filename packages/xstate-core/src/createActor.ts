@@ -249,6 +249,7 @@ export class Actor<TLogic extends AnyActorLogic>
 			// so right now this is a lie of sorts
 			this._snapshot = {
 				status: "error",
+				trace: debug.traceback("\n"),
 				output: undefined,
 				error: err,
 			} as never;
@@ -278,6 +279,7 @@ export class Actor<TLogic extends AnyActorLogic>
 				this._snapshot = {
 					...(snapshot as object),
 					status: "error",
+					trace: debug.traceback("\n"),
 					error: err,
 				} as never;
 			}
@@ -418,13 +420,14 @@ export class Actor<TLogic extends AnyActorLogic>
 					break;
 				case "error": {
 					const err = (this._snapshot as AnyObject).error;
+					const trace = (this._snapshot as AnyObject).trace as string;
 					if (!observer.error) {
-						reportUnhandledError(err);
+						reportUnhandledError(err, trace);
 					} else {
 						try {
 							observer.error(err);
 						} catch (err) {
-							reportUnhandledError(err);
+							reportUnhandledError(err, trace);
 						}
 					}
 					break;
@@ -522,6 +525,7 @@ export class Actor<TLogic extends AnyActorLogic>
 				this._snapshot = {
 					...(this._snapshot as object),
 					status: "error",
+					trace: debug.traceback("\n"),
 					error: err,
 				} as never;
 				this._error(err);
@@ -559,6 +563,7 @@ export class Actor<TLogic extends AnyActorLogic>
 			this._snapshot = {
 				...(this._snapshot as object),
 				status: "error",
+				trace: debug.traceback("\n"),
 				error: err,
 			} as never;
 			this._error(err);

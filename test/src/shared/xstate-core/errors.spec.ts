@@ -887,6 +887,7 @@ describe.skip("error handling", () => {
 			output: undefined,
 			error: "immediate error!",
 			context: undefined,
+			trace: "",
 		});
 
 		const machine = createMachine(

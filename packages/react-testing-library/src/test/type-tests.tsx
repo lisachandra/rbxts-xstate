@@ -65,7 +65,8 @@ export function testSVGRenderOptions() {
 
 export function testFireEvent() {
 	const { container } = render(<textbutton />);
-	fireEvent.click(container);
+	const button = container.FindFirstChildOfClass("TextButton")!;
+	fireEvent.click(button);
 }
 
 export function testConfigure() {
@@ -114,7 +115,8 @@ export async function testScreen() {
 
 export async function testWaitFor() {
 	const { container } = render(<textbutton />);
-	fireEvent.click(container);
+	const button = container.FindFirstChildOfClass("TextButton")!;
+	fireEvent.click(button);
 	await waitFor(() => {});
 }
 

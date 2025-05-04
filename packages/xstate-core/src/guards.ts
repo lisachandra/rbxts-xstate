@@ -75,7 +75,7 @@ type UnknownReferencedGuard = Guard<
 
 type UnknownInlineGuard = Guard<MachineContext, EventObject, undefined, ParameterizedObject>;
 
-interface BuiltinGuard {
+interface BuiltInGuard {
 	(): boolean;
 	check: (
 		snapshot: AnyMachineSnapshot,
@@ -359,7 +359,7 @@ export function evaluateGuard<
 		return resolved(guardArgs, guardParams as never);
 	}
 
-	const builtinGuard = resolved as unknown as BuiltinGuard;
+	const builtinGuard = resolved as unknown as BuiltInGuard;
 
 	return builtinGuard.check(
 		snapshot,

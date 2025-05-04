@@ -76,6 +76,7 @@ export function macrostep(
 			nextSnapshot = cloneMachineSnapshot<typeof snapshot>(snapshot, {
 				status: "error",
 				error: currentEvent.error,
+				trace: debug.traceback("\n"),
 			});
 			addMicrostate(nextSnapshot, currentEvent, []);
 			return {

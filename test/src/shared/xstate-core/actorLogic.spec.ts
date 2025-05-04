@@ -29,6 +29,7 @@ import {
 import { waitFor } from "@rbxts/xstate/out/utils/misc/waitFor";
 import { raise, sendTo } from "@rbxts/xstate/out/actions";
 import { setTimeout } from "@rbxts/luau-polyfill";
+import RegExp from "@rbxts/regexp";
 
 describe("promise logic (fromPromise)", () => {
 	it("should interpret a promise", async () => {
@@ -1096,8 +1097,8 @@ describe("machine logic", () => {
 
 		const actorRef = createActor(machine).start();
 
-		expect(() => actorRef.getPersistedSnapshot()).toThrowErrorMatchingInlineSnapshot(
-			`"An inline child actor cannot be persisted."`,
+		expect(() => actorRef.getPersistedSnapshot()).toThrow(
+			RegExp("An inline child actor cannot be persisted\\."),
 		);
 	});
 

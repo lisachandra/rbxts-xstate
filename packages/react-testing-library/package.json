@@ -5,6 +5,7 @@
 	"types": "out/types/index.d.ts",
 	"files": [
 		"out",
+		"default.project.json",
 		"!**/*.tsbuildinfo",
 		"!**/__tests__"
 	],

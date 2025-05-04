@@ -77,7 +77,7 @@ describe("input", () => {
 		expect(() => {
 			// TODO: add ts-expect-errpr
 			createActor(machine).start();
-		}).never.toThrowError();
+		}).never.toThrow();
 	});
 
 	it("should provide input data to invoked machines", (_, done) => {

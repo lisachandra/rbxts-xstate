@@ -8,7 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { act, fireEvent, screen } from "@rbxts/react-testing-library";
+import { act, screen } from "@rbxts/react-testing-library";
 import * as React from "@rbxts/react";
 import {
 	ActorRef,
@@ -26,7 +26,7 @@ import {
 	AnyObject,
 } from "@rbxts/xstate";
 import { shallowEqual, useActorRef, useMachine, useSelector } from "@rbxts/xstate-react";
-import { describeEachReactMode } from "./utils";
+import { describeEachReactMode, fireClickEvent } from "./utils";
 
 describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 	it("only rerenders for selected values", () => {
@@ -74,22 +74,22 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		render(<App />);
-		const countButton: TextLabel = screen.getByTestId("count");
-		const otherButton: TextLabel = screen.getByTestId("other");
-		const incrementEl: TextLabel = screen.getByTestId("increment");
+		const countButton: TextButton = screen.getByTestId("count");
+		const otherButton: TextButton = screen.getByTestId("other");
+		const incrementEl: TextButton = screen.getByTestId("increment");
 
-		fireEvent.click(incrementEl);
+		fireClickEvent(incrementEl);
 
 		rerenders = 0;
 
-		fireEvent.click(otherButton);
-		fireEvent.click(otherButton);
-		fireEvent.click(otherButton);
-		fireEvent.click(otherButton);
+		fireClickEvent(otherButton);
+		fireClickEvent(otherButton);
+		fireClickEvent(otherButton);
+		fireClickEvent(otherButton);
 
 		expect(rerenders).toEqual(0);
 
-		fireEvent.click(incrementEl);
+		fireClickEvent(incrementEl);
 
 		expect(countButton.Text).toBe("2");
 	});
@@ -143,21 +143,21 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 		const nameEl: TextLabel = screen.getByTestId("name");
-		const sendUpperButton: TextLabel = screen.getByTestId("sendUpper");
-		const sendOtherButton: TextLabel = screen.getByTestId("sendOther");
+		const sendUpperButton: TextButton = screen.getByTestId("sendUpper");
+		const sendOtherButton: TextButton = screen.getByTestId("sendOther");
 
 		expect(nameEl.Text).toEqual("david");
 
-		fireEvent.click(sendUpperButton);
+		fireClickEvent(sendUpperButton);
 
 		// unchanged due to comparison function
 		expect(nameEl.Text).toEqual("david");
 
-		fireEvent.click(sendOtherButton);
+		fireClickEvent(sendOtherButton);
 
 		expect(nameEl.Text).toEqual("other");
 
-		fireEvent.click(sendUpperButton);
+		fireClickEvent(sendUpperButton);
 
 		expect(nameEl.Text).toEqual("DAVID");
 	});
@@ -216,28 +216,28 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		render(<App />);
 		const nameEl: TextLabel = screen.getByTestId("name");
 		const changesEl: TextLabel = screen.getByTestId("changes");
-		const sendSameButton: TextLabel = screen.getByTestId("sendSame");
-		const sendOtherButton: TextLabel = screen.getByTestId("sendOther");
+		const sendSameButton: TextButton = screen.getByTestId("sendSame");
+		const sendOtherButton: TextButton = screen.getByTestId("sendOther");
 
 		expect(nameEl.Text).toEqual("david");
 
 		// unchanged due to comparison function
-		fireEvent.click(sendSameButton);
+		fireClickEvent(sendSameButton);
 		expect(nameEl.Text).toEqual("david");
 		expect(changesEl.Text).toEqual("0");
 
 		// changed
-		fireEvent.click(sendOtherButton);
+		fireClickEvent(sendOtherButton);
 		expect(nameEl.Text).toEqual("other");
 		expect(changesEl.Text).toEqual("1");
 
 		// changed
-		fireEvent.click(sendSameButton);
+		fireClickEvent(sendSameButton);
 		expect(nameEl.Text).toEqual("david");
 		expect(changesEl.Text).toEqual("2");
 
 		// unchanged due to comparison function
-		fireEvent.click(sendSameButton);
+		fireClickEvent(sendSameButton);
 		expect(nameEl.Text).toEqual("david");
 		expect(changesEl.Text).toEqual("2");
 	});
@@ -329,11 +329,11 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		const buttonEl: TextLabel = screen.getByTestId("button");
+		const buttonEl: TextButton = screen.getByTestId("button");
 		const countEl: TextLabel = screen.getByTestId("count");
 
 		expect(countEl.Text).toEqual("0");
-		fireEvent.click(buttonEl);
+		fireClickEvent(buttonEl);
 		expect(countEl.Text).toEqual("1");
 	});
 
@@ -364,7 +364,8 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<App />);
-		expect((container as TextLabel).Text).toEqual("foo");
+		const label = container.FindFirstChildOfClass("TextLabel")!;
+		expect(label.Text).toEqual("foo");
 	});
 
 	it("should rerender with a new value when the selector changes", () => {
@@ -402,11 +403,12 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container, rerender } = render(<App prop="first" />);
+		const label = container.FindFirstChildOfClass("TextLabel")!;
 
-		expect((container as TextLabel).Text).toEqual("first 0");
+		expect(label.Text).toEqual("first 0");
 
 		rerender(<App prop="second" />);
-		expect((container as TextLabel).Text).toEqual("second 0");
+		expect(label.Text).toEqual("second 0");
 	});
 
 	it("should use a fresh selector for subscription updates after selector change", () => {
@@ -458,13 +460,13 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		const { rerender } = render(<App prop="first" />);
 
-		const buttonEl: TextLabel = screen.getByTestId("button");
+		const buttonEl: TextButton = screen.getByTestId("button");
 		const valueEl: TextLabel = screen.getByTestId("value");
 
 		expect(valueEl.Text).toEqual("first 0");
 
 		rerender(<App prop="second" />);
-		fireEvent.click(buttonEl);
+		fireClickEvent(buttonEl);
 
 		expect(valueEl.Text).toEqual("second 1");
 	});
@@ -495,7 +497,8 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container } = render(<App />);
-		expect((container as TextLabel).Text).toEqual("foo");
+		const label = container.FindFirstChildOfClass("TextLabel")!;
+		expect(label.Text).toEqual("foo");
 	});
 
 	it("should render snapshot state when actor changes", () => {
@@ -516,10 +519,11 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container, rerender } = render(<App prop="first" />);
-		expect((container as TextLabel).Text).toEqual("foo");
+		const label = container.FindFirstChildOfClass("TextLabel")!;
+		expect(label.Text).toEqual("foo");
 
 		rerender(<App prop="second" />);
-		expect((container as TextLabel).Text).toEqual("bar");
+		expect(label.Text).toEqual("bar");
 	});
 
 	it("should keep rendering a new selected value after selector change when the actor doesn't emit", async () => {
@@ -541,13 +545,14 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		};
 
 		const { container, rerender } = render(<App selector={() => "foo"} />);
-		expect((container as TextLabel).Text).toEqual("foo");
+		const label = container.FindFirstChildOfClass("TextLabel")!;
+		expect(label.Text).toEqual("foo");
 
 		rerender(<App selector={() => "bar"} />);
-		expect((container as TextLabel).Text).toEqual("bar");
+		expect(label.Text).toEqual("bar");
 
-		fireEvent.click(await screen.findByTestId("button"));
-		expect((container as TextLabel).Text).toEqual("bar");
+		fireClickEvent((await screen.findByTestId("button")) as TextButton);
+		expect(label.Text).toEqual("bar");
 	});
 
 	it("should only rerender once when the selected value changes", () => {
@@ -689,10 +694,10 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 		render(<App />);
 
 		const elState: TextLabel = screen.getByTestId("child-state");
-		const elSend: TextLabel = screen.getByTestId("child-send");
+		const elSend: TextButton = screen.getByTestId("child-send");
 
 		expect(elState.Text).toEqual("one");
-		fireEvent.click(elSend);
+		fireClickEvent(elSend);
 
 		expect(elState.Text).toEqual("two");
 	});
@@ -748,12 +753,12 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		render(<App />);
 
-		const button: TextLabel = screen.getByTestId("button");
+		const button: TextButton = screen.getByTestId("button");
 		const stateEl: TextLabel = screen.getByTestId("state");
 
 		expect(stateEl.Text).toBe("nil");
 
-		fireEvent.click(button);
+		fireClickEvent(button);
 
 		expect(stateEl.Text).toBe("42");
 	});

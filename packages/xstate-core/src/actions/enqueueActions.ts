@@ -12,7 +12,7 @@ import {
 	MachineContext,
 	ParameterizedObject,
 	ProvidedActor,
-	BuiltinActionResolution,
+	BuiltInActionResolution,
 	UnifiedArg,
 	UnknownAction,
 } from "../types";
@@ -119,7 +119,7 @@ function resolveEnqueueActions(
 			EventObject
 		>;
 	},
-): BuiltinActionResolution {
+): BuiltInActionResolution {
 	const actions: defined[] = [];
 	const enqueue: Parameters<typeof collect>[0]["enqueue"] = function (action) {
 		actions.push(action);
