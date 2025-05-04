@@ -8,8 +8,17 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { AnyObject, InputFrom, createActor, createMachine, raise } from "@rbxts/xstate";
-import { andG, notG, orG, stateIn } from "@rbxts/xstate";
+import {
+	AnyObject,
+	InputFrom,
+	createActor,
+	createMachine,
+	raise,
+	andG,
+	notG,
+	orG,
+	stateIn,
+} from "@rbxts/xstate";
 import { trackEntries } from "./utils";
 
 describe("guard conditions", () => {
@@ -260,14 +269,14 @@ describe("guard conditions", () => {
 
 		actorRef.send({ type: "BAD_COND" });
 
-		/*expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: Unable to evaluate guard 'doesNotExist' in transition for event 'BAD_COND' in state node '(machine).foo':
-      Guard 'doesNotExist' is not implemented.'.],
-        ],
-      ]
-    `);*/
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[
+				[
+					`Error: Unable to evaluate guard 'doesNotExist' in transition for event 'BAD_COND' in state node '(machine).foo':
+      Guard 'doesNotExist' is not implemented.'.`,
+				],
+			],
+		]);
 	});
 });
 
@@ -895,14 +904,14 @@ describe("referencing guards", () => {
 		actorRef.start();
 		actorRef.send({ type: "EVENT" });
 
-		/*expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: Unable to evaluate guard 'missing-predicate' in transition for event 'EVENT' in state node 'invalid-predicate.active':
-      Guard 'missing-predicate' is not implemented.'.],
-        ],
-      ]
-    `);*/
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[
+				[
+					`Error: Unable to evaluate guard 'missing-predicate' in transition for event 'EVENT' in state node 'invalid-predicate.active':
+      Guard 'missing-predicate' is not implemented.'.`,
+				],
+			],
+		]);
 	});
 
 	it("should be possible to reference a composite guard that only uses inline predicates", () => {
@@ -1209,15 +1218,13 @@ describe("not() guard", () => {
 		const actorRef = createActor(machine).start();
 		actorRef.send({ type: "EV", secret: 42 });
 
-		/*expect(spy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          {
-            "secret": 42,
-          },
-        ],
-      ]
-    `);*/
+		expect((spy as jest.Mock).mock.calls).toEqual([
+			[
+				{
+					secret: 42,
+				},
+			],
+		]);
 	});
 });
 
@@ -1381,15 +1388,13 @@ describe("and() guard", () => {
 		const actorRef = createActor(machine).start();
 		actorRef.send({ type: "EV", secret: 42 });
 
-		/*expect(spy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          {
-            "secret": 42,
-          },
-        ],
-      ]
-    `);*/
+		expect((spy as jest.Mock).mock.calls).toEqual([
+			[
+				{
+					secret: 42,
+				},
+			],
+		]);
 	});
 });
 
@@ -1554,14 +1559,12 @@ describe("or() guard", () => {
 		const actorRef = createActor(machine).start();
 		actorRef.send({ type: "EV", secret: 42 });
 
-		/*expect(spy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          {
-            "secret": 42,
-          },
-        ],
-      ]
-    `);*/
+		expect((spy as jest.Mock).mock.calls).toEqual([
+			[
+				{
+					secret: 42,
+				},
+			],
+		]);
 	});
 });

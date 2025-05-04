@@ -75,11 +75,11 @@ importers:
         specifier: ^1.0.0
         version: 1.5.5
       '@rbxts/whatwg-abort-controller':
-        specifier: ^3.0.0-rc.2
-        version: 3.0.0-rc.2
+        specifier: ^3.0.0-rc.3
+        version: 3.0.0-rc.3
       '@rbxts/whatwg-event-target':
-        specifier: ^6.0.2-rc.2
-        version: 6.0.2-rc.2
+        specifier: ^6.0.2-rc.3
+        version: 6.0.2-rc.3
     devDependencies:
       '@rbxts/compiler-types':
         specifier: ^3.0.0-types.0
@@ -99,9 +99,6 @@ importers:
       shx:
         specifier: ^0.3.4
         version: 0.3.4
-    dependenciesMeta:
-      '*':
-        injected: true
 
   packages/xstate-react:
     dependencies:
@@ -147,7 +144,7 @@ importers:
     dependencies:
       '@rbxts/dom-testing-library':
         specifier: ^8.14.0-rc.1
-        version: 8.14.0-rc.2(@rbxts/jest-vendor@0.1.0)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3)
+        version: 8.14.0-rc.3(@rbxts/jest-vendor@test+packages+jest-vendor)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3)
       '@rbxts/jest':
         specifier: ^0.1.0
         version: 0.1.0
@@ -155,8 +152,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@rbxts/jest-vendor':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: workspace:^
+        version: link:packages/jest-vendor
       '@rbxts/luau-polyfill':
         specifier: ^1.0.0
         version: 1.1.3
@@ -168,10 +165,10 @@ importers:
         version: 17.2.3
       '@rbxts/react-roblox-fire':
         specifier: ^0
-        version: 0.0.1
+        version: 0.1.0
       '@rbxts/react-testing-library':
         specifier: ^12.1.5-rc.1
-        version: 12.1.5-rc.2(@rbxts/dom-testing-library@8.14.0-rc.2(@rbxts/jest-vendor@0.1.0)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3))(@rbxts/jest-vendor@0.1.0)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)
+        version: 12.1.5-rc.3(@rbxts/dom-testing-library@8.14.0-rc.3(@rbxts/jest-vendor@test+packages+jest-vendor)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3))(@rbxts/jest-vendor@test+packages+jest-vendor)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)
       '@rbxts/react-vendor':
         specifier: '*'
         version: 17.2.3
@@ -185,17 +182,17 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)
       '@rbxts/whatwg-abort-controller':
-        specifier: ^3.0.0-rc.2
-        version: 3.0.0-rc.2
+        specifier: ^3.0.0-rc.3
+        version: 3.0.0-rc.3
       '@rbxts/whatwg-event-target':
-        specifier: ^6.0.2-rc.2
-        version: 6.0.2-rc.2
+        specifier: ^6.0.2-rc.3
+        version: 6.0.2-rc.3
       '@rbxts/xstate':
-        specifier: ^5.19.2-rc.1
-        version: 5.19.2-rc.1
+        specifier: workspace:^
+        version: link:../packages/xstate-core
       '@rbxts/xstate-react':
-        specifier: ^5.0.3-rc.1
-        version: 5.0.3-rc.1(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)(@rbxts/xstate@5.19.2-rc.1)
+        specifier: workspace:^
+        version: file:packages/xstate-react(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)(@rbxts/xstate@file:packages/xstate-core)
     devDependencies:
       '@rbxts/compiler-types':
         specifier: ^3.0.0-types.0
@@ -433,8 +430,8 @@ packages:
   '@rbxts/compiler-types@3.0.0-types.0':
     resolution: {integrity: sha512-VGOHJPoL7+56NTatMGqQj3K7xWuzEV+aP4QD5vZiHu+bcff3kiTmtoadaF6NkJrmwfFAvbsd4Dg764ZjWNceag==}
 
-  '@rbxts/dom-testing-library@8.14.0-rc.2':
-    resolution: {integrity: sha512-bBftmpahuBSWMLIHID3XMdL/VMNmSjcxhDr8T1+Sr4lDSYjPhRNZ9ikzlQA1XPMH9R0AKFjYyQcU1Bcx+g/z+w==}
+  '@rbxts/dom-testing-library@8.14.0-rc.3':
+    resolution: {integrity: sha512-GE1Q+6MRVJ9jUxYCOjpK9/rXQMQ6H57JNV5FaIdq4ARWmsF+FJWh2N3u876f7aelb2z/prsNdPJvbQhqRvEPpg==}
     peerDependencies:
       '@rbxts/jest-vendor': '*'
       '@rbxts/luau-polyfill': '*'
@@ -452,23 +449,20 @@ packages:
   '@rbxts/jest@0.1.0':
     resolution: {integrity: sha512-0JmmHh0vPbydCRhPWNaU8eb9RcY82i80RP6N5uJphLSZSV57kUvX8ahk1RhbPcn8xFoTmh+Pm6YEdGiPAzX1BA==}
 
-  '@rbxts/lemon-signal@1.2.0':
-    resolution: {integrity: sha512-R8iZqtwqLCnA4g2gS8d8j/QVnctkvzLQspq3VfuKfFbXp+Zqs7rw/2LebD/9ifX/NGpHAGgatRqj0C6DABT9Rw==}
-
   '@rbxts/luau-polyfill@1.1.3':
     resolution: {integrity: sha512-HhTeV1aeCDrr6PoTCc0khnAAxyBcDm0iXeu/t7l96u2Mr1fyA+0ugZd66A1xpThZwz/7YbTSFpiFp5SIFeu2Ug==}
 
   '@rbxts/pretty-format@0.1.0':
     resolution: {integrity: sha512-ZEZM6wd2kWXhXYcr+Q6Vey2wcre6JP6LDRX4u6PnLOEHmSy5XiLCmed1sicYFQfFYgkG5bRk+sGCySSWFEbqoA==}
 
-  '@rbxts/react-roblox-fire@0.0.1':
-    resolution: {integrity: sha512-1hMw0oHFb1kBAPR+bFirrgVCA+RC2mZ14hS/77aRDfsoNuR+qEvHsyiXVgWN6tifY3rdmkjZSILBlwxk+Fa3Ww==}
+  '@rbxts/react-roblox-fire@0.1.0':
+    resolution: {integrity: sha512-tAarssGtdwayXWLMELEJUD0xyIQt5ysbzl7obHuJj3ed7nAcyTL8Mwd4KnbjvE/j1dI+/pT19F7gcB0r/cRYpQ==}
 
   '@rbxts/react-roblox@17.2.3':
     resolution: {integrity: sha512-YgS+C3tf92iM1NTK1f6R2O2G8+nbcKFnblA0mTs2Nt878OsWLgxhnhkCBZ6wYv+yeDGD9/sssKHZ6s2LzUWTrQ==}
 
-  '@rbxts/react-testing-library@12.1.5-rc.2':
-    resolution: {integrity: sha512-crtwO+104mj77w83uTPBHe1u1j28xwPmZd17O8IoHaomEJvrTSN0Dv5QJgcBgAT8Cf+HmCer/B5ItzslsVF89Q==}
+  '@rbxts/react-testing-library@12.1.5-rc.3':
+    resolution: {integrity: sha512-twU7dsRH5x/0u4nU7eZsp8SuLvgKkPx5NiPy0rFOAENsKvwnAV0s1iYvCEeDyYoUs4XAn7d/hkXRsvQHS24vYA==}
     peerDependencies:
       '@rbxts/dom-testing-library': '*'
       '@rbxts/jest-vendor': '*'
@@ -497,30 +491,23 @@ packages:
       '@rbxts/react': '*'
       '@rbxts/react-roblox': '*'
 
-  '@rbxts/whatwg-abort-controller@3.0.0-rc.2':
-    resolution: {integrity: sha512-AxJn8j3oqBfEBVtF5u7z7Cv7HBwEDdlYXTCgcLe3iKtGEKvpDE9d/tqxVuknwG+kfP70xLAfFeysXDAISno7jA==}
+  '@rbxts/whatwg-abort-controller@3.0.0-rc.3':
+    resolution: {integrity: sha512-nJpSnRf5sPJJlUa0Ntuch3ZCDRC0ocGp9q0QxIxZ+mMdlQqQ1feyVTwxrb3KYhKCIu4Aj3S2vpTQ0+54Gnm7oQ==}
 
-  '@rbxts/whatwg-abort-controller@3.0.0-rev.1':
-    resolution: {integrity: sha512-NMzxSsPXPhBw1NLeipTnS3KguNIGIuw0cgU4lh4EQUshP3C4ySsXgq0zSJP88614j0YfSfGgVnlTedex9EjNBw==}
+  '@rbxts/whatwg-event-target@6.0.2-rc.3':
+    resolution: {integrity: sha512-EN6oT7ObnzI9PYhJ489XmTvxjkDVbSji0trzIvARYjS244fwL195UNF0eP9MC+w/tG2r0cbdX5uohF/xinTpvA==}
 
-  '@rbxts/whatwg-event-target@6.0.2-rc.2':
-    resolution: {integrity: sha512-NyHQpJR2X/L58XPPKWUJNngO1/+m13Q6N7sYDgejc0/rtY/R/KvJJWhgQpZtvAtS559N6xvImXtgvQznXk+S1Q==}
-
-  '@rbxts/whatwg-event-target@6.0.2-rev.1':
-    resolution: {integrity: sha512-xFn45uxXjDepG3ts4aT8l4MpCgvR3toG7zY/+5Il/PDHyf043d7j4nieJYcdQxgBcCDH7K+5B/zTrjUV7X/+0g==}
-
-  '@rbxts/xstate-react@5.0.3-rc.1':
-    resolution: {integrity: sha512-zk0GVKcxozXqvOsy602S4/fZFSERtXzh8jHn1mTogOfzRLRwy1NhDma3dIP7REnFHTjmRMElfOuuM75JRWfNIw==}
+  '@rbxts/xstate-react@file:packages/xstate-react':
+    resolution: {directory: packages/xstate-react, type: directory}
     peerDependencies:
-      '@rbxts/react': ^17.0.0
+      '@rbxts/react': ^17.2.3
       '@rbxts/xstate': ^5.19.2-rc.1
-      xstate: '*'
     peerDependenciesMeta:
-      xstate:
+      '@rbxts/xstate':
         optional: true
 
-  '@rbxts/xstate@5.19.2-rc.1':
-    resolution: {integrity: sha512-HI22HKlFQUHdK73G2kM9CcFo5FyuQtm/oRDncngNNWPZlsvL/vp/vL714WRWkTfcpBfIDd7GFrziAtV8kD00dA==}
+  '@rbxts/xstate@file:packages/xstate-core':
+    resolution: {directory: packages/xstate-core, type: directory}
 
   '@roblox-ts/luau-ast@2.0.0':
     resolution: {integrity: sha512-cmMi093IdwBOLVxwuordhM8AmtbyTIyRpsTbB0D/JauidW4SXsQRQowSwWjHo4QP0DRJBXvOIlxtqEQi50uNzQ==}
@@ -3308,9 +3295,9 @@ snapshots:
 
   '@rbxts/compiler-types@3.0.0-types.0': {}
 
-  '@rbxts/dom-testing-library@8.14.0-rc.2(@rbxts/jest-vendor@0.1.0)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3)':
+  '@rbxts/dom-testing-library@8.14.0-rc.3(@rbxts/jest-vendor@test+packages+jest-vendor)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3)':
     dependencies:
-      '@rbxts/jest-vendor': 0.1.0
+      '@rbxts/jest-vendor': link:test/packages/jest-vendor
       '@rbxts/luau-polyfill': 1.1.3
       '@rbxts/react-vendor': 17.2.3
 
@@ -3335,15 +3322,13 @@ snapshots:
       '@rbxts/jest-vendor': 0.1.0
       '@rbxts/pretty-format': 0.1.0
 
-  '@rbxts/lemon-signal@1.2.0': {}
-
   '@rbxts/luau-polyfill@1.1.3': {}
 
   '@rbxts/pretty-format@0.1.0':
     dependencies:
       '@rbxts/jest-vendor': 0.1.0
 
-  '@rbxts/react-roblox-fire@0.0.1':
+  '@rbxts/react-roblox-fire@0.1.0':
     dependencies:
       '@rbxts/react': 17.2.3
       '@rbxts/react-roblox': 17.2.3
@@ -3354,10 +3339,10 @@ snapshots:
       '@rbxts/react': 17.2.3
       '@rbxts/react-vendor': 17.2.3
 
-  '@rbxts/react-testing-library@12.1.5-rc.2(@rbxts/dom-testing-library@8.14.0-rc.2(@rbxts/jest-vendor@0.1.0)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3))(@rbxts/jest-vendor@0.1.0)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)':
+  '@rbxts/react-testing-library@12.1.5-rc.3(@rbxts/dom-testing-library@8.14.0-rc.3(@rbxts/jest-vendor@test+packages+jest-vendor)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3))(@rbxts/jest-vendor@test+packages+jest-vendor)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)':
     dependencies:
-      '@rbxts/dom-testing-library': 8.14.0-rc.2(@rbxts/jest-vendor@0.1.0)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3)
-      '@rbxts/jest-vendor': 0.1.0
+      '@rbxts/dom-testing-library': 8.14.0-rc.3(@rbxts/jest-vendor@test+packages+jest-vendor)(@rbxts/luau-polyfill@1.1.3)(@rbxts/react-vendor@17.2.3)
+      '@rbxts/jest-vendor': link:test/packages/jest-vendor
       '@rbxts/luau-polyfill': 1.1.3
       '@rbxts/react': 17.2.3
       '@rbxts/react-roblox': 17.2.3
@@ -3379,45 +3364,36 @@ snapshots:
       '@rbxts/react': 17.2.3
       '@rbxts/react-roblox': 17.2.3
 
-  '@rbxts/whatwg-abort-controller@3.0.0-rc.2':
+  '@rbxts/whatwg-abort-controller@3.0.0-rc.3':
     dependencies:
       '@rbxts/luau-polyfill': 1.1.3
       '@rbxts/services': 1.5.5
-      '@rbxts/whatwg-event-target': 6.0.2-rc.2
+      '@rbxts/whatwg-event-target': 6.0.2-rc.3
 
-  '@rbxts/whatwg-abort-controller@3.0.0-rev.1':
-    dependencies:
-      '@rbxts/luau-polyfill': 1.1.3
-      '@rbxts/services': 1.5.5
-      '@rbxts/whatwg-event-target': 6.0.2-rev.1
-
-  '@rbxts/whatwg-event-target@6.0.2-rc.2':
+  '@rbxts/whatwg-event-target@6.0.2-rc.3':
     dependencies:
       '@rbxts/luau-polyfill': 1.1.3
       '@rbxts/services': 1.5.5
 
-  '@rbxts/whatwg-event-target@6.0.2-rev.1':
-    dependencies:
-      '@rbxts/lemon-signal': 1.2.0
-      '@rbxts/luau-polyfill': 1.1.3
-      '@rbxts/services': 1.5.5
-
-  '@rbxts/xstate-react@5.0.3-rc.1(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)(@rbxts/xstate@5.19.2-rc.1)':
+  '@rbxts/xstate-react@file:packages/xstate-react(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)(@rbxts/xstate@file:packages/xstate-core)':
     dependencies:
       '@rbxts/luau-polyfill': 1.1.3
       '@rbxts/react': 17.2.3
       '@rbxts/services': 1.5.5
       '@rbxts/use-sync-external-store': 1.0.0(@rbxts/react-roblox@17.2.3)(@rbxts/react@17.2.3)
-      '@rbxts/xstate': 5.19.2-rc.1
+    optionalDependencies:
+      '@rbxts/xstate': file:packages/xstate-core
     transitivePeerDependencies:
       - '@rbxts/react-roblox'
 
-  '@rbxts/xstate@5.19.2-rc.1':
+  '@rbxts/xstate@file:packages/xstate-core':
     dependencies:
       '@rbxts/luau-polyfill': 1.1.3
       '@rbxts/regexp': 0.2.1-ts.4
       '@rbxts/services': 1.5.5
-      '@rbxts/whatwg-abort-controller': 3.0.0-rev.1
+      '@rbxts/whatwg-abort-controller': 3.0.0-rc.3
+      '@rbxts/whatwg-event-target': 6.0.2-rc.3
+    optional: true
 
   '@roblox-ts/luau-ast@2.0.0': {}
 

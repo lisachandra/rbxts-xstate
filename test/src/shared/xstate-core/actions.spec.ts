@@ -1960,17 +1960,7 @@ describe("initial actions", () => {
 		actorRef.send({
 			type: "NEXT",
 		});
-		/*
-		expect(spy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          "initial in b",
-        ],
-        [
-          "initial in b_child",
-        ],
-      ]
-    `);*/
+		expect(spy.mock.calls).toEqual([["initial in b"], ["initial in b_child"]]);
 	});
 
 	it("should execute actions of all initial transitions resolving to the initial state value", () => {
@@ -1994,17 +1984,7 @@ describe("initial actions", () => {
 		});
 
 		createActor(machine).start();
-		/*
-		expect(spy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          "root",
-        ],
-        [
-          "inner",
-        ],
-      ]
-    `);*/
+		expect(spy.mock.calls).toEqual([["root"], ["inner"]]);
 	});
 
 	it("should execute actions of the initial transition when taking a root reentering self-transition", () => {
@@ -2489,14 +2469,14 @@ describe("forwardTo()", () => {
 		});
 		actorRef.start();
 		actorRef.send({ type: "TEST" });
-		/*
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: Attempted to forward event to undefined actor. This risks an infinite loop in the sender.],
-        ],
-      ]
-    `);*/
+
+		expect(errorSpy.mock.calls).toEqual([
+			[
+				[
+					`Error: Attempted to forward event to undefined actor. This risks an infinite loop in the sender.`,
+				],
+			],
+		]);
 	});
 });
 
@@ -2507,15 +2487,7 @@ describe("log()", () => {
 			entry: log("some string", "string label"),
 		});
 		createActor(machine, { logger: consoleSpy }).start();
-		/*
-		expect(consoleSpy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          "string label",
-          "some string",
-        ],
-      ]
-    `);*/
+		expect(consoleSpy.mock.calls).toEqual([["string label", "some string"]]);
 	});
 
 	it("should log an expression", () => {
@@ -2530,15 +2502,8 @@ describe("log()", () => {
 			),
 		});
 		createActor(machine, { logger: consoleSpy }).start();
-		/*
-		expect(consoleSpy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          "expr label",
-          "expr 42",
-        ],
-      ]
-    `);*/
+
+		expect(consoleSpy.mock.calls).toEqual([["expr label", "expr 42"]]);
 	});
 });
 
@@ -2631,16 +2596,14 @@ describe("enqueueActions", () => {
 		);
 
 		createActor(machine).start();
-		/*
-		expect(spy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          {
-            "answer": 42,
-          },
-        ],
-      ]
-    `);*/
+
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					answer: 42,
+				},
+			],
+		]);
 	});
 
 	it("should execute a function", () => {
@@ -2777,16 +2740,14 @@ describe("enqueueActions", () => {
 		);
 
 		createActor(machine);
-		/*
-		expect(spy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          {
-            "max": 100,
-          },
-        ],
-      ]
-    `);*/
+
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					max: 100,
+				},
+			],
+		]);
 	});
 
 	it("should provide self", () => {
@@ -3142,14 +3103,14 @@ describe("sendTo", () => {
 			error: errorSpy,
 		});
 		actorRef.start();
-		/*
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: Only event objects may be used with sendTo; use sendTo({ type: "a string" }) instead],
-        ],
-      ]
-    `);*/
+
+		expect(errorSpy.mock.calls).toEqual([
+			[
+				[
+					`Error: Only event objects may be used with sendTo; use sendTo({ type: "a string" }) instead`,
+				],
+			],
+		]);
 	});
 
 	it('a self-event "handler" of an event sent using sendTo should be able to read updated snapshot of self', () => {
@@ -3183,16 +3144,14 @@ describe("sendTo", () => {
 
 		actorRef.send({ type: "NEXT" });
 		actorRef.send({ type: "EVENT" });
-		/*
-		expect(spy).toMatchMockCallsInlineSnapshot(`
-[
-  [
-    {
-      "counter": 1,
-    },
-  ],
-]
-`);*/
+
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					counter: 1,
+				},
+			],
+		]);
 	});
 
 	it("should not attempt to deliver a delayed event to the spawned actor's ID that was stopped since the event was scheduled", async () => {
@@ -3252,15 +3211,13 @@ describe("sendTo", () => {
 
 		expect(spy1).toHaveBeenCalledTimes(0);
 		expect(spy2).toHaveBeenCalledTimes(0);
-		/*
-		expect(warn).toMatchMockCallsInlineSnapshot(`
-[
-  [
-    "Event "PING" was sent to stopped actor "myChild (x:113)". This actor has already reached its final state, and will not transition.
-Event: {"type":"PING"}",
-  ],
-]
-`);*/
+
+		expect((warn as jest.Mock).mock.calls).toEqual([
+			[
+				`"Event "PING" was sent to stopped actor "myChild (x:113)". This actor has already reached its final state, and will not transition.
+Event: {"type":"PING"}",`,
+			],
+		]);
 	});
 
 	it("should not attempt to deliver a delayed event to the invoked actor's ID that was stopped since the event was scheduled", async () => {
@@ -3325,15 +3282,13 @@ Event: {"type":"PING"}",
 
 		expect(spy1).toHaveBeenCalledTimes(0);
 		expect(spy2).toHaveBeenCalledTimes(0);
-		/*
-		expect(warn).toMatchMockCallsInlineSnapshot(`
-[
-  [
-    "Event "PING" was sent to stopped actor "myChild (x:116)". This actor has already reached its final state, and will not transition.
-Event: {"type":"PING"}",
-  ],
-]
-`);*/
+
+		expect((warn as jest.Mock).mock.calls).toEqual([
+			[
+				`"Event "PING" was sent to stopped actor "myChild (x:116)". This actor has already reached its final state, and will not transition.
+Event: {"type":"PING"}"`,
+			],
+		]);
 	});
 });
 
@@ -3527,14 +3482,14 @@ describe("raise", () => {
 			error: errorSpy,
 		});
 		actorRef.start();
-		/*
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: Only event objects may be used with raise; use raise({ type: "a string" }) instead],
-        ],
-      ]
-    `);*/
+
+		expect(errorSpy.mock.calls).toEqual([
+			[
+				[
+					`Error: Only event objects may be used with raise; use raise({ type: "a string" }) instead`,
+				],
+			],
+		]);
 	});
 });
 
@@ -4275,23 +4230,21 @@ describe("actions", () => {
 		});
 
 		createActor(machine).start();
-		/*
-		expect(warn).toMatchMockCallsInlineSnapshot(`
-[
-  [
-    "Custom actions should not call \`assign()\` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
-  ],
-  [
-    "Custom actions should not call \`raise()\` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
-  ],
-  [
-    "Custom actions should not call \`sendTo()\` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
-  ],
-  [
-    "Custom actions should not call \`emit()\` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
-  ],
-]
-`);*/
+
+		expect((warn as jest.Mock).mock.calls).toEqual([
+			[
+				"Custom actions should not call `assign()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+			],
+			[
+				"Custom actions should not call `raise()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+			],
+			[
+				"Custom actions should not call `sendTo()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+			],
+			[
+				"Custom actions should not call `emit()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+			],
+		]);
 	});
 
 	it("inline actions should not leak into provided actions object", async () => {

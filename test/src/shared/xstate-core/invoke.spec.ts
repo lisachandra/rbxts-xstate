@@ -1822,13 +1822,13 @@ describe("invoke", () => {
 			});
 			actorRef.start();
 			/*
-			expect(spy.mock.calls).toMatchInlineSnapshot(`
+			expect(spy.mock.calls).toEqual(
         [
           [
             [Error: test],
           ],
         ]
-      `);
+      );
 	  */
 		});
 
@@ -1899,6 +1899,7 @@ describe("invoke", () => {
 	});
 
 	/*
+	FIXME: Observables not supported
 	describe("with observables", () => {
 		it("should work with an infinite observable", (_, done) => {
 			interface Events {
@@ -2084,6 +2085,7 @@ describe("invoke", () => {
 	*/
 
 	/*
+	FIXME: Observables not supported
 	describe("with event observables", () => {
 		it("should work with an infinite event observable", (_, done) => {
 			interface Events {

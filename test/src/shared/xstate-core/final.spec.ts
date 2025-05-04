@@ -35,16 +35,14 @@ describe("final states", () => {
 		});
 		createActor(machine, { input: 42 }).start();
 
-		/*expect(spy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          {
-            "output": undefined,
-            "type": "xstate.done.state.(machine)",
-          },
-        ],
-      ]
-    `);*/
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					output: undefined,
+					type: "xstate.done.state.(machine)",
+				},
+			],
+		]);
 	});
 	it('should emit the "xstate.done.state.*" event when all nested states are in their final states', () => {
 		const onDoneSpy = jest.fn();
@@ -603,16 +601,14 @@ describe("final states", () => {
 
 		createActor(machine).start();
 
-		/*expect(spy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          {
-            "output": undefined,
-            "type": "xstate.done.state.(machine)",
-          },
-        ],
-      ]
-    `);*/
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					output: undefined,
+					type: "xstate.done.state.(machine)",
+				},
+			],
+		]);
 	});
 
 	it('root output should be called with a "xstate.done.state.*" event of the parallel root when a final child of its compound child is reached', () => {
@@ -636,16 +632,14 @@ describe("final states", () => {
 
 		createActor(machine).start();
 
-		/*expect(spy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          {
-            "output": undefined,
-            "type": "xstate.done.state.(machine)",
-          },
-        ],
-      ]
-    `);*/
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					output: undefined,
+					type: "xstate.done.state.(machine)",
+				},
+			],
+		]);
 	});
 
 	it('root output should be called with a "xstate.done.state.*" event of the parallel root when a final descendant is reached 2 parallel levels deep', () => {
@@ -674,16 +668,14 @@ describe("final states", () => {
 
 		createActor(machine).start();
 
-		/*expect(spy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          {
-            "output": undefined,
-            "type": "xstate.done.state.(machine)",
-          },
-        ],
-      ]
-    `);*/
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					output: undefined,
+					type: "xstate.done.state.(machine)",
+				},
+			],
+		]);
 	});
 
 	it('onDone of an outer parallel state should be called with its own "xstate.done.state.*" event when its direct parallel child completes', () => {
@@ -718,16 +710,14 @@ describe("final states", () => {
 		});
 		createActor(machine).start();
 
-		/*expect(spy.mock.calls).toMatchInlineSnapshot(`
-      [
-        [
-          {
-            "output": undefined,
-            "type": "xstate.done.state.(machine).a",
-          },
-        ],
-      ]
-    `);*/
+		expect(spy.mock.calls).toEqual([
+			[
+				{
+					output: undefined,
+					type: "xstate.done.state.(machine).a",
+				},
+			],
+		]);
 	});
 
 	it("onDone should not be called when the machine reaches its final state", () => {

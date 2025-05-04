@@ -147,45 +147,35 @@ describe("json", () => {
 
 		const revivedMachine = createMachine(machineObject as never);
 
-		/*
-		expect(Array.flat([...Object.values(revivedMachine.states.active!.transitions)]))
-			.toMatchInlineSnapshot(`
-      [
-        {
-          "actions": [],
-          "eventType": "EVENT",
-          "guard": undefined,
-          "reenter": false,
-          "source": "#active",
-          "target": [
-            "#(machine).foo",
-          ],
-          "toJSON": [Function],
-        },
-        {
-          "actions": [],
-          "eventType": "xstate.done.actor.0.active",
-          "guard": undefined,
-          "reenter": false,
-          "source": "#active",
-          "target": [
-            "#(machine).foo",
-          ],
-          "toJSON": [Function],
-        },
-        {
-          "actions": [],
-          "eventType": "xstate.error.actor.0.active",
-          "guard": undefined,
-          "reenter": false,
-          "source": "#active",
-          "target": [
-            "#(machine).bar",
-          ],
-          "toJSON": [Function],
-        },
-      ]
-    `);*/
+		expect(Array.flat([...Object.values(revivedMachine.states.active!.transitions)])).toEqual([
+			{
+				actions: [],
+				eventType: "EVENT",
+				guard: undefined,
+				reenter: false,
+				source: "#active",
+				target: ["#(machine).foo"],
+				toJSON: `[Function]`,
+			},
+			{
+				actions: [],
+				eventType: "xstate.done.actor.0.active",
+				guard: undefined,
+				reenter: false,
+				source: "#active",
+				target: ["#(machine).foo"],
+				toJSON: `[Function]`,
+			},
+			{
+				actions: [],
+				eventType: "xstate.error.actor.0.active",
+				guard: undefined,
+				reenter: false,
+				source: "#active",
+				target: ["#(machine).bar"],
+				toJSON: `[Function]`,
+			},
+		]);
 
 		// 1. onDone
 		// 2. onError

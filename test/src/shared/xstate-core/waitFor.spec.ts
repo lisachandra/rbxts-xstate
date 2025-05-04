@@ -103,11 +103,9 @@ describe("waitFor", () => {
 			service.send({ type: "NEXT" });
 		}, 10);
 
-		/*
-		await expect(
-			waitFor(service, state => state.matches("never")),
-		).rejects.toMatchInlineSnapshot(`[Error: Actor terminated without satisfying predicate]`);
-		*/
+		await expect(waitFor(service, state => state.matches("never"))).rejects.toEqual(
+			`[Error: Actor terminated without satisfying predicate]`,
+		);
 	});
 
 	it("should resolve correctly when the predicate immediately matches the current state", async () => {
@@ -206,11 +204,9 @@ describe("waitFor", () => {
 		const service = createActor(machine).start();
 		service.send({ type: "NEXT" });
 
-		/*
-		await expect(waitFor(service, state => state.matches("a"))).rejects.toMatchInlineSnapshot(
+		await expect(waitFor(service, state => state.matches("a"))).rejects.toEqual(
 			`[Error: Actor terminated without satisfying predicate]`,
 		);
-		*/
 	});
 
 	it("should not subscribe to the actor when it receives an aborted signal", async () => {
@@ -326,11 +322,9 @@ describe("waitFor", () => {
 		const signal = controller.getSignal();
 		controller.abort(/* new Error("Aborted!") */);
 
-		/*
 		await expect(
 			waitFor(service, state => state.matches("b"), { signal }),
-		).rejects.toMatchInlineSnapshot(`[Error: Aborted!]`);
-		*/
+		).rejects.toBeUndefined();
 	});
 
 	it("should reject when the signal is aborted while waiting", async () => {
@@ -349,11 +343,9 @@ describe("waitFor", () => {
 		const signal = controller.getSignal();
 		setTimeout(() => controller.abort(/* new Error("Aborted!") */), 10);
 
-		/*
 		await expect(
 			waitFor(service, state => state.matches("b"), { signal }),
-		).rejects.toMatchInlineSnapshot(`[Error: Aborted!]`);
-		*/
+		).rejects.toBeUndefined();
 	});
 
 	it('should stop listening for the "abort" event upon successful completion', async () => {

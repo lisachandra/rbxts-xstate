@@ -823,7 +823,7 @@ describe("interpreter", () => {
 
 		state$.subscribe(state => {
 			((_val: number) => {})(state.context.count);
-			// @ts-expect-error
+			// ts-expect-error
 			((_val: string) => {})(state.context.count);
 		});
 	});

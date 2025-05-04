@@ -146,14 +146,12 @@ describe("promise logic (fromPromise)", () => {
 		setTimeout(() => {
 			const resolvedPersistedState = actor.getPersistedSnapshot();
 
-			/*expect(resolvedPersistedState).toMatchInlineSnapshot(`
-        {
-          "error": undefined,
-          "input": undefined,
-          "output": 42,
-          "status": "done",
-        }
-      `);*/
+			expect(resolvedPersistedState).toEqual({
+				error: undefined,
+				input: undefined,
+				output: 42,
+				status: "done",
+			});
 
 			const restoredActor = createActor(promiseLogic, {
 				snapshot: resolvedPersistedState,
@@ -175,14 +173,12 @@ describe("promise logic (fromPromise)", () => {
 		await new Promise(res => setTimeout(res, 5, undefined as never));
 
 		const resolvedPersistedState = actor.getPersistedSnapshot();
-		/*expect(resolvedPersistedState).toMatchInlineSnapshot(`
-      {
-        "error": undefined,
-        "input": undefined,
-        "output": 1,
-        "status": "done",
-      }
-    `);*/
+		expect(resolvedPersistedState).toEqual({
+			error: undefined,
+			input: undefined,
+			output: 1,
+			status: "done",
+		});
 		expect(createdPromises).toBe(1);
 
 		const restoredActor = createActor(promiseLogic, {
@@ -206,14 +202,12 @@ describe("promise logic (fromPromise)", () => {
 		await new Promise(res => setTimeout(res, 5, undefined as never));
 
 		const rejectedPersistedState = actorRef.getPersistedSnapshot();
-		/*expect(rejectedPersistedState).toMatchInlineSnapshot(`
-      {
-        "error": 1,
-        "input": undefined,
-        "output": undefined,
-        "status": "error",
-      }
-    `);*/
+		expect(rejectedPersistedState).toEqual({
+			error: 1,
+			input: undefined,
+			output: undefined,
+			status: "error",
+		});
 		expect(createdPromises).toBe(1);
 
 		const actorRef2 = createActor(promiseLogic, {
@@ -606,13 +600,13 @@ describe("observable logic (fromObservable)", () => {
 		});
 
 		actor.start();
-		expect(spy).toMatchMockCallsInlineSnapshot(`
+		expect((spy as jest.Mock).mock.calls).toEqual(
       [
         [
           "Observable error.",
         ],
       ]
-    `);
+    );
 	});
 
 	it("should complete (observer .complete)", () => {
@@ -852,14 +846,12 @@ describe("machine logic", () => {
 
 		const persistedState = actor.getPersistedSnapshot();
 
-		/*expect((persistedState as AnyObject).children.a.snapshot).toMatchInlineSnapshot(`
-      {
-        "error": undefined,
-        "input": undefined,
-        "output": 42,
-        "status": "done",
-      }
-    `);*/
+		expect(((persistedState as AnyObject).children as { a: AnyObject }).a.snapshot).toEqual({
+			error: undefined,
+			input: undefined,
+			output: 42,
+			status: "done",
+		});
 
 		expect(((persistedState as AnyObject).children as { b: AnyObject }).b.snapshot).toEqual(
 			expect.objectContaining({

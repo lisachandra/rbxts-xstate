@@ -10,7 +10,7 @@ return {
 	spyOnConsole = spyOnConsole,
 	consoleSpies = {
 		-- error = spyOnConsole("error"),
-		-- print = spyOnConsole("print"),
+		print = spyOnConsole("print"),
 		warn = spyOnConsole("warn"),
 	},
 }

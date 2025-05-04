@@ -8,6 +8,8 @@ local TestService = game:GetService("TestService")
 
 local Jest = require(ReplicatedStorage.TS.node_modules["@rbxts"].jest.src)
 
+local capableOfRunningReactTests = pcall(function() print(game:GetService("CoreGui")) end)
+
 local status, result = Jest.runCLI(script, {
 	verbose = false,
 	ci = false,
@@ -15,7 +17,7 @@ local status, result = Jest.runCLI(script, {
 	setupFilesAfterEnv = { TestService["setup-env"] },
 }, {
 	ReplicatedStorage.TS.shared["xstate-core"],
-	ReplicatedStorage.TS.shared["xstate-react"],
+	capableOfRunningReactTests and ReplicatedStorage.TS.shared["xstate-react"] or nil,
 }):awaitStatus()
 
 if status == "Rejected" or result.results.numFailedTestSuites > 0 or result.results.numFailedTests > 0 then

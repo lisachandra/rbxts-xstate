@@ -723,11 +723,10 @@ describe("interpreter", () => {
 		const snapshot = createActor(createMachine(invalidMachine)).getSnapshot();
 
 		expect(snapshot.status).toBe("error");
-		/*
-		expect(snapshot.error).toMatchInlineSnapshot(
+
+		expect(snapshot.error).toEqual(
 			`[Error: Initial state node "create" not found on parent state node #fetchMachine]`,
 		);
-		*/
 	});
 
 	it("should not update when stopped", () => {
@@ -746,14 +745,12 @@ describe("interpreter", () => {
 			expect(service.getSnapshot().value).toEqual("yellow");
 		}
 
-		/*expect(warn).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          "Event "TIMER" was sent to stopped actor "x:27 (x:27)". This actor has already reached its final state, and will not transition.
-      Event: {"type":"TIMER"}",
-        ],
-      ]
-    `);*/
+		expect((warn as jest.Mock).mock.calls).toEqual([
+			[
+				`Event "TIMER" was sent to stopped actor "x:27 (x:27)". This actor has already reached its final state, and will not transition.
+      Event: {"type":"TIMER"}`,
+			],
+		]);
 	});
 
 	it("should be able to log (log action)", () => {
@@ -1161,14 +1158,12 @@ describe("interpreter", () => {
 
 			setTimeout(() => {
 				expect(called).toBeFalsy();
-				/*expect(warn).toMatchMockCallsInlineSnapshot(`
-          [
-            [
-              "Event "TRIGGER" was sent to stopped actor "x:43 (x:43)". This actor has already reached its final state, and will not transition.
-          Event: {"type":"TRIGGER"}",
-            ],
-          ]
-        `);*/
+				expect((warn as jest.Mock).mock.calls).toEqual([
+					[
+						`Event "TRIGGER" was sent to stopped actor "x:43 (x:43)". This actor has already reached its final state, and will not transition.
+          Event: {"type":"TRIGGER"}`,
+					],
+				]);
 				done();
 			}, 10);
 		});
@@ -1891,11 +1886,5 @@ it("should notify the error observer for an errored logic when it gets subscribe
 		error: spy,
 	});
 
-	/*expect(spy).toMatchMockCallsInlineSnapshot(`
-    [
-      [
-        [Error: error],
-      ],
-    ]
-  `);*/
+	expect((spy as jest.Mock).mock.calls).toEqual([[["Error: error"]]]);
 });

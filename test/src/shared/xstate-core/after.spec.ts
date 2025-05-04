@@ -95,13 +95,7 @@ describe("delayed transitions", () => {
 
 		const transitions = greenNode.transitions;
 
-		/*
-		expect([...Object.keys(transitions)]).toMatchInlineSnapshot(`
-      [
-        "xstate.after.1000.light.green",
-      ]
-    `);
-	*/
+		expect([...Object.keys(transitions)]).toEqual(["xstate.after.1000.light.green"]);
 	});
 
 	it("should be able to transition with delay from nested initial state", (_, done) => {

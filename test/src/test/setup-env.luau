@@ -21,7 +21,7 @@ expect.extend({
 
 local console = {
 	-- error = jest.globalEnv.error,
-	-- print = jest.globalEnv.print,
+	print = jest.globalEnv.print,
 	warn = jest.globalEnv.warn,
 }
 

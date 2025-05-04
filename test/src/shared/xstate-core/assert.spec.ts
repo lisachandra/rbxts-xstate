@@ -44,11 +44,10 @@ describe("assertion helpers", () => {
 
 		actor.subscribe({
 			error: err => {
-				/*
-				expect(err).toMatchInlineSnapshot(
+				expect(err).toEqual(
 					`[Error: Expected event {"type":"count","value":42} to have type "greet"]`,
 				);
-				*/
+
 				done();
 			},
 		});
@@ -98,11 +97,10 @@ describe("assertion helpers", () => {
 
 		actor.subscribe({
 			error: err => {
-				/*
-				expect(err).toMatchInlineSnapshot(
+				expect(err).toEqual(
 					`[Error: Expected event {"type":"count","value":42} to have one of types "greet", "notify"]`,
 				);
-				*/
+
 				done();
 			},
 		});

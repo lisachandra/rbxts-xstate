@@ -19,7 +19,7 @@ import {
 	fromPromise,
 	fromTransition,
 } from "@rbxts/xstate";
-import { Error, ErrorConstructor, Object, setTimeout } from "@rbxts/luau-polyfill";
+import { Error, Object, setTimeout } from "@rbxts/luau-polyfill";
 import { EventTarget, Event } from "@rbxts/whatwg-event-target";
 
 class ErrorEvent extends Event<"error"> {
@@ -30,16 +30,23 @@ class ErrorEvent extends Event<"error"> {
 		rawset(this, "error", err);
 	}
 }
+const ev = new ErrorEvent(undefined as never);
 
 const originalConsoleError = (jest as never as { globalEnv: { error: jest.Mock } }).globalEnv.error;
 const window = new EventTarget<{ error: ErrorEvent }, "strict">();
 
 const cleanups: (() => void)[] = [];
-function installGlobalOnErrorHandler(handler: (target: typeof window, ev: ErrorEvent) => void) {
+function installGlobalOnErrorHandler(handler: () => void) {
 	const spy = jest
 		.spyOn((jest as never as { globalEnv: { error: jest.Mock } }).globalEnv, "error")
 		.mockImplementation((err: unknown) => {
-			if (err instanceof Error && window.dispatchEvent(new ErrorEvent(err))) {
+			if (ev.defaultPrevented()) {
+				return;
+			}
+
+			if (err instanceof Error) {
+				rawset(ev, "error", err);
+				window.dispatchEvent(ev);
 				return;
 			}
 
@@ -50,6 +57,7 @@ function installGlobalOnErrorHandler(handler: (target: typeof window, ev: ErrorE
 	cleanups.push(() => {
 		window.removeEventListener("error", handler);
 		spy.mockRestore();
+		ev.initEvent("error");
 	});
 }
 
@@ -58,8 +66,7 @@ afterEach(() => {
 	cleanups.clear();
 });
 
-// FIXME: Find a good way to make these tests pass
-describe.skip("error handling", () => {
+describe("error handling", () => {
 	// https://github.com/statelyai/xstate/issues/4004
 	it("does not cause an infinite loop when an error is thrown in subscribe", (_, done) => {
 		const machine = createMachine({
@@ -88,7 +95,7 @@ describe.skip("error handling", () => {
 
 		expect(spy).toHaveBeenCalledTimes(1);
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual("no_infinite_loop_when_error_is_thrown_in_subscribe");
 			done();
@@ -131,7 +138,7 @@ describe.skip("error handling", () => {
 		expect(subscriber).toHaveBeenCalledTimes(1);
 		expect(actor.getSnapshot().status).toEqual("active");
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual(
 				"doesnt_crash_actor_when_error_is_thrown_in_subscribe",
@@ -176,7 +183,7 @@ describe.skip("error handling", () => {
 		expect(nextSpy).toHaveBeenCalledTimes(1);
 		expect(errorSpy).toHaveBeenCalledTimes(0);
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual(
 				"doesnt_notify_error_listener_when_error_is_thrown_in_subscribe",
@@ -205,7 +212,7 @@ describe.skip("error handling", () => {
 
 		createActor(machine).start();
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual("unhandled_sync_error_in_actor_start");
 			done();
@@ -236,7 +243,7 @@ describe.skip("error handling", () => {
 
 		createActor(machine).start();
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual(
 				"unhandled_rejection_in_promise_actor_without_error_listener",
@@ -276,15 +283,10 @@ describe.skip("error handling", () => {
 		actorRef.start();
 
 		await sleep(0);
-		/*
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: unhandled_rejection_in_promise_actor_with_parent_listener],
-        ],
-      ]
-    `);
-	*/
+
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[["Error: unhandled_rejection_in_promise_actor_with_parent_listener"]],
+		]);
 	});
 
 	it("unhandled rejection of a promise actor should be reported to the existing error listener of its grandparent", async () => {
@@ -333,16 +335,10 @@ describe.skip("error handling", () => {
 		actorRef.start();
 
 		await sleep(0);
-		/*
 
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: unhandled_rejection_in_promise_actor_with_grandparent_listener],
-        ],
-      ]
-    `);
-	*/
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[["Error: unhandled_rejection_in_promise_actor_with_grandparent_listener"]],
+		]);
 	});
 
 	it("handled sync errors thrown when starting a child actor should not be reported globally", (_, done) => {
@@ -400,7 +396,7 @@ describe.skip("error handling", () => {
 		childActorRef.subscribe(() => {});
 		actorRef.start();
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual("handled_sync_error_in_actor_start");
 			done();
@@ -468,7 +464,7 @@ describe.skip("error handling", () => {
 
 		const actual: string[] = [];
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			actual.push(ev.error.message);
 
@@ -538,16 +534,10 @@ describe.skip("error handling", () => {
 			error: errorSpy,
 		});
 		actorRef.start();
-		/*
 
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: unhandled_sync_error_in_actor_start_with_root_error_listener],
-        ],
-      ]
-    `);
-	*/
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[["Error: unhandled_sync_error_in_actor_start_with_root_error_listener"]],
+		]);
 	});
 
 	it(`unhandled sync errors should not notify the global listener when the root error listener is present`, (_, done) => {
@@ -641,7 +631,7 @@ describe.skip("error handling", () => {
 
 		expect(actorRef.getSnapshot().status).toBe("error");
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual("unhandled_sync_error_in_actor_start");
 			done();
@@ -670,7 +660,7 @@ describe.skip("error handling", () => {
 		});
 		actorRef.start();
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual("error_thrown_by_error_listener");
 			done();
@@ -700,7 +690,7 @@ describe.skip("error handling", () => {
 		actorRef.subscribe(() => {});
 		actorRef.start();
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual(
 				"error_thrown_when_not_every_observer_comes_with_an_error_listener",
@@ -736,7 +726,7 @@ describe.skip("error handling", () => {
 
 		const actual: string[] = [];
 
-		installGlobalOnErrorHandler((_, ev) => {
+		installGlobalOnErrorHandler(() => {
 			ev.preventDefault();
 			actual.push(ev.error.message);
 
@@ -767,19 +757,12 @@ describe.skip("error handling", () => {
 
 		const snapshot = actorRef.getSnapshot();
 		expect(snapshot.status).toBe("error");
-		/*
-		expect(snapshot.error).toMatchInlineSnapshot(
-			`[Error: error_thrown_in_initial_entry_action]`,
-		);
 
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: error_thrown_in_initial_entry_action],
-        ],
-      ]
-    `);
-	*/
+		expect(snapshot.error).toEqual(`[Error: error_thrown_in_initial_entry_action]`);
+
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[["Error: error_thrown_in_initial_entry_action"]],
+		]);
 	});
 
 	it("error thrown when resolving initial builtin entry action should error the actor immediately", () => {
@@ -795,26 +778,17 @@ describe.skip("error handling", () => {
 
 		const snapshot = actorRef.getSnapshot();
 		expect(snapshot.status).toBe("error");
-		/*
-		expect(snapshot.error).toMatchInlineSnapshot(
-			`[Error: error_thrown_when_resolving_initial_entry_action]`,
-		);
-		*/
+
+		expect(snapshot.error).toEqual(`[Error: error_thrown_when_resolving_initial_entry_action]`);
 
 		actorRef.subscribe({
 			error: errorSpy,
 		});
 		actorRef.start();
-		/*
 
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: error_thrown_when_resolving_initial_entry_action],
-        ],
-      ]
-    `);
-	*/
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[["Error: error_thrown_when_resolving_initial_entry_action"]],
+		]);
 	});
 
 	it("error thrown by a custom entry action when transitioning should error the actor", () => {
@@ -846,19 +820,14 @@ describe.skip("error handling", () => {
 
 		const snapshot = actorRef.getSnapshot();
 		expect(snapshot.status).toBe("error");
-		/*
-		expect(snapshot.error).toMatchInlineSnapshot(
+
+		expect(snapshot.error).toEqual(
 			`[Error: error_thrown_in_a_custom_entry_action_when_transitioning]`,
 		);
 
-		expect(errorSpy).toMatchMockCallsInlineSnapshot(`
-      [
-        [
-          [Error: error_thrown_in_a_custom_entry_action_when_transitioning],
-        ],
-      ]
-    `);
-	*/
+		expect((errorSpy as jest.Mock).mock.calls).toEqual([
+			[["Error: error_thrown_in_a_custom_entry_action_when_transitioning"]],
+		]);
 	});
 
 	it(`shouldn't execute deferred initial actions that come after an action that errors`, () => {
@@ -942,11 +911,10 @@ describe.skip("error handling", () => {
 
 		const snapshot = actorRef.getSnapshot();
 		expect(snapshot.status).toBe("error");
-		/*
-		expect(snapshot.error).toMatchInlineSnapshot(`
-      [Error: Unable to evaluate guard in transition for event 'NEXT' in state node '(machine).a':
-      error_thrown_in_guard_when_transitioning]
-    `);
-	*/
+
+		expect(snapshot.error).toEqual([
+			`Error: Unable to evaluate guard in transition for event 'NEXT' in state node '(machine).a':
+      error_thrown_in_guard_when_transitioning`,
+		]);
 	});
 });
