@@ -1,4 +1,3 @@
-import type { symbolObservable } from "utils/polyfill/symbolObservable";
 import type { MachineSnapshot } from "./State";
 import type { StateMachine } from "./StateMachine";
 import type { StateNode } from "./StateNode";
@@ -1773,7 +1772,7 @@ export interface Subscription {
 }
 
 export interface InteropObservable<T> {
-	[symbolObservable]: () => InteropSubscribable<T>;
+	[Symbol.observable]: () => InteropSubscribable<T>;
 }
 
 export interface InteropSubscribable<T> {

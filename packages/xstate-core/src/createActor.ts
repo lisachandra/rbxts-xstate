@@ -5,7 +5,7 @@ import { createDoneActorEvent } from "utils/event/createDoneActorEvent";
 import { createErrorActorEvent } from "utils/event/createErrorActorEvent";
 import { createInitEvent } from "utils/event/createInitEvent";
 import { reportUnhandledError } from "./utils/misc/reportUnhandledError";
-import { symbolObservable } from "./utils/polyfill/symbolObservable";
+import Symbol from "./utils/polyfill/symbol";
 import { AnyActorSystem, Clock, createSystem } from "./createSystem";
 
 export let executingCustomAction: boolean = false;
@@ -721,7 +721,7 @@ export class Actor<TLogic extends AnyActorLogic>
 		return this.logic.getPersistedSnapshot(this._snapshot, options);
 	}
 
-	public [symbolObservable](): InteropSubscribable<SnapshotFrom<TLogic>> {
+	public [Symbol.observable](): InteropSubscribable<SnapshotFrom<TLogic>> {
 		return this;
 	}
 

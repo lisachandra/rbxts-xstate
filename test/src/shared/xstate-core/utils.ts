@@ -13,7 +13,7 @@ import {
 	Subscription,
 } from "@rbxts/xstate";
 import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
-import { symbolObservable } from "@rbxts/xstate/out/utils/polyfill/symbolObservable";
+import Symbol from "@rbxts/xstate/out/utils/polyfill/symbol";
 import { indexString } from "@rbxts/xstate/out/utils/polyfill/indexString";
 import { callable } from "@rbxts/xstate/out/utils/polyfill/callable";
 
@@ -122,7 +122,7 @@ export class BehaviorSubjectStub<T> implements Subscribable<T> {
 	private _value: T;
 	private _subscribers: Array<Observer<T>> = [];
 
-	[symbolObservable] = () => this;
+	[Symbol.observable] = () => this;
 
 	constructor(initialValue: T) {
 		this._value = initialValue;
