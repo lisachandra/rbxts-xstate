@@ -29,6 +29,7 @@ import { PromiseActorLogic, fromPromise } from "@rbxts/xstate/out/actors/promise
 import { fromCallback } from "@rbxts/xstate/out/actors/callback";
 import { assertEvent } from "@rbxts/xstate/out/utils/misc/assert";
 import { Error, setTimeout } from "@rbxts/luau-polyfill";
+import { from, interval } from "@rbxts/rx";
 
 const lightMachine = createMachine({
 	id: "light",
@@ -1283,8 +1284,6 @@ describe("interpreter", () => {
 		});
 	});
 
-	/*
-	FIXME: Observables not supported
 	describe("observable", () => {
 		const context = { count: 0 };
 		const intervalMachine = createMachine({
@@ -1436,7 +1435,6 @@ describe("interpreter", () => {
 			expect(completeCb).toHaveBeenCalledTimes(1);
 		});
 	});
-	*/
 
 	describe("actors", () => {
 		it("doesn't crash cryptically on undefined return from the actor creator", () => {
@@ -1580,8 +1578,6 @@ describe("interpreter", () => {
 			service.start();
 		});
 
-		/*
-		FIXME: Observables not supported
 		it("state.children should reference invoked child actors (observable)", (_, done) => {
 			const interval$ = interval(10);
 			const intervalLogic = fromObservable(() => interval$);
@@ -1636,7 +1632,6 @@ describe("interpreter", () => {
 
 			service.start();
 		});
-		*/
 
 		it("state.children should reference spawned actors", () => {
 			const childMachine = createMachine({
@@ -1690,14 +1685,11 @@ describe("interpreter", () => {
 							),
 							{ id: "promiseChild" },
 						),
-					/*
-						// FIXME: Observables not supported
 					observableRef: ({ spawn }) =>
 						spawn(
 							fromObservable(() => interval(1000)),
 							{ id: "observableChild" },
 						),
-						*/
 				}),
 				states: {
 					present: {

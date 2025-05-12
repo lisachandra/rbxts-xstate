@@ -30,6 +30,7 @@ import { waitFor } from "@rbxts/xstate/out/utils/misc/waitFor";
 import { raise, sendTo } from "@rbxts/xstate/out/actions";
 import { setTimeout } from "@rbxts/luau-polyfill";
 import RegExp from "@rbxts/regexp";
+import { EMPTY, interval, of, take, throwError } from "@rbxts/rx";
 
 describe("promise logic (fromPromise)", () => {
 	it("should interpret a promise", async () => {
@@ -555,8 +556,6 @@ describe("transition function logic (fromTransition)", () => {
 	});
 });
 
-/*
-FIXME: Observables are unsupported
 describe("observable logic (fromObservable)", () => {
 	it("should interpret an observable", async () => {
 		const observableLogic = fromObservable(() => interval(10).pipe(take(4)));
@@ -600,13 +599,7 @@ describe("observable logic (fromObservable)", () => {
 		});
 
 		actor.start();
-		expect((spy as jest.Mock).mock.calls).toEqual(
-      [
-        [
-          "Observable error.",
-        ],
-      ]
-    );
+		expect((spy as jest.Mock).mock.calls).toEqual([["Observable error."]]);
 	});
 
 	it("should complete (observer .complete)", () => {
@@ -678,7 +671,6 @@ describe("eventObservable logic (fromEventObservable)", () => {
 		createActor(observableLogic).start();
 	});
 });
-*/
 
 describe("callback logic (fromCallback)", () => {
 	it("should interpret a callback", () => {
@@ -1196,8 +1188,6 @@ describe("composable actor logic", () => {
 		expect(logs).toEqual([42]);
 	});
 
-	/*
-	FIXME: Observables are unsupported
 	it("should work with observables", (_, done) => {
 		const logs: defined[] = [];
 
@@ -1208,7 +1198,7 @@ describe("composable actor logic", () => {
 					const s = actorLogic.transition(state, event, actorScope) as AnyObject;
 
 					if (s.status === "active") {
-						logs.push(s.context);
+						logs.push(s.context as defined);
 					}
 
 					return s;
@@ -1227,7 +1217,6 @@ describe("composable actor logic", () => {
 			},
 		});
 	});
-	*/
 
 	it("higher-level logic wrapping a machine should be able to persist a snapshot", () => {
 		const logged: defined[] = [];

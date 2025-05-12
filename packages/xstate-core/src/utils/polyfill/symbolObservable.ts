@@ -1,3 +1,9 @@
 import { Symbol } from "@rbxts/luau-polyfill";
 
-export const symbolObservable: unique symbol = Symbol("observable") as never;
+declare global {
+	interface SymbolConstructor {
+		observable: symbol;
+	}
+}
+
+export const symbolObservable: SymbolConstructor["observable"] = Symbol.for("observable") as never;

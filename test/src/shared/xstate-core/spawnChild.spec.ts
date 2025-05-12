@@ -8,6 +8,7 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
+import { interval } from "@rbxts/rx";
 // import { interval } from "rxjs";
 import {
 	ActorRefFrom,
@@ -56,8 +57,6 @@ describe("spawnChild action", () => {
 		expect(actor.getSnapshot().children.child).toBeDefined();
 	});
 
-	/*
-	FIXME: Observables not supported
 	it("should accept `syncSnapshot` option", (_, done) => {
 		const observableLogic = fromObservable(() => interval(10));
 		const observableMachine = createMachine({
@@ -94,7 +93,6 @@ describe("spawnChild action", () => {
 
 		observableService.start();
 	});
-	*/
 
 	it("should handle a dynamic id", () => {
 		const spy = jest.fn();

@@ -1,8 +1,6 @@
 packages:
     - packages/*
-    - test/packages/*
     - test
-patchedDependencies:
-    roblox-ts@3.0.0: patches/roblox-ts@3.0.0.patch
 overrides:
-    typescript: ^5.7.3
+    typescript: $typescript
+    roblox-ts@3.0.0>typescript: =5.5.3

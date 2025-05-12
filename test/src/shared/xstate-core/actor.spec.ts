@@ -36,6 +36,7 @@ import {
 import { setup } from "@rbxts/xstate/out/setup";
 import { sleep } from "test/env-utils";
 import { Error, Object, setTimeout } from "@rbxts/luau-polyfill";
+import { EMPTY, interval, map, of } from "@rbxts/rx";
 
 describe("spawning machines", () => {
 	const context = {
@@ -425,8 +426,6 @@ describe("spawning callbacks", () => {
 	});
 });
 
-/*
-FIXME: Observables are unsupported
 describe("spawning observables", () => {
 	it("should spawn an observable", (_, done) => {
 		const observableLogic = fromObservable(() => interval(10));
@@ -451,7 +450,9 @@ describe("spawning observables", () => {
 					on: {
 						"xstate.snapshot.int": {
 							target: "success",
-							guard: ({ event }) => (event as never as AnyObject).snapshot.context === 5,
+							guard: ({ event }) =>
+								(event as never as { snapshot: { context: number } }).snapshot
+									.context === 5,
 						},
 					},
 				},
@@ -488,7 +489,9 @@ describe("spawning observables", () => {
 						on: {
 							"xstate.snapshot.int": {
 								target: "success",
-								guard: ({ event }) => (event as never as AnyObject).snapshot.context === 5,
+								guard: ({ event }) =>
+									(event as never as { snapshot: { context: number } }).snapshot
+										.context === 5,
 							},
 						},
 					},
@@ -762,7 +765,6 @@ describe("spawning event observables", () => {
 		observableService.start();
 	});
 });
-*/
 
 describe("communicating with spawned actors", () => {
 	it("should treat an interpreter as an actor", (_, done) => {
@@ -1361,8 +1363,6 @@ describe("actors", () => {
 		}).never.toThrow();
 	});
 
-	/*
-	FIXME: Observables are unsupported
 	it("should receive done event from an immediately completed observable when self-initializing", () => {
 		const emptyObservable = fromObservable(() => EMPTY);
 
@@ -1394,7 +1394,6 @@ describe("actors", () => {
 
 		expect(service.getSnapshot().value).toBe("done");
 	});
-
 
 	it("should not restart a completed observable", () => {
 		let subscriptionCount = 0;
@@ -1441,7 +1440,6 @@ describe("actors", () => {
 		// Will be 2 if the event observable is resubscribed
 		expect(subscriptionCount).toBe(1);
 	});
-	*/
 
 	it("should be able to restart a spawned actor within a single macrostep", () => {
 		const actual: string[] = [];

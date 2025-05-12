@@ -39,6 +39,7 @@ import {
 	toPromise,
 } from "@rbxts/xstate";
 import { Array } from "@rbxts/luau-polyfill";
+import { from, InteropObservable } from "@rbxts/rx";
 
 function noop(_x: unknown) {
 	return;
@@ -806,8 +807,6 @@ describe("events", () => {
 });
 
 describe("interpreter", () => {
-	/*
-	FIXME: Observables not supported
 	it("should be convertible to Rx observable", () => {
 		const s = createActor(
 			createMachine({
@@ -819,15 +818,13 @@ describe("interpreter", () => {
 				},
 			}),
 		);
-		const state$ = from(s);
+		const state = from(s);
 
-		state$.subscribe(state => {
+		state.subscribe(state => {
 			((_val: number) => {})(state.context.count);
-			// ts-expect-error
 			((_val: string) => {})(state.context.count);
 		});
 	});
-	*/
 });
 
 describe("spawnChild action", () => {

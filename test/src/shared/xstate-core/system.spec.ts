@@ -31,6 +31,7 @@ import {
 } from "@rbxts/xstate";
 import { ActorSystem } from "@rbxts/xstate/out/createSystem";
 import { Error } from "@rbxts/luau-polyfill";
+import { of } from "@rbxts/rx";
 
 describe("system", () => {
 	it("should register an invoked actor", (_, done) => {
@@ -408,8 +409,6 @@ describe("system", () => {
 		(actor.system.get("reducer")! as { send(a: unknown): unknown }).send({ type: "a" });
 	});
 
-	/*
-	FIXME: Observables not supported
 	it("should be accessible in observable logic", () => {
 		expect.assertions(2);
 		const machine = createMachine({
@@ -455,7 +454,6 @@ describe("system", () => {
 
 		expect(actor.system.get("test")).toBeDefined();
 	});
-	*/
 
 	it("should be accessible in callback logic", () => {
 		expect.assertions(2);

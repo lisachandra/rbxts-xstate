@@ -60,5 +60,5 @@
 			"git add"
 		]
 	},
-	"packageManager": "pnpm@9.7.1"
+	"packageManager": "pnpm@10.10.0"
 }

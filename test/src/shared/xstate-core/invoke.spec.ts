@@ -38,6 +38,7 @@ import {
 import { sleep } from "test/env-utils";
 import { clearInterval, Error, setInterval, setTimeout } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
+import { interval, map, of, take } from "@rbxts/rx";
 
 const user = { name: "David" };
 
@@ -1898,8 +1899,6 @@ describe("invoke", () => {
 		});
 	});
 
-	/*
-	FIXME: Observables not supported
 	describe("with observables", () => {
 		it("should work with an infinite observable", (_, done) => {
 			interface Events {
@@ -2021,7 +2020,9 @@ describe("invoke", () => {
 							onError: {
 								target: "success",
 								guard: ({ context, event }) => {
-									expect((event.error as AnyObject).message).toEqual("some error");
+									expect((event.error as AnyObject).message).toEqual(
+										"some error",
+									);
 									return (
 										context.count === 4 &&
 										(event.error as AnyObject).message === "some error"
@@ -2082,10 +2083,7 @@ describe("invoke", () => {
 			createActor(machine).start();
 		});
 	});
-	*/
 
-	/*
-	FIXME: Observables not supported
 	describe("with event observables", () => {
 		it("should work with an infinite event observable", (_, done) => {
 			interface Events {
@@ -2211,7 +2209,9 @@ describe("invoke", () => {
 							onError: {
 								target: "success",
 								guard: ({ context, event }) => {
-									expect((event.error as AnyObject).message).toEqual("some error");
+									expect((event.error as AnyObject).message).toEqual(
+										"some error",
+									);
 									return (
 										context.count === 4 &&
 										(event.error as AnyObject).message === "some error"
@@ -2264,7 +2264,6 @@ describe("invoke", () => {
 			createActor(machine).start();
 		});
 	});
-	*/
 
 	describe("with logic", () => {
 		it("should work with actor logic", (_, done) => {

@@ -18,6 +18,7 @@ import {
 	fromTransition,
 } from "@rbxts/xstate/out/actors";
 import { setTimeout } from "@rbxts/luau-polyfill";
+import { of } from "@rbxts/rx";
 
 describe("input", () => {
 	it("should create a machine with input", () => {
@@ -158,8 +159,6 @@ describe("input", () => {
 		expect(transitionActor.getSnapshot().context).toEqual({ count: 42 });
 	});
 
-	/*
-	FIXME: Observables not supported
 	it("should create an observable actor with input", (_, done) => {
 		const observableLogic = fromObservable<{ count: number }, { count: number }>(({ input }) =>
 			of(input),
@@ -178,7 +177,6 @@ describe("input", () => {
 
 		observableActor.start();
 	});
-	*/
 
 	it("should create a callback actor with input", (_, done) => {
 		const callbackLogic = fromCallback(({ input }) => {
