@@ -556,7 +556,8 @@ describe("transition function logic (fromTransition)", () => {
 	});
 });
 
-describe("observable logic (fromObservable)", () => {
+// TODO: RXJS
+describe.skip("observable logic (fromObservable)", () => {
 	it("should interpret an observable", async () => {
 		const observableLogic = fromObservable(() => interval(10).pipe(take(4)));
 

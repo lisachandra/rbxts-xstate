@@ -1899,7 +1899,8 @@ describe("invoke", () => {
 		});
 	});
 
-	describe("with observables", () => {
+	// TODO: RXJS
+	describe.skip("with observables", () => {
 		it("should work with an infinite observable", (_, done) => {
 			interface Events {
 				type: "COUNT";

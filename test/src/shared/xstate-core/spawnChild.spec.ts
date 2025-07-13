@@ -58,7 +58,8 @@ describe("spawnChild action", () => {
 		expect(actor.getSnapshot().children.child).toBeDefined();
 	});
 
-	it("should accept `syncSnapshot` option", (_, done) => {
+	// TODO: RXJS
+	it.skip("should accept `syncSnapshot` option", (_, done) => {
 		const observableLogic = fromObservable(() => interval(10));
 		const observableMachine = createMachine({
 			id: "observable",

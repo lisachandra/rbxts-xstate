@@ -409,7 +409,8 @@ describe("system", () => {
 		(actor.system.get("reducer")! as { send(a: unknown): unknown }).send({ type: "a" });
 	});
 
-	it("should be accessible in observable logic", () => {
+	// TODO: RXJS
+	it.skip("should be accessible in observable logic", () => {
 		expect.assertions(2);
 		const machine = createMachine({
 			invoke: [
@@ -432,7 +433,8 @@ describe("system", () => {
 		expect(actor.system.get("test")).toBeDefined();
 	});
 
-	it("should be accessible in event observable logic", () => {
+	// TODO: RXJS
+	it.skip("should be accessible in event observable logic", () => {
 		expect.assertions(2);
 		const machine = createMachine({
 			invoke: [
