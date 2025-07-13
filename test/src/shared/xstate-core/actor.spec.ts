@@ -542,7 +542,7 @@ describe("spawning observables", () => {
 							target: "success",
 							guard: ({ context, event }) => {
 								return (
-									event.snapshot.context === 1 &&
+									(event.snapshot as AnyObject).context === 1 &&
 									context.observableRef.getSnapshot().context === 1
 								);
 							},

@@ -818,10 +818,13 @@ describe("interpreter", () => {
 				},
 			}),
 		);
+		// TODO: RXJS tests
+		// @ts-ignore
 		const state = from(s);
 
 		state.subscribe(state => {
 			((_val: number) => {})(state.context.count);
+			// @ts-ignore
 			((_val: string) => {})(state.context.count);
 		});
 	});

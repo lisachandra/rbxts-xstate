@@ -1916,7 +1916,8 @@ describe("invoke", () => {
 							src: fromObservable(() => interval(10)),
 							onSnapshot: {
 								actions: assign({
-									count: ({ event }) => event.snapshot.context,
+									count: ({ event }) =>
+										(event.snapshot as AnyObject).context as never,
 								}),
 							},
 						},
@@ -1961,7 +1962,8 @@ describe("invoke", () => {
 							src: fromObservable(() => interval(10).pipe(take(5))),
 							onSnapshot: {
 								actions: assign({
-									count: ({ event }) => event.snapshot.context,
+									count: ({ event }) =>
+										(event.snapshot as AnyObject).context as never,
 								}),
 							},
 							onDone: {
@@ -2014,7 +2016,8 @@ describe("invoke", () => {
 							),
 							onSnapshot: {
 								actions: assign({
-									count: ({ event }) => event.snapshot.context,
+									count: ({ event }) =>
+										(event.snapshot as AnyObject).context as never,
 								}),
 							},
 							onError: {

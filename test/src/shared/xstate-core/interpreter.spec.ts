@@ -1317,7 +1317,7 @@ describe("interpreter", () => {
 			let count: number;
 			const intervalService = createActor(intervalMachine).start();
 
-			expect(typeof intervalService.subscribe === "function").toBeTruthy();
+			expect(type(intervalService["subscribe" as never])).toBe("function");
 
 			intervalService.subscribe(
 				state => {
@@ -1335,9 +1335,11 @@ describe("interpreter", () => {
 			let count = 0;
 			const intervalService = createActor(intervalMachine).start();
 
-			const state$ = from(intervalService);
+			// TODO: RXJS tests
+			// @ts-ignore
+			const state0 = from(intervalService);
 
-			state$.subscribe({
+			state0.subscribe({
 				next: () => {
 					count += 1;
 				},
@@ -1579,8 +1581,8 @@ describe("interpreter", () => {
 		});
 
 		it("state.children should reference invoked child actors (observable)", (_, done) => {
-			const interval$ = interval(10);
-			const intervalLogic = fromObservable(() => interval$);
+			const interval0 = interval(10);
+			const intervalLogic = fromObservable(() => interval0);
 
 			const parentMachine = createMachine(
 				{

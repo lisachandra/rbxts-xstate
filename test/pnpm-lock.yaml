@@ -47,8 +47,8 @@ importers:
         specifier: ^0.2.1-ts.4
         version: 0.2.1-ts.4
       '@rbxts/rx':
-        specifier: D:\Github\Roblox\Packages\rbxts-rx\packages\rx
-        version: link:../../rbxts-rx/packages/rx
+        specifier: ^7.8.2-rc.1
+        version: 7.8.2-rc.1
       '@rbxts/services':
         specifier: ^1.0.0
         version: 1.5.5
@@ -145,6 +145,9 @@ packages:
 
   '@rbxts/regexp@0.2.1-ts.4':
     resolution: {integrity: sha512-UGHGq9xJ86ObpfY4bKkOeoBSQz6GpCwhfYteoxh5M15QFNS1MG8Ut9BPp8m3r8VOKftk94yY5X0hZ1bKYm439g==}
+
+  '@rbxts/rx@7.8.2-rc.1':
+    resolution: {integrity: sha512-h9oQUGonzE8mfXJt5vktm/TDs44w2NqDam7Y5OL8/9BiFfqh6FXvdqoWTtDgV0ZuvQSuh+4QTXPJL55VhVreWw==}
 
   '@rbxts/services@1.5.5':
     resolution: {integrity: sha512-Hu7QH2ecefS60zpakKG3T2vgABydoOJqpSG7nXr59wFAbPk/cA+OcsntYPHUWyHAat0VFGZ5jNZLTLdiqfssvg==}
@@ -522,6 +525,12 @@ snapshots:
       '@rbxts/react-vendor': 17.2.3
 
   '@rbxts/regexp@0.2.1-ts.4': {}
+
+  '@rbxts/rx@7.8.2-rc.1':
+    dependencies:
+      '@rbxts/luau-polyfill': 1.1.3
+      '@rbxts/regexp': 0.2.1-ts.4
+      '@rbxts/services': 1.5.5
 
   '@rbxts/services@1.5.5': {}
 

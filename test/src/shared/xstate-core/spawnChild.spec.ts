@@ -12,6 +12,7 @@ import { interval } from "@rbxts/rx";
 // import { interval } from "rxjs";
 import {
 	ActorRefFrom,
+	AnyObject,
 	createActor,
 	createMachine,
 	fromObservable,
@@ -74,7 +75,7 @@ describe("spawnChild action", () => {
 					on: {
 						"xstate.snapshot.int": {
 							target: "success",
-							guard: ({ event }) => event.snapshot.context === 5,
+							guard: ({ event }) => (event.snapshot as AnyObject).context === 5,
 						},
 					},
 				},

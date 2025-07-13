@@ -641,8 +641,8 @@ describe("observable logic (fromObservable)", () => {
 
 	it("should have reference to self", () => {
 		expect.assertions(1);
-		const observableLogic = fromObservable(({ self }) => {
-			expect(self.send).toBeDefined();
+		const observableLogic = fromObservable(({ self: myself }) => {
+			expect(myself).toHaveProperty("send");
 			return of(42);
 		});
 
@@ -663,8 +663,8 @@ describe("eventObservable logic (fromEventObservable)", () => {
 
 	it("should have reference to self", () => {
 		expect.assertions(1);
-		const observableLogic = fromEventObservable(({ self }) => {
-			expect(self.send).toBeDefined();
+		const observableLogic = fromEventObservable(({ self: myself }) => {
+			expect(myself).toHaveProperty("send");
 			return of({ type: "a" });
 		});
 
