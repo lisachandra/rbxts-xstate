@@ -21,7 +21,7 @@ export function resolveTarget(
 			return stateNode.machine.getStateNodeById(target);
 		}
 
-		const isInternalTarget = indexString(target, 0 + 1) === STATE_DELIMITER;
+		const isInternalTarget = indexString(target, 0) === STATE_DELIMITER;
 		// If internal target is defined on machine,
 		// do not include machine key on target
 		if (isInternalTarget && !stateNode.parent) {

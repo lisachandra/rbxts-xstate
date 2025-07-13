@@ -16,7 +16,7 @@ export function toStatePath(stateId: string | string[]): string[] {
 			// \
 			case 92:
 				// consume the next character
-				segment += indexString(stateId, i + 1 + 1);
+				segment += indexString(stateId, i + 1) ?? "";
 				// and skip over it
 				i++;
 				continue;
@@ -27,7 +27,7 @@ export function toStatePath(stateId: string | string[]): string[] {
 				i++;
 				continue;
 		}
-		segment += indexString(stateId, i + 1);
+		segment += indexString(stateId, i) ?? "";
 	}
 
 	result.push(segment);

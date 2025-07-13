@@ -18,7 +18,7 @@ import { indexString } from "@rbxts/xstate/out/utils/polyfill/indexString";
 import { callable } from "@rbxts/xstate/out/utils/polyfill/callable";
 
 const resolveSerializedStateValue = (machine: AnyStateMachine, serialized: string) =>
-	indexString(serialized, 0 + 1) === "{"
+	indexString(serialized, 0) === "{"
 		? machine.resolveState({
 				value: JSON.parse(serialized) as StateValue,
 				context: {},
