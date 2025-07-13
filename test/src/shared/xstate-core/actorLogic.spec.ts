@@ -28,7 +28,7 @@ import {
 } from "@rbxts/xstate/out/actors/index";
 import { waitFor } from "@rbxts/xstate/out/utils/misc/waitFor";
 import { raise, sendTo } from "@rbxts/xstate/out/actions";
-import { setTimeout } from "@rbxts/luau-polyfill";
+import { Object, setTimeout } from "@rbxts/luau-polyfill";
 import RegExp from "@rbxts/regexp";
 import { EMPTY, interval, of, take, throwError } from "@rbxts/rx";
 
@@ -203,7 +203,7 @@ describe("promise logic (fromPromise)", () => {
 		await new Promise(res => setTimeout(res, 5, undefined as never));
 
 		const rejectedPersistedState = actorRef.getPersistedSnapshot();
-		expect(rejectedPersistedState).toEqual({
+		expect(Object.assign(rejectedPersistedState, { trace: Object.None })).toEqual({
 			error: 1,
 			input: undefined,
 			output: undefined,
