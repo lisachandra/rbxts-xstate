@@ -44,8 +44,9 @@ describe("assertion helpers", () => {
 
 		actor.subscribe({
 			error: err => {
-				expect(err).toEqual(
-					`[Error: Expected event {"type":"count","value":42} to have type "greet"]`,
+				expect(err).toHaveProperty(
+					"message",
+					`Expected event {"value":42,"type":"count"} to have type "greet"`,
 				);
 
 				done();
@@ -97,8 +98,9 @@ describe("assertion helpers", () => {
 
 		actor.subscribe({
 			error: err => {
-				expect(err).toEqual(
-					`[Error: Expected event {"type":"count","value":42} to have one of types "greet", "notify"]`,
+				expect(err).toHaveProperty(
+					"message",
+					`Expected event {"value":42,"type":"count"} to have one of types "greet", "notify"`,
 				);
 
 				done();
