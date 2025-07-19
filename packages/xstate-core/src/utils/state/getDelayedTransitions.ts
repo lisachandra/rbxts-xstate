@@ -4,6 +4,7 @@ import { AnyStateNode, DelayedTransitionDefinition, MachineContext, EventObject 
 import { createAfterEvent } from "utils/event/createAfterEvent";
 import { formatTransition } from "./formatTransition";
 import { toArray } from "utils/polyfill/array";
+import { tonumber } from "utils/polyfill/tonumber";
 
 /** All delayed transitions from the config. */
 export function getDelayedTransitions(
@@ -41,6 +42,7 @@ export function getDelayedTransitions(
 			delay: resolvedDelay,
 		}));
 	});
+
 	return delayedTransitions.map(delayedTransition => {
 		const { delay } = delayedTransition;
 		return {

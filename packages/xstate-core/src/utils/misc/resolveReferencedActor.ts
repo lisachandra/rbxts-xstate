@@ -1,6 +1,7 @@
 import type { AnyStateMachine, InvokeConfig } from "../../types";
 import { Array } from "@rbxts/luau-polyfill";
 import RegExp from "@rbxts/regexp";
+import { tonumber } from "utils/polyfill/tonumber";
 
 export function resolveReferencedActor(machine: AnyStateMachine, src: string) {
 	const match = RegExp("^xstate\\.invoke\\.(\\d+)\\.(.*)").exec(src);

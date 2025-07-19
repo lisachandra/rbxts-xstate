@@ -13,7 +13,7 @@ export function getCandidates<TEvent extends EventObject>(
 		stateNode.transitions.get(receivedEventType) ||
 		Array.flatMap(
 			Array.sort(
-				[...Object.keys(stateNode.transitions)].filter(eventDescriptor => {
+				Object.keys(stateNode.transitions).filter(eventDescriptor => {
 					// check if transition is a wildcard transition,
 					// which matches any non-transient events
 					if (eventDescriptor === WILDCARD) {
