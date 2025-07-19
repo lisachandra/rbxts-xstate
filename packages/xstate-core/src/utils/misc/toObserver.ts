@@ -6,10 +6,13 @@ export function toObserver<T>(
 	errorHandler?: (error: any) => void,
 	completionHandler?: () => void,
 ): Observer<T> {
-	const isObserver = typeIs(nextHandler, "table") && is<Observer<T>>(nextHandler);
+	const isObserver =
+		typeIs(nextHandler, "table") &&
+		!("_isMockFunction" in nextHandler) &&
+		is<Observer<T>>(nextHandler);
 
 	return {
-		next: isObserver ? nextHandler.next! : nextHandler,
+		next: isObserver ? nextHandler.next! : (nextHandler as (value: T) => void),
 		error: isObserver ? nextHandler.error! : errorHandler,
 		complete: isObserver ? nextHandler.complete! : completionHandler,
 	};
