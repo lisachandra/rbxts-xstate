@@ -249,6 +249,7 @@ describe("event descriptors", () => {
 	});
 
 	it("should not match infix wildcards", () => {
+		const warnSpy = jest.spyOn(jest.globalEnv, "warn");
 		const machine = createMachine({
 			initial: "start",
 			states: {
@@ -270,7 +271,7 @@ describe("event descriptors", () => {
 
 		expect(actorRef1.getSnapshot().matches("success")).toBeFalsy();
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "event.*.bar.*" event.`,
 			],
@@ -284,6 +285,7 @@ describe("event descriptors", () => {
 				`Infix wildcards in transition events are not allowed. Check the "*.event.*" transition.`,
 			],
 		]);
+		warnSpy.mockReset();
 
 		const actorRef2 = createActor(machine).start();
 
@@ -291,7 +293,7 @@ describe("event descriptors", () => {
 
 		expect(actorRef2.getSnapshot().matches("success")).toBeFalsy();
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "event.*.bar.*" event.`,
 			],
@@ -305,6 +307,7 @@ describe("event descriptors", () => {
 	});
 
 	it("should not match wildcards as part of tokens", () => {
+		const warnSpy = jest.spyOn(jest.globalEnv, "warn");
 		const machine = createMachine({
 			initial: "start",
 			states: {
@@ -326,14 +329,15 @@ describe("event descriptors", () => {
 
 		expect(actorRef1.getSnapshot().matches("success")).toBeFalsy();
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
-			[
-				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "event*.bar.*" event.`,
-			],
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "*event.*" event.`,
 			],
+			[
+				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "event*.bar.*" event.`,
+			],
 		]);
+		warnSpy.mockReset();
 
 		const actorRef2 = createActor(machine).start();
 
@@ -341,12 +345,12 @@ describe("event descriptors", () => {
 
 		expect(actorRef2.getSnapshot().matches("success")).toBeFalsy();
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
-			[
-				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "event*.bar.*" event.`,
-			],
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "*event.*" event.`,
+			],
+			[
+				`Wildcards can only be the last token of an event descriptor (e.g., "event.*") or the entire event descriptor ("*"). Check the "event*.bar.*" event.`,
 			],
 		]);
 	});
