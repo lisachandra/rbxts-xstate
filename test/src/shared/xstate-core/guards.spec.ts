@@ -268,15 +268,14 @@ describe("guard conditions", () => {
 		actorRef.start();
 
 		actorRef.send({ type: "BAD_COND" });
+		const expectedErrorMessage = `Unable to evaluate guard 'doesNotExist' in transition for event 'BAD_COND' in state node '(machine).foo':
+Error: Guard 'doesNotExist' is not implemented.'.`;
 
-		expect((errorSpy as jest.Mock).mock.calls).toEqual([
-			[
-				[
-					`Error: Unable to evaluate guard 'doesNotExist' in transition for event 'BAD_COND' in state node '(machine).foo':
-      Guard 'doesNotExist' is not implemented.'.`,
-				],
-			],
-		]);
+		expect(errorSpy).toHaveBeenCalledTimes(1);
+		expect((errorSpy.mock.calls as any[][][])[0][0]).toHaveProperty(
+			"message",
+			expectedErrorMessage,
+		);
 	});
 });
 
@@ -904,14 +903,14 @@ describe("referencing guards", () => {
 		actorRef.start();
 		actorRef.send({ type: "EVENT" });
 
-		expect((errorSpy as jest.Mock).mock.calls).toEqual([
-			[
-				[
-					`Error: Unable to evaluate guard 'missing-predicate' in transition for event 'EVENT' in state node 'invalid-predicate.active':
-      Guard 'missing-predicate' is not implemented.'.`,
-				],
-			],
-		]);
+		const expectedErrorMessage = `Unable to evaluate guard 'missing-predicate' in transition for event 'EVENT' in state node 'invalid-predicate.active':
+Error: Guard 'missing-predicate' is not implemented.'.`;
+
+		expect(errorSpy).toHaveBeenCalledTimes(1);
+		expect((errorSpy.mock.calls as any[][][])[0][0]).toHaveProperty(
+			"message",
+			expectedErrorMessage,
+		);
 	});
 
 	it("should be possible to reference a composite guard that only uses inline predicates", () => {

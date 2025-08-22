@@ -11,6 +11,7 @@ import {
 	StateValue,
 	Subscribable,
 	Subscription,
+	toObserver,
 } from "@rbxts/xstate";
 import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 import Symbol from "@rbxts/xstate/out/utils/polyfill/symbol";
@@ -135,14 +136,7 @@ export class BehaviorSubjectStub<T> implements Subscribable<T> {
 		err: (err: any) => void = () => {},
 		complete: () => void = () => {},
 	): Subscription {
-		let observer: Observer<T>;
-
-		// Determine if the first argument is an Observer object or the next callback
-		if (typeIs(observerOrNext, "function")) {
-			observer = { next: observerOrNext, error: err, complete };
-		} else {
-			observer = observerOrNext;
-		}
+		let observer: Observer<T> = toObserver(observerOrNext, err, complete);
 
 		this._subscribers.push(observer);
 

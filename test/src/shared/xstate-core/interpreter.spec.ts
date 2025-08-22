@@ -59,6 +59,11 @@ const lightMachine = createMachine({
 });
 
 describe("interpreter", () => {
+	const warnSpy = jest.spyOn(jest.globalEnv, "warn");
+	beforeEach(() => {
+		warnSpy.mockReset();
+	});
+
 	describe("initial state", () => {
 		it(".getSnapshot returns the initial state", () => {
 			const machine = createMachine({
@@ -746,7 +751,7 @@ describe("interpreter", () => {
 			expect(service.getSnapshot().value).toEqual("yellow");
 		}
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				`Event "TIMER" was sent to stopped actor "x:27 (x:27)". This actor has already reached its final state, and will not transition.
       Event: {"type":"TIMER"}`,
@@ -1159,7 +1164,7 @@ describe("interpreter", () => {
 
 			setTimeout(() => {
 				expect(called).toBeFalsy();
-				expect((warn as jest.Mock).mock.calls).toEqual([
+				expect(warnSpy.mock.calls).toEqual([
 					[
 						`Event "TRIGGER" was sent to stopped actor "x:43 (x:43)". This actor has already reached its final state, and will not transition.
           Event: {"type":"TRIGGER"}`,

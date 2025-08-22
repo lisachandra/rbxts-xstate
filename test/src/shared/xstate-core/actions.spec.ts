@@ -36,6 +36,14 @@ import {
 import { trackEntries } from "./utils";
 import { Error, setTimeout } from "@rbxts/luau-polyfill";
 
+const logSpy = jest.spyOn(jest.globalEnv, "print");
+const warnSpy = jest.spyOn(jest.globalEnv, "warn");
+
+beforeEach(() => {
+	logSpy.mockReset();
+	warnSpy.mockReset();
+});
+
 describe("entry/exit actions", () => {
 	describe("State.actions", () => {
 		it("should return the entry actions of an initial state", () => {
@@ -2482,16 +2490,14 @@ describe("forwardTo()", () => {
 
 describe("log()", () => {
 	it("should log a string", () => {
-		const consoleSpy = print as jest.Mock;
 		const machine = createMachine({
 			entry: log("some string", "string label"),
 		});
-		createActor(machine, { logger: consoleSpy }).start();
-		expect(consoleSpy.mock.calls).toEqual([["string label", "some string"]]);
+		createActor(machine, { logger: logSpy as never }).start();
+		expect(logSpy.mock.calls).toEqual([["string label", "some string"]]);
 	});
 
 	it("should log an expression", () => {
-		const consoleSpy = print as jest.Mock;
 		const machine = createMachine({
 			context: {
 				count: 42,
@@ -2501,9 +2507,9 @@ describe("log()", () => {
 				"expr label",
 			),
 		});
-		createActor(machine, { logger: consoleSpy }).start();
+		createActor(machine, { logger: logSpy as never }).start();
 
-		expect(consoleSpy.mock.calls).toEqual([["expr label", "expr 42"]]);
+		expect(logSpy.mock.calls).toEqual([["expr label", "expr 42"]]);
 	});
 });
 
@@ -3212,7 +3218,7 @@ describe("sendTo", () => {
 		expect(spy1).toHaveBeenCalledTimes(0);
 		expect(spy2).toHaveBeenCalledTimes(0);
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				`"Event "PING" was sent to stopped actor "myChild (x:113)". This actor has already reached its final state, and will not transition.
 Event: {"type":"PING"}",`,
@@ -3283,7 +3289,7 @@ Event: {"type":"PING"}",`,
 		expect(spy1).toHaveBeenCalledTimes(0);
 		expect(spy2).toHaveBeenCalledTimes(0);
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				`"Event "PING" was sent to stopped actor "myChild (x:116)". This actor has already reached its final state, and will not transition.
 Event: {"type":"PING"}"`,
@@ -4231,7 +4237,7 @@ describe("actions", () => {
 
 		createActor(machine).start();
 
-		expect((warn as jest.Mock).mock.calls).toEqual([
+		expect(warnSpy.mock.calls).toEqual([
 			[
 				"Custom actions should not call `assign()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
 			],
