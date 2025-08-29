@@ -13,7 +13,7 @@
 		"changeset": "changeset",
 		"release": "pnpm -r publish --access=public && changeset tag",
 		"version": "changeset version",
-		"serve:rojo": "rojo serve test/default.project.json",
+		"serve:rojo": "rojo serve default.project.json",
 		"serve:snapshot": "python scripts/python/snapshot-server.py"
 	},
 	"repository": {

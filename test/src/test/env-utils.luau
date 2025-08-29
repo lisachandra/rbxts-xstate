@@ -5,7 +5,7 @@ local consoleSpies = require(game.TestService["console-spies"]).consoleSpies
 
 local EnvTestUtils = {}
 EnvTestUtils = {
-	silenceConsole = false,
+	silenceConsole = true,
 
 	clearConsoleMocks = function()
 		for _k, spy in consoleSpies do

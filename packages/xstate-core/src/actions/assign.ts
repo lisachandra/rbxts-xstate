@@ -140,7 +140,7 @@ export function assign<
 		| Assigner<LowInfer<TContext>, TExpressionEvent, TParams, TEvent, TActor>
 		| PropertyAssigner<LowInfer<TContext>, TExpressionEvent, TParams, TEvent, TActor>,
 ): ActionFunction<TContext, TExpressionEvent, TEvent, TParams, TActor, never, never, never, never> {
-	if (isDevelopment && executingCustomAction) {
+	if (isDevelopment && executingCustomAction[0]) {
 		warn(
 			"Custom actions should not call `assign()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
 		);

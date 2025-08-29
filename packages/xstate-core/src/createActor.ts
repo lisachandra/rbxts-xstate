@@ -14,7 +14,7 @@ import type { fromPromise } from "./actors/promise";
 import type { fromTransition } from "./actors/transition";
 import type { createMachine } from "./createMachine";
 
-export let executingCustomAction: boolean = false;
+export const executingCustomAction: [boolean] = [false];
 
 import type {
 	ActorScope,
@@ -211,10 +211,10 @@ export class Actor<TLogic extends AnyActorLogic>
 					}
 					const saveExecutingCustomAction = executingCustomAction;
 					try {
-						executingCustomAction = true;
+						executingCustomAction[0] = true;
 						action.exec(action.info, action.params);
 					} finally {
-						executingCustomAction = saveExecutingCustomAction;
+						executingCustomAction[0] = saveExecutingCustomAction[0];
 					}
 				};
 				if (this._processingStatus === ProcessingStatus.Running) {

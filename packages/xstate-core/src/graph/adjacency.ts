@@ -101,11 +101,9 @@ export function adjacencyMapToArray<TSnapshot, TEvent>(
 	}> = [];
 
 	for (const adjValue of Object.values(adjMap)) {
-		for (const transition of Object.values(
-			(adjValue as AdjacencyValue<TSnapshot, TEvent>).transitions,
-		)) {
+		for (const transition of Object.values(adjValue.transitions)) {
 			adjList.push({
-				state: (adjValue as AdjacencyValue<TSnapshot, TEvent>).state,
+				state: adjValue.state,
 				event: transition.event,
 				nextState: transition.state,
 			});

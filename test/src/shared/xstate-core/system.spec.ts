@@ -239,9 +239,11 @@ describe("system", () => {
 		actorRef.start();
 		actorRef.send({ type: "toggle" });
 
-		expect((errorSpy as jest.Mock).mock.calls).toEqual([
-			[["Error: Actor with system ID 'test' already exists."]],
-		]);
+		expect(errorSpy).toHaveBeenCalledTimes(1);
+		expect((errorSpy.mock.calls as any[][][])[0][0]).toHaveProperty(
+			"message",
+			`Actor with system ID 'test' already exists.`,
+		);
 	});
 
 	it("should cleanup stopped actors", () => {

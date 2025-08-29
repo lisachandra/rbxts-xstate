@@ -121,7 +121,7 @@ export function emit<
 	never,
 	TEmitted
 > {
-	if (isDevelopment && executingCustomAction) {
+	if (isDevelopment && executingCustomAction[0]) {
 		warn(
 			"Custom actions should not call `emit()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
 		);

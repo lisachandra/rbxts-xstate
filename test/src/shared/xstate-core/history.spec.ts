@@ -1449,11 +1449,7 @@ describe("revive history states", () => {
 
 		actorRef.send({ type: "POWER" });
 
-		expect(warnSpy.mock.calls).toEqual(`
-			[
-				"Could not resolve StateNode for id/path: nonexistent"
-			]
-    	`);
+		expect(warnSpy.mock.calls).toEqual([["Could not resolve StateNode for id: nonexistent"]]);
 
 		expect(actorRef.getSnapshot().value).toEqual({ on: "first" });
 

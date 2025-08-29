@@ -128,22 +128,22 @@ describe("die hard example", () => {
 					},
 				},
 				events: {
-					POUR_3_TO_5: () => {
+					POUR_3_TO_5: async () => {
 						jugs.transferThree();
 					},
-					POUR_5_TO_3: () => {
+					POUR_5_TO_3: async () => {
 						jugs.transferFive();
 					},
-					EMPTY_3: () => {
+					EMPTY_3: async () => {
 						jugs.emptyThree();
 					},
-					EMPTY_5: () => {
+					EMPTY_5: async () => {
 						jugs.emptyFive();
 					},
-					FILL_3: () => {
+					FILL_3: async () => {
 						jugs.fillThree();
 					},
-					FILL_5: () => {
+					FILL_5: async () => {
 						jugs.fillFive();
 					},
 				},

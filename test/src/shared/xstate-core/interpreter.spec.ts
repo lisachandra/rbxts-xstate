@@ -729,9 +729,9 @@ describe("interpreter", () => {
 		const snapshot = createActor(createMachine(invalidMachine)).getSnapshot();
 
 		expect(snapshot.status).toBe("error");
-
-		expect(snapshot.error).toEqual(
-			`[Error: Initial state node "create" not found on parent state node #fetchMachine]`,
+		expect(snapshot.error).toHaveProperty(
+			"message",
+			`Initial state node "create" not found on parent state node #fetchMachine`,
 		);
 	});
 
@@ -753,8 +753,7 @@ describe("interpreter", () => {
 
 		expect(warnSpy.mock.calls).toEqual([
 			[
-				`Event "TIMER" was sent to stopped actor "x:27 (x:27)". This actor has already reached its final state, and will not transition.
-      Event: {"type":"TIMER"}`,
+				`Event "TIMER" was sent to stopped actor "x:27 (x:27)". This actor has already reached its final state, and will not transition.\nEvent: {"type":"TIMER"}`,
 			],
 		]);
 	});
@@ -1888,5 +1887,5 @@ it("should notify the error observer for an errored logic when it gets subscribe
 		error: spy,
 	});
 
-	expect((spy as jest.Mock).mock.calls).toEqual([[["Error: error"]]]);
+	expect((spy.mock.calls as any[][][])[0][0]).toHaveProperty("message", "error");
 });

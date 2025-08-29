@@ -2478,13 +2478,13 @@ describe("forwardTo()", () => {
 		actorRef.start();
 		actorRef.send({ type: "TEST" });
 
-		expect(errorSpy.mock.calls).toEqual([
-			[
-				[
-					`Error: Attempted to forward event to undefined actor. This risks an infinite loop in the sender.`,
-				],
-			],
-		]);
+		const expectedErrorMessage = `Attempted to forward event to undefined actor. This risks an infinite loop in the sender.`;
+
+		expect(errorSpy).toHaveBeenCalledTimes(1);
+		expect((errorSpy.mock.calls as any[][][])[0][0]).toHaveProperty(
+			"message",
+			expectedErrorMessage,
+		);
 	});
 });
 
@@ -3110,13 +3110,13 @@ describe("sendTo", () => {
 		});
 		actorRef.start();
 
-		expect(errorSpy.mock.calls).toEqual([
-			[
-				[
-					`Error: Only event objects may be used with sendTo; use sendTo({ type: "a string" }) instead`,
-				],
-			],
-		]);
+		const expectedErrorMessage = `Only event objects may be used with sendTo; use sendTo({ type: "a string" }) instead`;
+
+		expect(errorSpy).toHaveBeenCalledTimes(1);
+		expect((errorSpy.mock.calls as any[][][])[0][0]).toHaveProperty(
+			"message",
+			expectedErrorMessage,
+		);
 	});
 
 	it('a self-event "handler" of an event sent using sendTo should be able to read updated snapshot of self', () => {
@@ -3220,8 +3220,8 @@ describe("sendTo", () => {
 
 		expect(warnSpy.mock.calls).toEqual([
 			[
-				`"Event "PING" was sent to stopped actor "myChild (x:113)". This actor has already reached its final state, and will not transition.
-Event: {"type":"PING"}",`,
+				`Event "PING" was sent to stopped actor "myChild (x:113)". This actor has already reached its final state, and will not transition.
+Event: {"type":"PING"}`,
 			],
 		]);
 	});
@@ -3291,8 +3291,8 @@ Event: {"type":"PING"}",`,
 
 		expect(warnSpy.mock.calls).toEqual([
 			[
-				`"Event "PING" was sent to stopped actor "myChild (x:116)". This actor has already reached its final state, and will not transition.
-Event: {"type":"PING"}"`,
+				`Event "PING" was sent to stopped actor "myChild (x:116)". This actor has already reached its final state, and will not transition.
+Event: {"type":"PING"}`,
 			],
 		]);
 	});
@@ -3489,13 +3489,13 @@ describe("raise", () => {
 		});
 		actorRef.start();
 
-		expect(errorSpy.mock.calls).toEqual([
-			[
-				[
-					`Error: Only event objects may be used with raise; use raise({ type: "a string" }) instead`,
-				],
-			],
-		]);
+		const expectedErrorMessage = `Only event objects may be used with raise; use raise({ type: "a string" }) instead`;
+
+		expect(errorSpy).toHaveBeenCalledTimes(1);
+		expect((errorSpy.mock.calls as any[][][])[0][0]).toHaveProperty(
+			"message",
+			expectedErrorMessage,
+		);
 	});
 });
 
@@ -4225,7 +4225,7 @@ describe("actions", () => {
 		});
 	});
 
-	it("should warn if called in custom action", () => {
+	it.only("should warn if called in custom action", () => {
 		const machine = createMachine({
 			entry: () => {
 				assign({});

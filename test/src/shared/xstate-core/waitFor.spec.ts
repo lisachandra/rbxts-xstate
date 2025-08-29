@@ -103,8 +103,9 @@ describe("waitFor", () => {
 			service.send({ type: "NEXT" });
 		}, 10);
 
-		await expect(waitFor(service, state => state.matches("never"))).rejects.toEqual(
-			`[Error: Actor terminated without satisfying predicate]`,
+		await expect(waitFor(service, state => state.matches("never"))).rejects.toHaveProperty(
+			"message",
+			"Actor terminated without satisfying predicate",
 		);
 	});
 
@@ -204,8 +205,9 @@ describe("waitFor", () => {
 		const service = createActor(machine).start();
 		service.send({ type: "NEXT" });
 
-		await expect(waitFor(service, state => state.matches("a"))).rejects.toEqual(
-			`[Error: Actor terminated without satisfying predicate]`,
+		await expect(waitFor(service, state => state.matches("a"))).rejects.toHaveProperty(
+			"message",
+			`Actor terminated without satisfying predicate`,
 		);
 	});
 

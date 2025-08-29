@@ -233,7 +233,7 @@ export function sendTo<
 		TUsedDelay
 	>,
 ): ActionFunction<TContext, TExpressionEvent, TEvent, TParams, never, never, never, TDelay, never> {
-	if (isDevelopment && executingCustomAction) {
+	if (isDevelopment && executingCustomAction[0]) {
 		warn(
 			"Custom actions should not call `sendTo()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
 		);
