@@ -1,9 +1,10 @@
-import { Error } from "@rbxts/luau-polyfill";
+import { Error, Object } from "@rbxts/luau-polyfill";
 import isDevelopment from "utils/polyfill/isDevelopment";
 import { AnyStateNode, AnyTransitionConfig, AnyTransitionDefinition } from "types";
 import { resolveTarget } from "./resolveTarget";
 import { toArray } from "utils/polyfill/array";
 import { normalizeTarget } from "utils/misc/normalizeTarget";
+import { JSON } from "utils/polyfill/json";
 
 export function formatTransition(
 	stateNode: AnyStateNode,

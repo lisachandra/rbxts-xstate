@@ -13,6 +13,7 @@ export function toArray<T>(value: readonly T[] | T | undefined): readonly T[] {
 	}
 	return toArrayStrict(value);
 }
+
 export function isArray(value: any): value is readonly any[] {
 	return Array.isArray(value);
 }

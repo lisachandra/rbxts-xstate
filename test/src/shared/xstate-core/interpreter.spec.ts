@@ -1106,7 +1106,7 @@ describe("interpreter", () => {
 	});
 
 	describe(".stop()", () => {
-		it("should cancel delayed events", (_, done) => {
+		it("should cancel delayed events", () => {
 			let called = false;
 			const delayedMachine = createMachine({
 				id: "delayed",
@@ -1130,13 +1130,12 @@ describe("interpreter", () => {
 
 			delayedService.stop();
 
-			setTimeout(() => {
-				expect(called).toBe(false);
-				done();
-			}, 60);
+			task.wait(0.1);
+
+			expect(called).toBe(false);
 		});
 
-		it("should not execute transitions after being stopped", (_, done) => {
+		it("should not execute transitions after being stopped", () => {
 			let called = false;
 
 			const testMachine = createMachine({
@@ -1161,16 +1160,14 @@ describe("interpreter", () => {
 
 			service.send({ type: "TRIGGER" });
 
-			setTimeout(() => {
-				expect(called).toBeFalsy();
-				expect(warnSpy.mock.calls).toEqual([
-					[
-						`Event "TRIGGER" was sent to stopped actor "x:43 (x:43)". This actor has already reached its final state, and will not transition.
-          Event: {"type":"TRIGGER"}`,
-					],
-				]);
-				done();
-			}, 10);
+			task.wait(0.1);
+
+			expect(called).toBeFalsy();
+			expect(warnSpy.mock.calls).toEqual([
+				[
+					`Event "TRIGGER" was sent to stopped actor "x:43 (x:43)". This actor has already reached its final state, and will not transition.\nEvent: {"type":"TRIGGER"}`,
+				],
+			]);
 		});
 
 		it("stopping a not-started interpreter should not crash", () => {

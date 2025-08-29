@@ -16,40 +16,44 @@ import { isInFinalState } from "utils/state/isInFinalState";
 import { isStateId } from "utils/state/isStateId";
 import { getAllStateNodes } from "utils/state/getAllStateNodes";
 import { AnyActorSystem } from "./createSystem";
-import type {
-	ActorLogic,
-	ActorScope,
-	AnyActorLogic,
-	AnyActorRef,
-	AnyActorScope,
-	AnyEventObject,
-	DoNotInfer,
-	Equals,
-	EventDescriptor,
-	EventObject,
-	HistoryValue,
-	InternalMachineImplementations,
-	MachineConfig,
-	MachineContext,
-	MachineImplementationsSimplified,
-	MetaObject,
-	ParameterizedObject,
-	ProvidedActor,
-	Snapshot,
-	SnapshotFrom,
-	StateMachineDefinition,
-	StateValue,
-	TransitionDefinition,
-	ResolvedStateMachineTypes,
-	StateSchema,
-	SnapshotStatus,
-	AnyObject,
+import {
+	type ActorLogic,
+	type ActorScope,
+	type AnyActorLogic,
+	type AnyActorRef,
+	type AnyActorScope,
+	type AnyEventObject,
+	type DoNotInfer,
+	type Equals,
+	type EventDescriptor,
+	type EventObject,
+	type HistoryValue,
+	type InternalMachineImplementations,
+	type MachineConfig,
+	type MachineContext,
+	type MachineImplementationsSimplified,
+	type MetaObject,
+	type ParameterizedObject,
+	type ProvidedActor,
+	type Snapshot,
+	type SnapshotFrom,
+	type StateMachineDefinition,
+	type StateValue,
+	type TransitionDefinition,
+	type ResolvedStateMachineTypes,
+	type StateSchema,
+	type SnapshotStatus,
+	type AnyObject,
+	type LowInfer,
+	ContextFactory,
+	AnyFunction,
 } from "./types";
 import { toStatePath } from "utils/misc/toStatePath";
 import { bind } from "utils/polyfill/bind";
 import { Array, Error, Object, String } from "@rbxts/luau-polyfill";
 import { __ACTOR_TYPE } from "constants";
 import { resolveReferencedActor } from "utils/misc/resolveReferencedActor";
+import { is } from "utils/polyfill/is";
 
 const STATE_IDENTIFIER = "#";
 
@@ -320,10 +324,11 @@ export class StateMachine<
 		internalQueue: AnyEventObject[],
 	): MachineSnapshot<TContext, TEvent, TChildren, TStateValue, TTag, TOutput, TMeta, TConfig> {
 		const { context } = this.config;
+		const isContextFn = !(typeIs(context, "table") && !("_isMockFunction" in context));
 
 		const preInitial = createMachineSnapshot(
 			{
-				context: !typeIs(context, "function") && context ? context : ({} as TContext),
+				context: (!isContextFn && context ? context : ({} as TContext)) as never,
 				_nodes: [this.root],
 				children: {},
 				status: "active",
@@ -331,9 +336,9 @@ export class StateMachine<
 			this,
 		);
 
-		if (typeIs(context, "function")) {
+		if (isContextFn && context) {
 			const assignment = (object: AnyObject) =>
-				context({
+				(context as never as AnyFunction)({
 					spawn: object.spawn,
 					input: (object.event as AnyObject).input,
 					self: object.self,

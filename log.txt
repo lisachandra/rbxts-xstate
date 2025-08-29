@@ -1,17 +1,85 @@
-  14:31:41.575  TestService macro parser is not supported anymore.  -  Studio
-  14:31:41.624  nil  -  Server - spec:11
-  14:31:42.197   PASS   xstate-core  xstate-core/actions.spec   -  Server - Writeable:33
-  14:31:42.287   PASS   xstate-core  xstate-core/activities.spec   -  Server - Writeable:33
-  14:31:42.968   PASS   xstate-core  xstate-core/actor.spec   -  Server - Writeable:33
-  14:31:43.485   PASS   xstate-core  xstate-core/actorLogic.spec   -  Server - Writeable:33
-  14:31:43.735   PASS   xstate-core  xstate-core/after.spec   -  Server - Writeable:33
-  14:31:43.886   PASS   xstate-core  xstate-core/assert.spec   -  Server - Writeable:33
-  14:31:44.017   PASS   xstate-core  xstate-core/assign.spec   -  Server - Writeable:33
-  14:31:44.100   PASS   xstate-core  xstate-core/clock.spec   -  Server - Writeable:33
-  14:31:44.185   PASS   xstate-core  xstate-core/deep.spec   -  Server - Writeable:33
-  14:31:44.268   PASS   xstate-core  xstate-core/definition.spec   -  Server - Writeable:33
-  14:31:44.368   PASS   xstate-core  xstate-core/deterministic.spec   -  Server - Writeable:33
-  14:31:44.467  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: oops
+  20:43:24.762  TestService macro parser is not supported anymore.  -  Studio
+  20:43:24.811  nil  -  Server - spec:11
+  20:43:26.040   FAIL   xstate-core  xstate-core/actions.spec   -  Server - Writeable:33
+  20:43:26.040    ● entry/exit actions › parallel states › should reenter parallel region when a parallel state gets reentered while targeting another region
+
+    expect(received).toEqual(expected) -- deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Table {
+
+      +   "exit: ready.devicesInfo",
+          "exit: ready.camera.on",
+          "exit: ready.camera",
+      -   "exit: ready.devicesInfo",
+          "exit: ready",
+          "enter: ready",
+      -   "enter: ready.devicesInfo",
+          "enter: ready.camera",
+          "enter: ready.camera.off",
+      +   "enter: ready.devicesInfo",
+        }
+      ReplicatedStorage.TS.shared.xstate-core.actions.spec:1159
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+
+  ● entry/exit actions › parallel states › should reenter parallel region when a parallel state is reentered while targeting another region
+
+    expect(received).toEqual(expected) -- deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Table {
+
+      +   "exit: ready.devicesInfo",
+          "exit: ready.camera.on",
+          "exit: ready.camera",
+      -   "exit: ready.devicesInfo",
+          "exit: ready",
+          "enter: ready",
+      -   "enter: ready.devicesInfo",
+          "enter: ready.camera",
+          "enter: ready.camera.off",
+      +   "enter: ready.devicesInfo",
+        }
+      ReplicatedStorage.TS.shared.xstate-core.actions.spec:1194
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+
+  ● actions › should call transition actions in document order for states at different levels of parallel regions
+
+    expect(received).toEqual(expected) -- deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Table {
+    -   "a1",
+        "b",
+    +   "a1",
+      }
+
+      ReplicatedStorage.TS.shared.xstate-core.actions.spec:3772
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+  -  Server - Writeable:33
+  20:43:26.138   PASS   xstate-core  xstate-core/activities.spec   -  Server - Writeable:33
+  20:43:26.772   PASS   xstate-core  xstate-core/actor.spec   -  Server - Writeable:33
+  20:43:27.289   PASS   xstate-core  xstate-core/actorLogic.spec   -  Server - Writeable:33
+  20:43:27.522   PASS   xstate-core  xstate-core/after.spec   -  Server - Writeable:33
+  20:43:27.655   PASS   xstate-core  xstate-core/assert.spec   -  Server - Writeable:33
+  20:43:27.789   PASS   xstate-core  xstate-core/assign.spec   -  Server - Writeable:33
+  20:43:27.872   PASS   xstate-core  xstate-core/clock.spec   -  Server - Writeable:33
+  20:43:27.955   PASS   xstate-core  xstate-core/deep.spec   -  Server - Writeable:33
+  20:43:28.022   PASS   xstate-core  xstate-core/definition.spec   -  Server - Writeable:33
+  20:43:28.121   PASS   xstate-core  xstate-core/deterministic.spec   -  Server - Writeable:33
+  20:43:28.221  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: oops
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:170
@@ -32,14 +100,14 @@ ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.polyfill.bind:17
 ReplicatedStorage.TS.shared.xstate-core.emit.spec:143
 ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl:26
   -  Server - src:285
-  14:31:44.467  Stack Begin  -  Studio
-  14:31:44.467  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.467  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.468  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.468  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.468  Stack End  -  Studio
-  14:31:44.518   PASS   xstate-core  xstate-core/emit.spec   -  Server - Writeable:33
-  14:31:44.556  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: no_infinite_loop_when_error_is_thrown_in_subscribe
+  20:43:28.221  Stack Begin  -  Studio
+  20:43:28.221  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:28.221  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:28.221  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:28.221  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:28.221  Stack End  -  Studio
+  20:43:28.272   PASS   xstate-core  xstate-core/emit.spec   -  Server - Writeable:33
+  20:43:28.322  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: no_infinite_loop_when_error_is_thrown_in_subscribe
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:304
@@ -58,13 +126,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.556  Stack Begin  -  Studio
-  14:31:44.556  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.557  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.557  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.557  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.557  Stack End  -  Studio
-  14:31:44.617  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: doesnt_crash_actor_when_error_is_thrown_in_subscribe
+  20:43:28.322  Stack Begin  -  Studio
+  20:43:28.322  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:28.322  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:28.322  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:28.323  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:28.323  Stack End  -  Studio
+  20:43:28.371  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: doesnt_crash_actor_when_error_is_thrown_in_subscribe
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:304
@@ -83,13 +151,14 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.617  Stack Begin  -  Studio
-  14:31:44.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.618  Stack End  -  Studio
-  14:31:44.618  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: doesnt_notify_error_listener_when_error_is_thrown_in_subscribe
+  20:43:28.371  Stack Begin  -  Studio
+  20:43:28.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:28.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:28.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:28.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:28.372  Stack End  -  Studio
+  20:43:29.771  TestService: on Server: waiting a total of 300.00 seconds for the test to end  -  Studio
+  20:43:33.371  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: doesnt_notify_error_listener_when_error_is_thrown_in_subscribe
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:304
@@ -108,13 +177,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.618  Stack Begin  -  Studio
-  14:31:44.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.619  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.619  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.619  Stack End  -  Studio
-  14:31:44.651  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: unhandled_sync_error_in_actor_start
+  20:43:33.372  Stack Begin  -  Studio
+  20:43:33.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.372  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.372  Stack End  -  Studio
+  20:43:33.404  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: unhandled_sync_error_in_actor_start
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:566 function _reportError
@@ -130,13 +199,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.651  Stack Begin  -  Studio
-  14:31:44.651  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.651  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.651  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.651  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.651  Stack End  -  Studio
-  14:31:44.684  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: unhandled_rejection_in_promise_actor_without_error_listener
+  20:43:33.404  Stack Begin  -  Studio
+  20:43:33.405  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.405  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.405  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.405  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.405  Stack End  -  Studio
+  20:43:33.421  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: unhandled_rejection_in_promise_actor_without_error_listener
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:566 function _reportError
@@ -152,13 +221,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.684  Stack Begin  -  Studio
-  14:31:44.684  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.684  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.684  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.684  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.685  Stack End  -  Studio
-  14:31:44.783  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: handled_sync_error_in_actor_start
+  20:43:33.421  Stack Begin  -  Studio
+  20:43:33.421  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.421  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.421  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.421  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.421  Stack End  -  Studio
+  20:43:33.521  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: handled_sync_error_in_actor_start
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:589 function _reportError
@@ -166,8 +235,8 @@ ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:594 function _e
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:473
 ReplicatedStorage.TS.include.RuntimeLib:209 function try
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:459 function start
-ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:258
-ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:262 function start
+ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:259
+ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:263 function start
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.polyfill.bind:17
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:460
 ReplicatedStorage.TS.include.RuntimeLib:195 function try
@@ -177,13 +246,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.784  Stack Begin  -  Studio
-  14:31:44.784  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.784  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.784  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.784  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.784  Stack End  -  Studio
-  14:31:44.867  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: handled_sync_error_in_actor_start
+  20:43:33.522  Stack Begin  -  Studio
+  20:43:33.522  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.522  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.522  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.522  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.522  Stack End  -  Studio
+  20:43:33.587  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: handled_sync_error_in_actor_start
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:589 function _reportError
@@ -191,8 +260,8 @@ ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:594 function _e
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:473
 ReplicatedStorage.TS.include.RuntimeLib:209 function try
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:459 function start
-ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:258
-ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:262 function start
+ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:259
+ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:263 function start
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.polyfill.bind:17
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:460
 ReplicatedStorage.TS.include.RuntimeLib:195 function try
@@ -202,13 +271,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.867  Stack Begin  -  Studio
-  14:31:44.867  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.867  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.867  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.868  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.868  Stack End  -  Studio
-  14:31:44.868  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: handled_sync_error_in_actor_start
+  20:43:33.587  Stack Begin  -  Studio
+  20:43:33.587  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.587  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.587  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.587  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.587  Stack End  -  Studio
+  20:43:33.588  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: handled_sync_error_in_actor_start
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:566 function _reportError
@@ -224,13 +293,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.868  Stack Begin  -  Studio
-  14:31:44.868  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.868  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.868  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.868  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.868  Stack End  -  Studio
-  14:31:44.934  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: unhandled_sync_error_in_actor_start
+  20:43:33.588  Stack Begin  -  Studio
+  20:43:33.588  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.588  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.588  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.588  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.588  Stack End  -  Studio
+  20:43:33.671  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: unhandled_sync_error_in_actor_start
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:566 function _reportError
@@ -246,13 +315,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.934  Stack Begin  -  Studio
-  14:31:44.934  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.934  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.934  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.934  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.934  Stack End  -  Studio
-  14:31:44.968  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_by_error_listener
+  20:43:33.671  Stack Begin  -  Studio
+  20:43:33.671  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.672  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.672  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.672  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.672  Stack End  -  Studio
+  20:43:33.704  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_by_error_listener
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:584
@@ -270,13 +339,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:44.968  Stack Begin  -  Studio
-  14:31:44.968  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:44.968  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:44.968  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:44.968  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:44.968  Stack End  -  Studio
-  14:31:45.000  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_when_not_every_observer_comes_with_an_error_listener
+  20:43:33.704  Stack Begin  -  Studio
+  20:43:33.704  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.704  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.705  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.705  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.705  Stack End  -  Studio
+  20:43:33.737  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_when_not_every_observer_comes_with_an_error_listener
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:589 function _reportError
@@ -292,13 +361,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:45.000  Stack Begin  -  Studio
-  14:31:45.000  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:45.001  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:45.001  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:45.001  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:45.001  Stack End  -  Studio
-  14:31:45.034  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_by_error_listener
+  20:43:33.737  Stack Begin  -  Studio
+  20:43:33.737  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.737  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.738  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.738  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.738  Stack End  -  Studio
+  20:43:33.770  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_by_error_listener
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:584
@@ -316,13 +385,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:45.034  Stack Begin  -  Studio
-  14:31:45.034  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:45.034  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:45.034  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:45.034  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:45.034  Stack End  -  Studio
-  14:31:45.034  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_when_not_every_observer_comes_with_an_error_listener
+  20:43:33.770  Stack Begin  -  Studio
+  20:43:33.771  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.771  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.771  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.771  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.771  Stack End  -  Studio
+  20:43:33.771  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: error_thrown_when_not_every_observer_comes_with_an_error_listener
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:589 function _reportError
@@ -338,13 +407,13 @@ ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-cir
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
 ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - src:285
-  14:31:45.035  Stack Begin  -  Studio
-  14:31:45.035  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:45.035  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:45.035  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:45.035  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:45.035  Stack End  -  Studio
-  14:31:45.051  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: oops
+  20:43:33.771  Stack Begin  -  Studio
+  20:43:33.771  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.771  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.772  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.772  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.772  Stack End  -  Studio
+  20:43:33.804  ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:285: ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src:644: Error: oops
 
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError:18 function reportUnhandledError
 ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createActor:170
@@ -365,34 +434,29 @@ ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.polyfill.bind:17
 ReplicatedStorage.TS.shared.xstate-core.errors.spec:866
 ReplicatedStorage.TS.include.RuntimeLib:148
   -  Server - src:285
-  14:31:45.051  Stack Begin  -  Studio
-  14:31:45.051  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:45.051  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:45.051  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:45.051  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:45.051  Stack End  -  Studio
-  14:31:45.083   ▶ {...}  -  Server - src:2043
-  14:31:45.084  Stack Begin  -  Studio
-  14:31:45.084  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
-  14:31:45.084  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:45.084  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:45.084  Stack End  -  Studio
-  14:31:45.117   FAIL   xstate-core  xstate-core/errors.spec   -  Server - Writeable:33
-  14:31:45.118    ● error handling › doesn't crash the actor when an error is thrown in subscribe
+  20:43:33.804  Stack Begin  -  Studio
+  20:43:33.804  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
+  20:43:33.805  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
+  20:43:33.805  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.805  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.805  Stack End  -  Studio
+  20:43:33.837   ▶ {...}  -  Server - src:2043
+  20:43:33.837  Stack Begin  -  Studio
+  20:43:33.837  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
+  20:43:33.837  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:33.837  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:33.837  Stack End  -  Studio
+  20:43:33.870   FAIL   xstate-core  xstate-core/errors.spec 5.518 s  -  Server - Writeable:33
+  20:43:33.870    ● error handling › doesn't crash the actor when an error is thrown in subscribe
 
-    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+    Exceeded timeout of 5000 ms for a test.
 
-      Expected number of calls: 1
-      Received number of calls: 2
-      ReplicatedStorage.TS.shared.xstate-core.errors.spec:169
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:353
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+      Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.
   -  Server - Writeable:33
-  14:31:45.251   PASS   xstate-core  xstate-core/event.spec   -  Server - Writeable:33
-  14:31:45.352   PASS   xstate-core  xstate-core/eventDescriptors.spec   -  Server - Writeable:33
-  14:31:45.435   FAIL   xstate-core  xstate-core/examples/6.16.spec   -  Server - Writeable:33
-  14:31:45.435    ● Example 6.16 › should go from {"A":"D","B":"F"} to {"A":"C","B":"F"} on 1, 5, 3
+  20:43:33.988   PASS   xstate-core  xstate-core/event.spec   -  Server - Writeable:33
+  20:43:34.072   PASS   xstate-core  xstate-core/eventDescriptors.spec   -  Server - Writeable:33
+  20:43:34.155   FAIL   xstate-core  xstate-core/examples/6.16.spec   -  Server - Writeable:33
+  20:43:34.155    ● Example 6.16 › should go from {"A":"D","B":"F"} to {"A":"C","B":"F"} on 1, 5, 3
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -410,8 +474,8 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:31:45.518   FAIL   xstate-core  xstate-core/examples/6.17.spec   -  Server - Writeable:33
-  14:31:45.519    ● Example 6.17 › should go from X to {"Y":{"A":"C","B":"G"}} on 2, back, 4
+  20:43:34.239   FAIL   xstate-core  xstate-core/examples/6.17.spec   -  Server - Writeable:33
+  20:43:34.239    ● Example 6.17 › should go from X to {"Y":{"A":"C","B":"G"}} on 2, back, 4
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -422,10 +486,10 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:31:45.618   PASS   xstate-core  xstate-core/examples/6.6.spec   -  Server - Writeable:33
-  14:31:45.701   PASS   xstate-core  xstate-core/examples/6.8.spec   -  Server - Writeable:33
-  14:31:45.818   FAIL   xstate-core  xstate-core/examples/6.9.spec   -  Server - Writeable:33
-  14:31:45.818    ● Example 6.9 › should go from {"A":"C"} to {"A":{"B":"E"}} on 4, 6, 1
+  20:43:34.339   PASS   xstate-core  xstate-core/examples/6.6.spec   -  Server - Writeable:33
+  20:43:34.438   PASS   xstate-core  xstate-core/examples/6.8.spec   -  Server - Writeable:33
+  20:43:34.554   FAIL   xstate-core  xstate-core/examples/6.9.spec   -  Server - Writeable:33
+  20:43:34.555    ● Example 6.9 › should go from {"A":"C"} to {"A":{"B":"E"}} on 4, 6, 1
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -463,13 +527,13 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:31:45.918   PASS   xstate-core  xstate-core/examples/cd.spec   -  Server - Writeable:33
-  14:31:46.084   PASS   xstate-core  xstate-core/final.spec   -  Server - Writeable:33
-  14:31:46.167   PASS   xstate-core  xstate-core/getNextSnapshot.spec   -  Server - Writeable:33
-  14:31:46.302   PASS   xstate-core  xstate-core/guards.spec   -  Server - Writeable:33
-  14:31:46.434   PASS   xstate-core  xstate-core/history.spec   -  Server - Writeable:33
-  14:31:46.518   FAIL   xstate-core  xstate-core/id.spec   -  Server - Writeable:33
-  14:31:46.518    ● State node IDs › should go from {"B":"foo"} to {"A":"foo"} on NEXT,NEXT
+  20:43:34.654   PASS   xstate-core  xstate-core/examples/cd.spec   -  Server - Writeable:33
+  20:43:34.821   PASS   xstate-core  xstate-core/final.spec   -  Server - Writeable:33
+  20:43:34.887   PASS   xstate-core  xstate-core/getNextSnapshot.spec   -  Server - Writeable:33
+  20:43:35.022   PASS   xstate-core  xstate-core/guards.spec   -  Server - Writeable:33
+  20:43:35.155   PASS   xstate-core  xstate-core/history.spec   -  Server - Writeable:33
+  20:43:35.222   FAIL   xstate-core  xstate-core/id.spec   -  Server - Writeable:33
+  20:43:35.223    ● State node IDs › should go from {"B":"foo"} to {"A":"foo"} on NEXT,NEXT
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -486,82 +550,27 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
-  ● State node IDs › should work with keys that have escaped periods
-
-    Invalid transition definition for state node '(machine).start':
-
-      Error: Child state 'foo..bar' does not exist on '(machine)'
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:37
-      ReplicatedStorage.TS.include.RuntimeLib:209 function try
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:33
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:47 function resolveTarget
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransition:15 function formatTransition
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:19
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:22 function formatTransitions
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:121 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:139
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:142 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:106 function constructor
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:42 function new
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createMachine:49 function createMachine
-      ReplicatedStorage.TS.shared.xstate-core.id.spec:127
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
-  ● State node IDs › should work with IDs that have escaped periods
-
-    Child state node '#foo..bar' does not exist on machine '(machine)'
-
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:272 function getStateNodeById
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:23
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:47 function resolveTarget
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransition:15 function formatTransition
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:19
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:22 function formatTransitions
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:121 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:139
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:142 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:106 function constructor
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:42 function new
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createMachine:49 function createMachine
-      ReplicatedStorage.TS.shared.xstate-core.id.spec:158
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
   ● State node IDs › should not treat escaped backslash as period's escape
 
-    Child state node '#some\\' does not exist on machine '(machine)'
+    expect(received).toEqual(expected) -- deep equality
 
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:272 function getStateNodeById
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:23
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:47 function resolveTarget
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransition:15 function formatTransition
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:19
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:22 function formatTransitions
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:121 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:139
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:142 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:106 function constructor
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:42 function new
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createMachine:49 function createMachine
-      ReplicatedStorage.TS.shared.xstate-core.id.spec:192
+      Expected: {"bar": "thing"}
+      Received: "foo"
+      ReplicatedStorage.TS.shared.xstate-core.id.spec:217
       ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:31:46.584  TestService: on Server: waiting a total of 300.00 seconds for the test to end  -  Studio
-  14:31:46.602   PASS   xstate-core  xstate-core/initial.spec   -  Server - Writeable:33
-  14:31:46.818   ▶ {...}  -  Server - src:2043
-  14:31:46.818  Stack Begin  -  Studio
-  14:31:46.818  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
-  14:31:46.818  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:46.818  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:46.818  Stack End  -  Studio
-  14:31:46.851   PASS   xstate-core  xstate-core/input.spec   -  Server - Writeable:33
-  14:31:46.984   FAIL   xstate-core  xstate-core/inspect.spec   -  Server - Writeable:33
-  14:31:46.984    ● inspect › can inspect communications between actors
+  20:43:35.305   PASS   xstate-core  xstate-core/initial.spec   -  Server - Writeable:33
+  20:43:35.521   ▶ {...}  -  Server - src:2043
+  20:43:35.521  Stack Begin  -  Studio
+  20:43:35.521  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
+  20:43:35.522  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:35.522  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:35.522  Stack End  -  Studio
+  20:43:35.556   PASS   xstate-core  xstate-core/input.spec   -  Server - Writeable:33
+  20:43:35.687   FAIL   xstate-core  xstate-core/inspect.spec   -  Server - Writeable:33
+  20:43:35.688    ● inspect › can inspect communications between actors
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -741,63 +750,17 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.shared.xstate-core.inspect.spec:287
       ReplicatedStorage.TS.include.RuntimeLib:148
   -  Server - Writeable:33
-  14:31:47.084   PASS   xstate-core  xstate-core/internalTransitions.spec   -  Server - Writeable:33
-  14:31:47.985   ▶ {...}  -  Server - src:285
-  14:31:47.985  Stack Begin  -  Studio
-  14:31:47.985  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:47.985  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:47.985  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.expect.src', Line 320 - function handleError  -  Studio
-  14:31:47.985  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.expect.src', Line 333 - function throwingMatcher  -  Studio
-  14:31:47.986  Script 'ReplicatedStorage.TS.shared.xstate-core.interpreter.spec', Line 1139  -  Studio
-  14:31:47.986  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:47.986  Stack End  -  Studio
-  14:31:53.183   ▶ {...}  -  Server - src:2043
-  14:31:53.183  Stack Begin  -  Studio
-  14:31:53.183  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
-  14:31:53.184  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:31:53.184  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:53.184  Stack End  -  Studio
-  14:31:53.202   FAIL   xstate-core  xstate-core/interpreter.spec 6.054 s  -  Server - Writeable:33
-  14:31:53.202    ● interpreter › .start() › should initialize the service
-
-    expect(jest.fn()).toHaveBeenCalled()
-
-      Expected number of calls: >= 1
-      Received number of calls:    0
-      ReplicatedStorage.TS.shared.xstate-core.interpreter.spec:1008
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
-  ● interpreter › .start() › should not reinitialize a started service
-
-    expect(jest.fn()).toHaveBeenCalledTimes(expected)
-
-      Expected number of calls: 1
-      Received number of calls: 0
-      ReplicatedStorage.TS.shared.xstate-core.interpreter.spec:1023
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
-  ● interpreter › .stop() › should not execute transitions after being stopped
-
-    Exceeded timeout of 5000 ms for a test.
-
-      Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.
-  -  Server - Writeable:33
-  14:31:53.284   PASS   xstate-core  xstate-core/invalid.spec   -  Server - Writeable:33
-  14:31:55.335   ▶ {...}  -  Server - src:285
-  14:31:55.335  Stack Begin  -  Studio
-  14:31:55.335  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-mock.src', Line 285  -  Studio - src:285
-  14:31:55.335  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2045  -  Studio - src:2045
-  14:31:55.336  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.expect.src', Line 320 - function handleError  -  Studio
-  14:31:55.336  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.expect.src', Line 333 - function throwingMatcher  -  Studio
-  14:31:55.336  Script 'ReplicatedStorage.TS.shared.xstate-core.invoke.spec', Line 3173  -  Studio
-  14:31:55.336  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:31:55.336  Stack End  -  Studio
-  14:32:00.351   FAIL   xstate-core  xstate-core/invoke.spec 7.002 s  -  Server - Writeable:33
-  14:32:00.351    ● invoke › invoke config defined as src containing a machine directly should register unique and predictable child in state
+  20:43:35.773   PASS   xstate-core  xstate-core/internalTransitions.spec   -  Server - Writeable:33
+  20:43:36.971   ▶ {...}  -  Server - src:2043
+  20:43:36.971  Stack Begin  -  Studio
+  20:43:36.972  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
+  20:43:36.972  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:36.972  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:36.972  Stack End  -  Studio
+  20:43:37.004   PASS   xstate-core  xstate-core/interpreter.spec   -  Server - Writeable:33
+  20:43:37.088   PASS   xstate-core  xstate-core/invalid.spec   -  Server - Writeable:33
+  20:43:39.205   FAIL   xstate-core  xstate-core/invoke.spec   -  Server - Writeable:33
+  20:43:39.205    ● invoke › invoke config defined as src containing a machine directly should register unique and predictable child in state
 
     stack overflow
 
@@ -805,25 +768,385 @@ ReplicatedStorage.TS.include.RuntimeLib:148
 
   ● invoke › xstate.done.actor events should have unique names when invokee is a machine with an id property
 
-    Exceeded timeout of 5000 ms for a test.
+    expect(received).toEqual(expected) -- deep equality
 
-      Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.
+    - Expected  - 4
+    + Received  + 4
+
+      Table {
+        Table {
+
+      -     "actorId": "0.(machine).first.fetch",
+      -     "type": "xstate.done.actor.0.(machine).first.fetch",
+      -   },
+      -   Table {
+            "actorId": "0.(machine).second.fetch",
+            "type": "xstate.done.actor.0.(machine).second.fetch",
+      +   },
+      +   Table {
+      +     "actorId": "0.(machine).first.fetch",
+      +     "type": "xstate.done.actor.0.(machine).first.fetch",
+          },
+        }
+      ReplicatedStorage.TS.shared.xstate-core.invoke.spec:3172
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:353
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:32:00.417   PASS   xstate-core  xstate-core/json.spec   -  Server - Writeable:33
-  14:32:00.470   ▶ {...}  -  Server - src:2043
-  14:32:00.470  Stack Begin  -  Studio
-  14:32:00.471  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
-  14:32:00.471  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:32:00.471  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:32:00.471  Stack End  -  Studio
-  14:32:00.471   ▶ {...}  -  Server - src:2043
-  14:32:00.471  Stack Begin  -  Studio
-  14:32:00.471  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
-  14:32:00.471  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:32:00.471  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:32:00.472  Stack End  -  Studio
-  14:32:00.501   FAIL   xstate-core  xstate-core/logger.spec   -  Server - Writeable:33
-  14:32:00.501    ● logger › system logger should be default logger for actors (spawned from machine)
+  20:43:39.304   FAIL   xstate-core  xstate-core/json.spec   -  Server - Writeable:33
+  20:43:39.304    ● json › should serialize the machine
+
+    expect(received).toMatchSnapshot()
+
+      Snapshot name: `json should serialize the machine 1`
+      New snapshot was not written. The update flag must be explicitly passed to write a new snapshot.
+      This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
+      Received:
+      {
+        "entry": {},
+        "exit": {},
+        "history": false,
+        "id": "(machine)",
+        "initial": {
+          "actions": {},
+          "source": "#(machine)",
+          "target": {
+            "#(machine).foo",
+          },
+        },
+        "invoke": {
+          {
+            "id": "invokeId",
+            "src": "invokeSrc",
+            "type": "xstate.invoke",
+          },
+        },
+        "key": "(machine)",
+        "on": {},
+        "order": -1,
+        "output": {
+          "result": 42,
+        },
+        "states": {
+          "bar": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).bar",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).bar",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "bar",
+            "on": {},
+            "order": 9,
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "atomic",
+            "version": "1.0.0",
+          },
+          "foo": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).foo",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).foo",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "foo",
+            "on": {},
+            "order": 10,
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "atomic",
+            "version": "1.0.0",
+          },
+          "testActions": {
+            "entry": {
+              {
+                "type": "stringActionType",
+              },
+              {
+                "type": "objectActionType",
+              },
+              {
+                "other": "any",
+                "type": "objectActionTypeWithExec",
+              },
+              {
+                "type": "function: 0x482990f9addccc58",
+              },
+              {
+                "type": "xstate.assign",
+              },
+              {
+                "type": "xstate.assign",
+              },
+              {
+                "type": "xstate.raise",
+              },
+            },
+            "exit": {
+              {
+                "type": "xstate.cancel",
+              },
+            },
+            "history": false,
+            "id": "(machine).testActions",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testActions",
+              "target": {},
+            },
+            "invoke": {
+              {
+                "id": "invokeId",
+                "src": "invokeSrc",
+                "type": "xstate.invoke",
+              },
+            },
+            "key": "testActions",
+            "on": {
+              "TO_FOO": {
+                {
+                  "actions": {},
+                  "eventType": "TO_FOO",
+                  "reenter": false,
+                  "source": "#(machine).testActions",
+                  "target": {
+                    "#(machine).foo",
+                    "#(machine).bar",
+                  },
+                },
+              },
+              "xstate.after.1000.(machine).testActions": {
+                {
+                  "actions": {},
+                  "delay": 1000,
+                  "event": "xstate.after.1000.(machine).testActions",
+                  "eventType": "xstate.after.1000.(machine).testActions",
+                  "reenter": false,
+                  "source": "#(machine).testActions",
+                  "target": {
+                    "#(machine).bar",
+                  },
+                },
+              },
+            },
+            "order": 6,
+            "states": {},
+            "tags": {},
+            "transitions": {
+              {
+                "actions": {},
+                "eventType": "TO_FOO",
+                "reenter": false,
+                "source": "#(machine).testActions",
+                "target": {
+                  "#(machine).foo",
+                  "#(machine).bar",
+                },
+              },
+              {
+                "actions": {},
+                "delay": 1000,
+                "event": "xstate.after.1000.(machine).testActions",
+                "eventType": "xstate.after.1000.(machine).testActions",
+                "reenter": false,
+                "source": "#(machine).testActions",
+                "target": {
+                  "#(machine).bar",
+                },
+              },
+            },
+            "type": "atomic",
+            "version": "1.0.0",
+          },
+          "testFinal": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).testFinal",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testFinal",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "testFinal",
+            "on": {},
+            "order": 8,
+            "output": {
+              "something": "else",
+            },
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "final",
+            "version": "1.0.0",
+          },
+          "testHistory": {
+            "entry": {},
+            "exit": {},
+            "history": "deep",
+            "id": "(machine).testHistory",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testHistory",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "testHistory",
+            "on": {},
+            "order": 7,
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "history",
+            "version": "1.0.0",
+          },
+          "testParallel": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).testParallel",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testParallel",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "testParallel",
+            "on": {},
+            "order": 1,
+            "states": {
+              "one": {
+                "entry": {},
+                "exit": {},
+                "history": false,
+                "id": "(machine).testParallel.one",
+                "initial": {
+                  "actions": {},
+                  "source": "#(machine).testParallel.one",
+                  "target": {
+                    "#(machine).testParallel.one.inactive",
+                  },
+                },
+                "invoke": {},
+                "key": "one",
+                "on": {},
+                "order": 2,
+                "states": {
+                  "inactive": {
+                    "entry": {},
+                    "exit": {},
+                    "history": false,
+                    "id": "(machine).testParallel.one.inactive",
+                    "initial": {
+                      "actions": {},
+                      "source": "#(machine).testParallel.one.inactive",
+                      "target": {},
+                    },
+                    "invoke": {},
+                    "key": "inactive",
+                    "on": {},
+                    "order": 3,
+                    "states": {},
+                    "tags": {},
+                    "transitions": {},
+                    "type": "atomic",
+                    "version": "1.0.0",
+                  },
+                },
+                "tags": {},
+                "transitions": {},
+                "type": "compound",
+                "version": "1.0.0",
+              },
+              "two": {
+                "entry": {},
+                "exit": {},
+                "history": false,
+                "id": "(machine).testParallel.two",
+                "initial": {
+                  "actions": {},
+                  "source": "#(machine).testParallel.two",
+                  "target": {
+                    "#(machine).testParallel.two.inactive",
+                  },
+                },
+                "invoke": {},
+                "key": "two",
+                "on": {},
+                "order": 4,
+                "states": {
+                  "inactive": {
+                    "entry": {},
+                    "exit": {},
+                    "history": false,
+                    "id": "(machine).testParallel.two.inactive",
+                    "initial": {
+                      "actions": {},
+                      "source": "#(machine).testParallel.two.inactive",
+                      "target": {},
+                    },
+                    "invoke": {},
+                    "key": "inactive",
+                    "on": {},
+                    "order": 5,
+                    "states": {},
+                    "tags": {},
+                    "transitions": {},
+                    "type": "atomic",
+                    "version": "1.0.0",
+                  },
+                },
+                "tags": {},
+                "transitions": {},
+                "type": "compound",
+                "version": "1.0.0",
+              },
+            },
+            "tags": {},
+            "transitions": {},
+            "type": "parallel",
+            "version": "1.0.0",
+          },
+        },
+        "tags": {},
+        "transitions": {},
+        "type": "compound",
+        "version": "1.0.0",
+      }
+      ReplicatedStorage.TS.shared.xstate-core.json.spec:109
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+  -  Server - Writeable:33
+  20:43:39.304   › 1 snapshot failed.  -  Server - Writeable:33
+  20:43:39.305   › 1 snapshot obsolete.  -  Server - Writeable:33
+  20:43:39.305  	 • json > should serialize the machine 1  -  Server - Writeable:33
+  20:43:39.354   ▶ {...}  -  Server - src:2043
+  20:43:39.354  Stack Begin  -  Studio
+  20:43:39.354  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
+  20:43:39.354  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:39.355  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:39.355  Stack End  -  Studio
+  20:43:39.355   ▶ {...}  -  Server - src:2043
+  20:43:39.355  Stack Begin  -  Studio
+  20:43:39.355  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
+  20:43:39.355  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:39.355  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:39.355  Stack End  -  Studio
+  20:43:39.387   FAIL   xstate-core  xstate-core/logger.spec   -  Server - Writeable:33
+  20:43:39.387    ● logger › system logger should be default logger for actors (spawned from machine)
 
     expect.assertions(1)
 
@@ -834,8 +1157,8 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:32:00.617   FAIL   xstate-core  xstate-core/machine.spec   -  Server - Writeable:33
-  14:32:00.617    ● machine › machine.states › should properly register machine states
+  20:43:39.504   FAIL   xstate-core  xstate-core/machine.spec   -  Server - Writeable:33
+  20:43:39.504    ● machine › machine.states › should properly register machine states
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -892,12 +1215,12 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:32:00.701   PASS   xstate-core  xstate-core/match.spec   -  Server - Writeable:33
-  14:32:00.784   PASS   xstate-core  xstate-core/meta.spec   -  Server - Writeable:33
-  14:32:00.868   PASS   xstate-core  xstate-core/microstep.spec   -  Server - Writeable:33
-  14:32:00.951   PASS   xstate-core  xstate-core/multiple.spec   -  Server - Writeable:33
-  14:32:01.034   FAIL   xstate-core  xstate-core/order.spec   -  Server - Writeable:33
-  14:32:01.034    ● document order › should specify the correct document order for each state node
+  20:43:39.605   PASS   xstate-core  xstate-core/match.spec   -  Server - Writeable:33
+  20:43:39.704   PASS   xstate-core  xstate-core/meta.spec   -  Server - Writeable:33
+  20:43:39.788   PASS   xstate-core  xstate-core/microstep.spec   -  Server - Writeable:33
+  20:43:39.872   PASS   xstate-core  xstate-core/multiple.spec   -  Server - Writeable:33
+  20:43:39.954   FAIL   xstate-core  xstate-core/order.spec   -  Server - Writeable:33
+  20:43:39.954    ● document order › should specify the correct document order for each state node
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -966,13 +1289,13 @@ ReplicatedStorage.TS.include.RuntimeLib:148
           "thirteen",
           13,
 
-      ReplicatedStorage.TS.shared.xstate-core.order.spec:90
+      ReplicatedStorage.TS.shared.xstate-core.order.spec:89
       ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:32:01.200   FAIL   xstate-core  xstate-core/parallel.spec   -  Server - Writeable:33
-  14:32:01.201    ● parallel states › should go from {"bold":"off","underline":"on","italics":"off","list":"bullets"} to {"bold":"on","underline":"on","italics":"on","list":"bullets"} on TOGGLE_BOLD, TOGGLE_ITALICS
+  20:43:40.088   FAIL   xstate-core  xstate-core/parallel.spec   -  Server - Writeable:33
+  20:43:40.089    ● parallel states › should go from {"bold":"off","underline":"on","italics":"off","list":"bullets"} to {"bold":"on","underline":"on","italics":"on","list":"bullets"} on TOGGLE_BOLD, TOGGLE_ITALICS
 
     expect(received).toEqual(expected) -- deep equality
 
@@ -993,9 +1316,9 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
   -  Server - Writeable:33
-  14:32:01.451   PASS   xstate-core  xstate-core/predictableExec.spec   -  Server - Writeable:33
-  14:32:01.583   FAIL   xstate-core  xstate-core/rehydration.spec   -  Server - Writeable:33
-  14:32:01.584    ● rehydration › should be able to stop a rehydrated child
+  20:43:40.355   PASS   xstate-core  xstate-core/predictableExec.spec   -  Server - Writeable:33
+  20:43:40.488   FAIL   xstate-core  xstate-core/rehydration.spec   -  Server - Writeable:33
+  20:43:40.488    ● rehydration › should be able to stop a rehydrated child
 
     expect(received).toBe(expected) -- Object.is equality
 
@@ -1004,48 +1327,113 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.shared.xstate-core.rehydration.spec:217
       ReplicatedStorage.TS.include.RuntimeLib:148
   -  Server - Writeable:33
-  14:32:01.651   PASS   xstate-core  xstate-core/resolve.spec   -  Server - Writeable:33
-  14:32:01.851   PASS   xstate-core  xstate-core/setup.types.spec   -  Server - Writeable:33
-  14:32:01.918   PASS   xstate-core  xstate-core/spawn.spec   -  Server - Writeable:33
-  14:32:02.000   PASS   xstate-core  xstate-core/spawn.types.spec   -  Server - Writeable:33
-  14:32:02.084   PASS   xstate-core  xstate-core/spawnChild.spec   -  Server - Writeable:33
-  14:32:02.184   PASS   xstate-core  xstate-core/state.spec   -  Server - Writeable:33
-  14:32:02.284   PASS   xstate-core  xstate-core/stateIn.spec   -  Server - Writeable:33
-  14:32:02.428   ▶ {...}  -  Server - src:2043
-  14:32:02.428  Stack Begin  -  Studio
-  14:32:02.428  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
-  14:32:02.428  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:32:02.429  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:32:02.429  Stack End  -  Studio
-  14:32:02.451   PASS   xstate-core  xstate-core/system.spec   -  Server - Writeable:33
-  14:32:02.534   PASS   xstate-core  xstate-core/tags.spec   -  Server - Writeable:33
-  14:32:02.617   ▶ {...}  -  Server - src:2043
-  14:32:02.617  Stack Begin  -  Studio
-  14:32:02.617  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
-  14:32:02.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
-  14:32:02.618  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
-  14:32:02.618  Stack End  -  Studio
-  14:32:02.651   PASS   xstate-core  xstate-core/toPromise.spec   -  Server - Writeable:33
-  14:32:02.751   PASS   xstate-core  xstate-core/transient.spec   -  Server - Writeable:33
-  14:32:02.901   PASS   xstate-core  xstate-core/transition.spec   -  Server - Writeable:33
-  14:32:02.985   PASS   xstate-core  xstate-core/typeHelpers.spec   -  Server - Writeable:33
-  14:32:03.328   PASS   xstate-core  xstate-core/types.spec   -  Server - Writeable:33
-  14:32:03.551   PASS   xstate-core  xstate-core/waitFor.spec   -  Server - Writeable:33
-  14:32:03.553  Summary of all failing tests  -  Server - Writeable:33
-  14:32:03.553   FAIL  xstate-core/errors.spec
-  ● error handling › doesn't crash the actor when an error is thrown in subscribe
+  20:43:40.571   PASS   xstate-core  xstate-core/resolve.spec   -  Server - Writeable:33
+  20:43:40.785   PASS   xstate-core  xstate-core/setup.types.spec   -  Server - Writeable:33
+  20:43:40.854   PASS   xstate-core  xstate-core/spawn.spec   -  Server - Writeable:33
+  20:43:40.937   PASS   xstate-core  xstate-core/spawn.types.spec   -  Server - Writeable:33
+  20:43:41.038   PASS   xstate-core  xstate-core/spawnChild.spec   -  Server - Writeable:33
+  20:43:41.138   PASS   xstate-core  xstate-core/state.spec   -  Server - Writeable:33
+  20:43:41.238   PASS   xstate-core  xstate-core/stateIn.spec   -  Server - Writeable:33
+  20:43:41.385   ▶ {...}  -  Server - src:2043
+  20:43:41.385  Stack Begin  -  Studio
+  20:43:41.385  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
+  20:43:41.386  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:41.386  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:41.386  Stack End  -  Studio
+  20:43:41.405   PASS   xstate-core  xstate-core/system.spec   -  Server - Writeable:33
+  20:43:41.488   PASS   xstate-core  xstate-core/tags.spec   -  Server - Writeable:33
+  20:43:41.570   ▶ {...}  -  Server - src:2043
+  20:43:41.570  Stack Begin  -  Studio
+  20:43:41.570  Script 'ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-runtime.src', Line 2043  -  Studio - src:2043
+  20:43:41.570  Script 'ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.misc.reportUnhandledError', Line 27  -  Studio
+  20:43:41.570  Script 'ReplicatedStorage.TS.node_modules.@rbxts.luau-polyfill.out.Timers.makeTimerImpl', Line 26  -  Studio
+  20:43:41.570  Stack End  -  Studio
+  20:43:41.604   PASS   xstate-core  xstate-core/toPromise.spec   -  Server - Writeable:33
+  20:43:41.704   PASS   xstate-core  xstate-core/transient.spec   -  Server - Writeable:33
+  20:43:41.855   PASS   xstate-core  xstate-core/transition.spec   -  Server - Writeable:33
+  20:43:41.954   PASS   xstate-core  xstate-core/typeHelpers.spec   -  Server - Writeable:33
+  20:43:42.331   PASS   xstate-core  xstate-core/types.spec   -  Server - Writeable:33
+  20:43:42.538   PASS   xstate-core  xstate-core/waitFor.spec   -  Server - Writeable:33
+  20:43:42.540  Summary of all failing tests  -  Server - Writeable:33
+  20:43:42.540   FAIL  xstate-core/actions.spec
+  ● entry/exit actions › parallel states › should reenter parallel region when a parallel state gets reentered while targeting another region
 
-    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+    expect(received).toEqual(expected) -- deep equality
 
-      Expected number of calls: 1
-      Received number of calls: 2
-      ReplicatedStorage.TS.shared.xstate-core.errors.spec:169
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:353
+    - Expected  - 2
+    + Received  + 2
+
+      Table {
+
+      +   "exit: ready.devicesInfo",
+          "exit: ready.camera.on",
+          "exit: ready.camera",
+      -   "exit: ready.devicesInfo",
+          "exit: ready",
+          "enter: ready",
+      -   "enter: ready.devicesInfo",
+          "enter: ready.camera",
+          "enter: ready.camera.off",
+      +   "enter: ready.devicesInfo",
+        }
+      ReplicatedStorage.TS.shared.xstate-core.actions.spec:1159
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+
+  ● entry/exit actions › parallel states › should reenter parallel region when a parallel state is reentered while targeting another region
+
+    expect(received).toEqual(expected) -- deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Table {
+
+      +   "exit: ready.devicesInfo",
+          "exit: ready.camera.on",
+          "exit: ready.camera",
+      -   "exit: ready.devicesInfo",
+          "exit: ready",
+          "enter: ready",
+      -   "enter: ready.devicesInfo",
+          "enter: ready.camera",
+          "enter: ready.camera.off",
+      +   "enter: ready.devicesInfo",
+        }
+      ReplicatedStorage.TS.shared.xstate-core.actions.spec:1194
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+
+  ● actions › should call transition actions in document order for states at different levels of parallel regions
+
+    expect(received).toEqual(expected) -- deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Table {
+    -   "a1",
+        "b",
+    +   "a1",
+      }
+
+      ReplicatedStorage.TS.shared.xstate-core.actions.spec:3772
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.553   FAIL  xstate-core/examples/6.16.spec
+  20:43:42.540   FAIL  xstate-core/errors.spec 5.518 s
+  ● error handling › doesn't crash the actor when an error is thrown in subscribe
+
+    Exceeded timeout of 5000 ms for a test.
+
+      Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.
+
+  -  Server - Writeable:33
+  20:43:42.541   FAIL  xstate-core/examples/6.16.spec
   ● Example 6.16 › should go from {"A":"D","B":"F"} to {"A":"C","B":"F"} on 1, 5, 3
 
     expect(received).toEqual(expected) -- deep equality
@@ -1065,7 +1453,7 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.553   FAIL  xstate-core/examples/6.17.spec
+  20:43:42.541   FAIL  xstate-core/examples/6.17.spec
   ● Example 6.17 › should go from X to {"Y":{"A":"C","B":"G"}} on 2, back, 4
 
     expect(received).toEqual(expected) -- deep equality
@@ -1078,7 +1466,7 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.553   FAIL  xstate-core/examples/6.9.spec
+  20:43:42.541   FAIL  xstate-core/examples/6.9.spec
   ● Example 6.9 › should go from {"A":"C"} to {"A":{"B":"E"}} on 4, 6, 1
 
     expect(received).toEqual(expected) -- deep equality
@@ -1118,7 +1506,7 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/id.spec
+  20:43:42.541   FAIL  xstate-core/id.spec
   ● State node IDs › should go from {"B":"foo"} to {"A":"foo"} on NEXT,NEXT
 
     expect(received).toEqual(expected) -- deep equality
@@ -1136,73 +1524,19 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
-  ● State node IDs › should work with keys that have escaped periods
-
-    Invalid transition definition for state node '(machine).start':
-
-      Error: Child state 'foo..bar' does not exist on '(machine)'
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:37
-      ReplicatedStorage.TS.include.RuntimeLib:209 function try
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:33
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:47 function resolveTarget
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransition:15 function formatTransition
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:19
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:22 function formatTransitions
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:121 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:139
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:142 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:106 function constructor
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:42 function new
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createMachine:49 function createMachine
-      ReplicatedStorage.TS.shared.xstate-core.id.spec:127
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
-  ● State node IDs › should work with IDs that have escaped periods
-
-    Child state node '#foo..bar' does not exist on machine '(machine)'
-
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:272 function getStateNodeById
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:23
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:47 function resolveTarget
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransition:15 function formatTransition
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:19
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:22 function formatTransitions
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:121 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:139
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:142 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:106 function constructor
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:42 function new
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createMachine:49 function createMachine
-      ReplicatedStorage.TS.shared.xstate-core.id.spec:158
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
   ● State node IDs › should not treat escaped backslash as period's escape
 
-    Child state node '#some\\' does not exist on machine '(machine)'
+    expect(received).toEqual(expected) -- deep equality
 
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:272 function getStateNodeById
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:23
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.resolveTarget:47 function resolveTarget
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransition:15 function formatTransition
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:19
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.utils.state.formatTransitions:22 function formatTransitions
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:121 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:139
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateNode:142 function _initialize
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:106 function constructor
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.StateMachine:42 function new
-      ReplicatedStorage.TS.node_modules.@rbxts.xstate-core.createMachine:49 function createMachine
-      ReplicatedStorage.TS.shared.xstate-core.id.spec:192
+      Expected: {"bar": "thing"}
+      Received: "foo"
+      ReplicatedStorage.TS.shared.xstate-core.id.spec:217
       ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/inspect.spec
+  20:43:42.541   FAIL  xstate-core/inspect.spec
   ● inspect › can inspect communications between actors
 
     expect(received).toEqual(expected) -- deep equality
@@ -1384,37 +1718,7 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.include.RuntimeLib:148
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/interpreter.spec 6.054 s
-  ● interpreter › .start() › should initialize the service
-
-    expect(jest.fn()).toHaveBeenCalled()
-
-      Expected number of calls: >= 1
-      Received number of calls:    0
-      ReplicatedStorage.TS.shared.xstate-core.interpreter.spec:1008
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
-  ● interpreter › .start() › should not reinitialize a started service
-
-    expect(jest.fn()).toHaveBeenCalledTimes(expected)
-
-      Expected number of calls: 1
-      Received number of calls: 0
-      ReplicatedStorage.TS.shared.xstate-core.interpreter.spec:1023
-      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
-      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
-
-  ● interpreter › .stop() › should not execute transitions after being stopped
-
-    Exceeded timeout of 5000 ms for a test.
-
-      Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.
-
-  -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/invoke.spec 7.002 s
+  20:43:42.541   FAIL  xstate-core/invoke.spec
   ● invoke › invoke config defined as src containing a machine directly should register unique and predictable child in state
 
     stack overflow
@@ -1423,12 +1727,371 @@ ReplicatedStorage.TS.include.RuntimeLib:148
 
   ● invoke › xstate.done.actor events should have unique names when invokee is a machine with an id property
 
-    Exceeded timeout of 5000 ms for a test.
+    expect(received).toEqual(expected) -- deep equality
 
-      Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.
+    - Expected  - 4
+    + Received  + 4
+
+      Table {
+        Table {
+
+      -     "actorId": "0.(machine).first.fetch",
+      -     "type": "xstate.done.actor.0.(machine).first.fetch",
+      -   },
+      -   Table {
+            "actorId": "0.(machine).second.fetch",
+            "type": "xstate.done.actor.0.(machine).second.fetch",
+      +   },
+      +   Table {
+      +     "actorId": "0.(machine).first.fetch",
+      +     "type": "xstate.done.actor.0.(machine).first.fetch",
+          },
+        }
+      ReplicatedStorage.TS.shared.xstate-core.invoke.spec:3172
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:353
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/logger.spec
+  20:43:42.541   FAIL  xstate-core/json.spec
+  ● json › should serialize the machine
+
+    expect(received).toMatchSnapshot()
+
+      Snapshot name: `json should serialize the machine 1`
+      New snapshot was not written. The update flag must be explicitly passed to write a new snapshot.
+      This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
+      Received:
+      {
+        "entry": {},
+        "exit": {},
+        "history": false,
+        "id": "(machine)",
+        "initial": {
+          "actions": {},
+          "source": "#(machine)",
+          "target": {
+            "#(machine).foo",
+          },
+        },
+        "invoke": {
+          {
+            "id": "invokeId",
+            "src": "invokeSrc",
+            "type": "xstate.invoke",
+          },
+        },
+        "key": "(machine)",
+        "on": {},
+        "order": -1,
+        "output": {
+          "result": 42,
+        },
+        "states": {
+          "bar": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).bar",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).bar",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "bar",
+            "on": {},
+            "order": 9,
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "atomic",
+            "version": "1.0.0",
+          },
+          "foo": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).foo",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).foo",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "foo",
+            "on": {},
+            "order": 10,
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "atomic",
+            "version": "1.0.0",
+          },
+          "testActions": {
+            "entry": {
+              {
+                "type": "stringActionType",
+              },
+              {
+                "type": "objectActionType",
+              },
+              {
+                "other": "any",
+                "type": "objectActionTypeWithExec",
+              },
+              {
+                "type": "function: 0x482990f9addccc58",
+              },
+              {
+                "type": "xstate.assign",
+              },
+              {
+                "type": "xstate.assign",
+              },
+              {
+                "type": "xstate.raise",
+              },
+            },
+            "exit": {
+              {
+                "type": "xstate.cancel",
+              },
+            },
+            "history": false,
+            "id": "(machine).testActions",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testActions",
+              "target": {},
+            },
+            "invoke": {
+              {
+                "id": "invokeId",
+                "src": "invokeSrc",
+                "type": "xstate.invoke",
+              },
+            },
+            "key": "testActions",
+            "on": {
+              "TO_FOO": {
+                {
+                  "actions": {},
+                  "eventType": "TO_FOO",
+                  "reenter": false,
+                  "source": "#(machine).testActions",
+                  "target": {
+                    "#(machine).foo",
+                    "#(machine).bar",
+                  },
+                },
+              },
+              "xstate.after.1000.(machine).testActions": {
+                {
+                  "actions": {},
+                  "delay": 1000,
+                  "event": "xstate.after.1000.(machine).testActions",
+                  "eventType": "xstate.after.1000.(machine).testActions",
+                  "reenter": false,
+                  "source": "#(machine).testActions",
+                  "target": {
+                    "#(machine).bar",
+                  },
+                },
+              },
+            },
+            "order": 6,
+            "states": {},
+            "tags": {},
+            "transitions": {
+              {
+                "actions": {},
+                "eventType": "TO_FOO",
+                "reenter": false,
+                "source": "#(machine).testActions",
+                "target": {
+                  "#(machine).foo",
+                  "#(machine).bar",
+                },
+              },
+              {
+                "actions": {},
+                "delay": 1000,
+                "event": "xstate.after.1000.(machine).testActions",
+                "eventType": "xstate.after.1000.(machine).testActions",
+                "reenter": false,
+                "source": "#(machine).testActions",
+                "target": {
+                  "#(machine).bar",
+                },
+              },
+            },
+            "type": "atomic",
+            "version": "1.0.0",
+          },
+          "testFinal": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).testFinal",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testFinal",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "testFinal",
+            "on": {},
+            "order": 8,
+            "output": {
+              "something": "else",
+            },
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "final",
+            "version": "1.0.0",
+          },
+          "testHistory": {
+            "entry": {},
+            "exit": {},
+            "history": "deep",
+            "id": "(machine).testHistory",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testHistory",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "testHistory",
+            "on": {},
+            "order": 7,
+            "states": {},
+            "tags": {},
+            "transitions": {},
+            "type": "history",
+            "version": "1.0.0",
+          },
+          "testParallel": {
+            "entry": {},
+            "exit": {},
+            "history": false,
+            "id": "(machine).testParallel",
+            "initial": {
+              "actions": {},
+              "source": "#(machine).testParallel",
+              "target": {},
+            },
+            "invoke": {},
+            "key": "testParallel",
+            "on": {},
+            "order": 1,
+            "states": {
+              "one": {
+                "entry": {},
+                "exit": {},
+                "history": false,
+                "id": "(machine).testParallel.one",
+                "initial": {
+                  "actions": {},
+                  "source": "#(machine).testParallel.one",
+                  "target": {
+                    "#(machine).testParallel.one.inactive",
+                  },
+                },
+                "invoke": {},
+                "key": "one",
+                "on": {},
+                "order": 2,
+                "states": {
+                  "inactive": {
+                    "entry": {},
+                    "exit": {},
+                    "history": false,
+                    "id": "(machine).testParallel.one.inactive",
+                    "initial": {
+                      "actions": {},
+                      "source": "#(machine).testParallel.one.inactive",
+                      "target": {},
+                    },
+                    "invoke": {},
+                    "key": "inactive",
+                    "on": {},
+                    "order": 3,
+                    "states": {},
+                    "tags": {},
+                    "transitions": {},
+                    "type": "atomic",
+                    "version": "1.0.0",
+                  },
+                },
+                "tags": {},
+                "transitions": {},
+                "type": "compound",
+                "version": "1.0.0",
+              },
+              "two": {
+                "entry": {},
+                "exit": {},
+                "history": false,
+                "id": "(machine).testParallel.two",
+                "initial": {
+                  "actions": {},
+                  "source": "#(machine).testParallel.two",
+                  "target": {
+                    "#(machine).testParallel.two.inactive",
+                  },
+                },
+                "invoke": {},
+                "key": "two",
+                "on": {},
+                "order": 4,
+                "states": {
+                  "inactive": {
+                    "entry": {},
+                    "exit": {},
+                    "history": false,
+                    "id": "(machine).testParallel.two.inactive",
+                    "initial": {
+                      "actions": {},
+                      "source": "#(machine).testParallel.two.inactive",
+                      "target": {},
+                    },
+                    "invoke": {},
+                    "key": "inactive",
+                    "on": {},
+                    "order": 5,
+                    "states": {},
+                    "tags": {},
+                    "transitions": {},
+                    "type": "atomic",
+                    "version": "1.0.0",
+                  },
+                },
+                "tags": {},
+                "transitions": {},
+                "type": "compound",
+                "version": "1.0.0",
+              },
+            },
+            "tags": {},
+            "transitions": {},
+            "type": "parallel",
+            "version": "1.0.0",
+          },
+        },
+        "tags": {},
+        "transitions": {},
+        "type": "compound",
+        "version": "1.0.0",
+      }
+      ReplicatedStorage.TS.shared.xstate-core.json.spec:109
+      ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
+      ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
+
+  -  Server - Writeable:33
+  20:43:42.542   FAIL  xstate-core/logger.spec
   ● logger › system logger should be default logger for actors (spawned from machine)
 
     expect.assertions(1)
@@ -1441,7 +2104,7 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/machine.spec
+  20:43:42.542   FAIL  xstate-core/machine.spec
   ● machine › machine.states › should properly register machine states
 
     expect(received).toEqual(expected) -- deep equality
@@ -1500,7 +2163,7 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/order.spec
+  20:43:42.542   FAIL  xstate-core/order.spec
   ● document order › should specify the correct document order for each state node
 
     expect(received).toEqual(expected) -- deep equality
@@ -1570,13 +2233,13 @@ ReplicatedStorage.TS.include.RuntimeLib:148
           "thirteen",
           13,
 
-      ReplicatedStorage.TS.shared.xstate-core.order.spec:90
+      ReplicatedStorage.TS.shared.xstate-core.order.spec:89
       ReplicatedStorage.TS.node_modules.@rbxts.JestLua.node_modules.@jsdotlua.jest-circus.src.circus.utils:367
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:172 function runExecutor
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/parallel.spec
+  20:43:42.542   FAIL  xstate-core/parallel.spec
   ● parallel states › should go from {"bold":"off","underline":"on","italics":"off","list":"bullets"} to {"bold":"on","underline":"on","italics":"on","list":"bullets"} on TOGGLE_BOLD, TOGGLE_ITALICS
 
     expect(received).toEqual(expected) -- deep equality
@@ -1599,7 +2262,7 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.node_modules.@rbxts.ReactLua.node_modules.@jsdotlua.promise.lib:299
 
   -  Server - Writeable:33
-  14:32:03.554   FAIL  xstate-core/rehydration.spec
+  20:43:42.542   FAIL  xstate-core/rehydration.spec
   ● rehydration › should be able to stop a rehydrated child
 
     expect(received).toBe(expected) -- Object.is equality
@@ -1610,12 +2273,18 @@ ReplicatedStorage.TS.include.RuntimeLib:148
       ReplicatedStorage.TS.include.RuntimeLib:148
 
   -  Server - Writeable:33
-  14:32:03.554    -  Server - Writeable:33
-  14:32:03.555  Test Suites: 13 failed, 46 passed, 59 total
-Tests:       22 failed, 177 skipped, 1160 passed, 1359 total
-Snapshots:   0 total
-Time:        21.919 s
+  20:43:42.542    -  Server - Writeable:33
+  20:43:42.542  Snapshot Summary  -  Server - Writeable:33
+  20:43:42.542   › 1 snapshot failed from 1 test suite. Inspect your code changes or re-run jest with `-u` to update them.  -  Server - Writeable:33
+  20:43:42.542   › 1 snapshot obsolete from 1 test suite. To remove it, re-run jest with `-u`.  -  Server - Writeable:33
+  20:43:42.543     ↳ xstate-core/json.spec  -  Server - Writeable:33
+  20:43:42.543       • json > should serialize the machine 1  -  Server - Writeable:33
+  20:43:42.543    -  Server - Writeable:33
+  20:43:42.543  Test Suites: 14 failed, 45 passed, 59 total
+Tests:       21 failed, 41 skipped, 1 todo, 1296 passed, 1359 total
+Snapshots:   1 failed, 1 obsolete, 1 total
+Time:        17.718 s
 Ran all test suites.  -  Server - Writeable:33
-  14:32:03.555  TestService.spec(-1): fatal TestService.spec:27: Tests failed!  -  Studio
-  14:32:03.555  TestService: Run completed, tests: 1, warns: 0, errors: 1  -  Studio
-  14:32:03.556  Rendering tests finished. 0 of 0 has passed.  -  Studio
+  20:43:42.543  TestService.spec(-1): fatal TestService.spec:27: Tests failed!  -  Studio
+  20:43:42.543  TestService: Run completed, tests: 1, warns: 0, errors: 1  -  Studio
+  20:43:42.545  Rendering tests finished. 0 of 0 has passed.  -  Studio

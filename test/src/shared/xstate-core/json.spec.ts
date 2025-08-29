@@ -3,6 +3,7 @@ import { Array, Object } from "@rbxts/luau-polyfill";
 import { HttpService } from "@rbxts/services";
 import { createMachine, assign } from "@rbxts/xstate";
 import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
+import { omit } from "@rbxts/xstate/out/utils/misc/omit";
 // import * as machineSchema from "@rbxts/xstate/out/machine.schema.json";
 
 // import Ajv from "ajv";
@@ -11,7 +12,7 @@ import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 // const validate = ajv.compile(machineSchema);
 
 describe("json", () => {
-	it.only("should serialize the machine", () => {
+	it("should serialize the machine", () => {
 		interface Context {
 			[key: string]: any;
 		}
@@ -97,6 +98,7 @@ describe("json", () => {
 		});
 
 		const json = JSON.parse(JSON.stringify(machine.getDefinition()));
+		expect(json).toMatchSnapshot();
 
 		/*
 		try {
@@ -105,11 +107,11 @@ describe("json", () => {
 			throw new Error(JSON.stringify(JSON.parse(err.message), undefined, 2));
 		}
 
-		expect(validate.errors).toBeundefined();
+		expect(validate.errors).toBeUndefined();
 		*/
 	});
 
-	it.skip("should detect an invalid machine", () => {
+	it("should detect an invalid machine", () => {
 		const invalidMachineConfig = {
 			id: "something",
 			key: "something",
@@ -118,7 +120,7 @@ describe("json", () => {
 		};
 
 		// validate(invalidMachineConfig);
-		// expect(validate.errors).never.toBeundefined();
+		// expect(validate.errors).never.toBeUndefined();
 	});
 
 	it("should not double-serialize invoke transitions", () => {
@@ -146,8 +148,7 @@ describe("json", () => {
 		const machineObject = JSON.parse(machineJSON);
 
 		const revivedMachine = createMachine(machineObject as never);
-
-		expect(Array.flat([...Object.values(revivedMachine.states.active!.transitions)])).toEqual([
+		const expectedTransitions = [
 			{
 				actions: [],
 				eventType: "EVENT",
@@ -155,16 +156,6 @@ describe("json", () => {
 				reenter: false,
 				source: "#active",
 				target: ["#(machine).foo"],
-				toJSON: `[Function]`,
-			},
-			{
-				actions: [],
-				eventType: "xstate.done.actor.0.active",
-				guard: undefined,
-				reenter: false,
-				source: "#active",
-				target: ["#(machine).foo"],
-				toJSON: `[Function]`,
 			},
 			{
 				actions: [],
@@ -173,9 +164,25 @@ describe("json", () => {
 				reenter: false,
 				source: "#active",
 				target: ["#(machine).bar"],
-				toJSON: `[Function]`,
 			},
+			{
+				actions: [],
+				eventType: "xstate.done.actor.0.active",
+				guard: undefined,
+				reenter: false,
+				source: "#active",
+				target: ["#(machine).foo"],
+			},
+		];
+
+		const actualTransitions = Array.flat([
+			...Object.values(revivedMachine.states.active!.transitions),
 		]);
+
+		actualTransitions.forEach((transition, index) => {
+			const expectedTransition = expectedTransitions[index];
+			expect(omit(transition.toJSON(), ["toJSON" as never])).toEqual(expectedTransition);
+		});
 
 		// 1. onDone
 		// 2. onError

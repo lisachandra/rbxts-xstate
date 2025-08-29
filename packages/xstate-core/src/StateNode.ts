@@ -48,11 +48,13 @@ const toSerializableAction = (action: UnknownAction) => {
 		if ("resolve" in action) {
 			return { type: (action as BuiltInAction).type };
 		}
+	}
+	if (typeIs(action, "function")) {
 		return {
-			type: action["name" as never],
+			type: `${action}`,
 		};
 	}
-	return `${action}`;
+	return action;
 };
 
 interface StateNodeOptions<TContext extends MachineContext, TEvent extends EventObject> {

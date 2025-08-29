@@ -3160,22 +3160,20 @@ describe("invoke", () => {
 
 		createActor(testMachine).start();
 
-		// check within a macrotask so all promise-induced microtasks have a chance to resolve first
-		setTimeout(() => {
-			expect(actual).toEqual([
-				{
-					type: "xstate.done.actor.0.(machine).first.fetch",
-					output: undefined,
-					actorId: "0.(machine).first.fetch",
-				},
-				{
-					type: "xstate.done.actor.0.(machine).second.fetch",
-					output: undefined,
-					actorId: "0.(machine).second.fetch",
-				},
-			]);
-			done();
-		}, 100);
+		task.wait(0.1);
+
+		expect(actual).toEqual([
+			{
+				type: "xstate.done.actor.0.(machine).first.fetch",
+				output: undefined,
+				actorId: "0.(machine).first.fetch",
+			},
+			{
+				type: "xstate.done.actor.0.(machine).second.fetch",
+				output: undefined,
+				actorId: "0.(machine).second.fetch",
+			},
+		]);
 	});
 
 	it("should get reinstantiated after reentering the invoking state in a microstep", () => {

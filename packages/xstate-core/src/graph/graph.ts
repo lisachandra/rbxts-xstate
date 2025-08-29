@@ -225,7 +225,7 @@ export function joinPaths<TSnapshot extends Snapshot<unknown>, TEvent extends Ev
 	return {
 		state: tailPath.state,
 		// e.g. [A, B, C] + [C, D, E] = [A, B, C, D, E]
-		steps: Array.concat(headPath.steps, Array.slice(tailPath.steps, 1)),
+		steps: Array.concat(headPath.steps, Array.slice(tailPath.steps, 1 + 1)),
 		weight: headPath.weight + tailPath.weight,
 	};
 }

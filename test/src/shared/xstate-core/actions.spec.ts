@@ -3220,8 +3220,10 @@ describe("sendTo", () => {
 
 		expect(warnSpy.mock.calls).toEqual([
 			[
-				`Event "PING" was sent to stopped actor "myChild (x:113)". This actor has already reached its final state, and will not transition.
-Event: {"type":"PING"}`,
+				"Custom actions should not call `sendTo()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+			],
+			[
+				`Event "PING" was sent to stopped actor "myChild (x:113)". This actor has already reached its final state, and will not transition.\nEvent: {"type":"PING"}`,
 			],
 		]);
 	});
@@ -3291,8 +3293,10 @@ Event: {"type":"PING"}`,
 
 		expect(warnSpy.mock.calls).toEqual([
 			[
-				`Event "PING" was sent to stopped actor "myChild (x:116)". This actor has already reached its final state, and will not transition.
-Event: {"type":"PING"}`,
+				"Custom actions should not call `sendTo()` directly, as it is not imperative. See https://stately.ai/docs/actions#built-in-actions for more details.",
+			],
+			[
+				`Event "PING" was sent to stopped actor "myChild (x:116)". This actor has already reached its final state, and will not transition.\nEvent: {"type":"PING"}`,
 			],
 		]);
 	});
@@ -4225,7 +4229,7 @@ describe("actions", () => {
 		});
 	});
 
-	it.only("should warn if called in custom action", () => {
+	it("should warn if called in custom action", () => {
 		const machine = createMachine({
 			entry: () => {
 				assign({});

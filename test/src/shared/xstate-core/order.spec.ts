@@ -72,7 +72,6 @@ describe("document order", () => {
 
 		const allStateNodeOrders = dfs(machine.root).map(sn => [sn.key, sn.order]);
 
-		print(allStateNodeOrders);
 		expect(allStateNodeOrders).toEqual([
 			["order", 0],
 			["one", 1],

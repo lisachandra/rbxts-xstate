@@ -12,7 +12,7 @@ local capableOfRunningReactTests = pcall(function() print(game:GetService("CoreG
 
 local status, result = Jest.runCLI(script, {
 	verbose = false,
-	ci = false,
+	ci = true,
 	setupFiles = { TestService.setup },
 	setupFilesAfterEnv = { TestService["setup-env"] },
 	snapshotFormat = {

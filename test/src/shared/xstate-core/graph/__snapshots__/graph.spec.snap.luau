@@ -1,6 +1,6 @@
 local exports = {}
 
-exports[`@xstate/graph > getPathFromEvents() > should return a path to the last entered state by the event sequence > path from events 1`] = [[
+exports[ [=[@xstate/graph > getPathFromEvents() > should return a path to the last entered state by the event sequence > path from events 1`]=] ] = [=[
 {
   "state": {
     "red": "flashing",
@@ -32,9 +32,9 @@ exports[`@xstate/graph > getPathFromEvents() > should return a path to the last 
     },
   ],
 }
-]]
+]=]
 
-exports[`@xstate/graph > getShortestPaths() > should return a mapping of shortest paths to all states (parallel) > shortest paths parallel 1`] = [[
+exports[ [=[@xstate/graph > getShortestPaths() > should return a mapping of shortest paths to all states (parallel) > shortest paths parallel 1`]=] ] = [=[
 [
   {
     "state": {
@@ -96,9 +96,9 @@ exports[`@xstate/graph > getShortestPaths() > should return a mapping of shortes
     ],
   },
 ]
-]]
+]=]
 
-exports[`@xstate/graph > getShortestPaths() > should return a mapping of shortest paths to all states > shortest paths 1`] = [[
+exports[ [=[@xstate/graph > getShortestPaths() > should return a mapping of shortest paths to all states > shortest paths 1`]=] ] = [=[
 [
   {
     "state": "green",
@@ -221,9 +221,9 @@ exports[`@xstate/graph > getShortestPaths() > should return a mapping of shortes
     ],
   },
 ]
-]]
+]=]
 
-exports[`@xstate/graph > getSimplePaths() > should return a mapping of arrays of simple paths to all states 2`] = [[
+exports[ [=[@xstate/graph > getSimplePaths() > should return a mapping of arrays of simple paths to all states 2`]=] ] = [=[
 [
   {
     "state": "green",
@@ -466,9 +466,9 @@ exports[`@xstate/graph > getSimplePaths() > should return a mapping of arrays of
     ],
   },
 ]
-]]
+]=]
 
-exports[`@xstate/graph > getSimplePaths() > should return a mapping of simple paths to all states (parallel) > simple paths parallel 1`] = [[
+exports[ [=[@xstate/graph > getSimplePaths() > should return a mapping of simple paths to all states (parallel) > simple paths parallel 1`]=] ] = [=[
 [
   {
     "state": {
@@ -559,9 +559,9 @@ exports[`@xstate/graph > getSimplePaths() > should return a mapping of simple pa
     ],
   },
 ]
-]]
+]=]
 
-exports[`@xstate/graph > getSimplePaths() > should return multiple paths for equivalent transitions > simple paths equal transitions 1`] = [[
+exports[ [=[@xstate/graph > getSimplePaths() > should return multiple paths for equivalent transitions > simple paths equal transitions 1`]=] ] = [=[
 [
   {
     "state": "a",
@@ -599,9 +599,9 @@ exports[`@xstate/graph > getSimplePaths() > should return multiple paths for equ
     ],
   },
 ]
-]]
+]=]
 
-exports[`@xstate/graph > getSimplePaths() > should return value-based paths > simple paths context 1`] = [[
+exports[ [=[@xstate/graph > getSimplePaths() > should return value-based paths > simple paths context 1`]=] ] = [=[
 [
   {
     "state": "start",
@@ -664,9 +664,9 @@ exports[`@xstate/graph > getSimplePaths() > should return value-based paths > si
     ],
   },
 ]
-]]
+]=]
 
-exports[`@xstate/graph > toDirectedGraph > should represent a statechart as a directed graph 1`] = [[
+exports[ [=[@xstate/graph > toDirectedGraph > should represent a statechart as a directed graph 1`]=] ] = [=[
 {
   "children": [
     {
@@ -757,9 +757,9 @@ exports[`@xstate/graph > toDirectedGraph > should represent a statechart as a di
   "edges": [],
   "id": "light",
 }
-]]
+]=]
 
-exports[`shortest paths for transition functions 1`] = [[
+exports[ [=[shortest paths for transition functions 1`]=] ] = [=[
 [
   {
     "state": 0,
@@ -1159,9 +1159,9 @@ exports[`shortest paths for transition functions 1`] = [[
     ],
   },
 ]
-]]
+]=]
 
-exports[`simple paths for transition functions 1`] = [[
+exports[ [=[simple paths for transition functions 1`]=] ] = [=[
 [
   {
     "state": 0,
@@ -1229,6 +1229,6 @@ exports[`simple paths for transition functions 1`] = [[
     ],
   },
 ]
-]]
+]=]
 
 return exports

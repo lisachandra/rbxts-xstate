@@ -491,13 +491,12 @@ describe("inspect", () => {
 			{
 				_transitions: [
 					{
-						// actions: [`[Function]`],
+						actions: [expect.any("table")],
 						eventType: "",
 						guard: undefined,
 						reenter: false,
 						source: "#(machine).counting",
 						target: undefined,
-						// toJSON: `[Function]`,
 					},
 				],
 				actorRef: {
@@ -526,13 +525,12 @@ describe("inspect", () => {
 			{
 				_transitions: [
 					{
-						// actions: [`[Function]`],
+						actions: [expect.any("table")],
 						eventType: "",
 						guard: undefined,
 						reenter: false,
 						source: "#(machine).counting",
 						target: undefined,
-						// toJSON: `[Function]`,
 					},
 				],
 				actorRef: {
@@ -561,13 +559,12 @@ describe("inspect", () => {
 			{
 				_transitions: [
 					{
-						// actions: [`[Function]`],
+						actions: [expect.any("table")],
 						eventType: "",
 						guard: undefined,
 						reenter: false,
 						source: "#(machine).counting",
 						target: undefined,
-						// toJSON: `[Function]`,
 					},
 				],
 				actorRef: {
@@ -598,11 +595,10 @@ describe("inspect", () => {
 					{
 						actions: [],
 						eventType: "",
-						// guard: `[Function]`,
+						// guard: expect.any("function"),
 						reenter: false,
 						source: "#(machine).counting",
 						target: ["#(machine).done"],
-						// toJSON: `[Function]`,
 					},
 				],
 				actorRef: {
