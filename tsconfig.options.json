@@ -21,7 +21,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"plugins": [],
 		"declaration": true,
-		"declarationMap": true,
+		"declarationMap": false,
 		"noEmitOnError": true,
 		"skipLibCheck": true
 	}

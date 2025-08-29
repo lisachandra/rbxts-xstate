@@ -11,6 +11,9 @@ local Jest = require(ReplicatedStorage.TS.node_modules["@rbxts"].jest.src)
 local capableOfRunningReactTests = pcall(function() print(game:GetService("CoreGui")) end)
 
 local status, result = Jest.runCLI(script, {
+	pretty = {
+		printBasicPrototype = false,
+	},
 	verbose = false,
 	ci = false,
 	setupFiles = { TestService.setup },

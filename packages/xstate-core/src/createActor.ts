@@ -8,6 +8,12 @@ import { reportUnhandledError } from "./utils/misc/reportUnhandledError";
 import Symbol from "./utils/polyfill/symbol";
 import { AnyActorSystem, Clock, createSystem } from "./createSystem";
 
+import type { fromObservable, fromEventObservable } from "./actors/observable";
+import type { fromCallback } from "./actors/callback";
+import type { fromPromise } from "./actors/promise";
+import type { fromTransition } from "./actors/transition";
+import type { createMachine } from "./createMachine";
+
 export let executingCustomAction: boolean = false;
 
 import type {
@@ -183,7 +189,11 @@ export class Actor<TLogic extends AnyActorLogic>
 					...(wildcardListener ? Object.keys(wildcardListener) : []),
 				];
 				for (const handler of allListeners) {
-					handler(emittedEvent);
+					try {
+						handler(emittedEvent);
+					} catch (err) {
+						reportUnhandledError(err);
+					}
 				}
 			},
 			actionExecutor: action => {

@@ -1,6 +1,5 @@
 // @ts-check
 import tseslint from "typescript-eslint";
-import tsparser from "@typescript-eslint/parser"
 import eslint from "@eslint/js";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import eslintPluginRoblox from "isentinel-eslint-plugin-roblox-ts";
@@ -18,7 +17,6 @@ export default tseslint.config(
 	},
 	{
 		languageOptions: {
-			parser: tsparser,
 			parserOptions: {
 				projectService: true,
 				tsconfigRootDir: import.meta.dirname,
@@ -97,12 +95,6 @@ export default tseslint.config(
 			"@typescript-eslint/no-floating-promises": "off",
 			"@typescript-eslint/no-unnecessary-type-assertion": "off",
 			"no-empty-pattern": "off",
-		},
-	},
-	{
-		files: ["packages/event-target/**"],
-		rules: {
-			"@typescript-eslint/no-unsafe-enum-comparison": "off",
 		},
 	},
 );

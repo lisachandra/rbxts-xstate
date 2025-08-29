@@ -137,14 +137,8 @@ describe("event emitter", () => {
 				type: "someEvent",
 			});
 		});
-		const err = await new Promise(res =>
-			actor.subscribe({
-				error: res,
-			}),
-		);
-
-		expect(err).toBeInstanceOf(Error);
-		expect((err as Error).message).toEqual("oops");
+		await new Promise(resolve => setTimeout(resolve, 10, undefined));
+		expect(actor.getSnapshot().status).toEqual("active");
 	});
 
 	it("dynamically emits events that can be listened to on actorRef.on(…)", async () => {

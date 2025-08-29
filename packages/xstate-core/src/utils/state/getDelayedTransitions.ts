@@ -34,7 +34,7 @@ export function getDelayedTransitions(
 		const resolvedTransition = typeIs(configTransition, "string")
 			? { target: configTransition }
 			: configTransition;
-		const resolvedDelay = Number.isNaN(tonumber(delay)) ? delay : (tonumber(delay) as number);
+		const resolvedDelay = Number.isNaN(tonumber(delay)) ? delay : tonumber(delay);
 		const eventType = mutateEntryExit(resolvedDelay);
 		return toArray(resolvedTransition).map(transition => ({
 			...transition,

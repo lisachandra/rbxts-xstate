@@ -1,4 +1,4 @@
-import { Error } from "@rbxts/luau-polyfill";
+import { Error, String } from "@rbxts/luau-polyfill";
 import {
 	InspectionEvent,
 	AnyEventObject,
@@ -10,7 +10,7 @@ import {
 	Subscription,
 } from "./types";
 import { toObserver } from "utils/misc/toObserver";
-import randomBase36String from "utils/polyfill/randomBase36String";
+import numberToString from "utils/polyfill/numberToString";
 
 interface ScheduledEvent {
 	id: string;
@@ -94,7 +94,13 @@ export function createSystem<T extends ActorSystemInfo>(
 	const { clock, logger } = options;
 
 	const scheduler: Scheduler = {
-		schedule: (source, target, event, delay, id = randomBase36String()) => {
+		schedule: (
+			source,
+			target,
+			event,
+			delay,
+			id = String.slice(numberToString(math.random(), 36), 2 + 1),
+		) => {
 			const scheduledEvent: ScheduledEvent = {
 				source,
 				target,

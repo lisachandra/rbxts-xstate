@@ -1,4 +1,4 @@
-import { beforeEach } from "@rbxts/jest-globals";
+import { beforeEach, describe, it, expect, jest, afterEach } from "@rbxts/jest-globals";
 
 import * as LuauPolyfill from "@rbxts/luau-polyfill";
 const { Error, Object, setTimeout } = LuauPolyfill;
@@ -6,8 +6,6 @@ const { Error, Object, setTimeout } = LuauPolyfill;
 beforeEach(() => {
 	jest.mock<typeof import("@rbxts/luau-polyfill")>(polyfillModule, () => LuauPolyfill);
 });
-
-import { describe, it, expect, jest, afterEach } from "@rbxts/jest-globals";
 
 import { EventTarget, Event } from "@rbxts/whatwg-event-target";
 import { getModuleByTree } from "test/utils";
@@ -17,12 +15,15 @@ import {
 	ActorLogicFrom,
 	ActorRefFrom,
 	AnyActor,
+	AnyEventObject,
 	assign,
 	createActor,
 	createMachine,
+	emit,
 	fromCallback,
 	fromPromise,
 	fromTransition,
+	setup,
 } from "@rbxts/xstate";
 
 const polyfillModule = getModuleByTree(...$getModuleTree("@rbxts/luau-polyfill"));
@@ -131,14 +132,15 @@ describe("error handling", () => {
 			},
 		});
 
+		// eslint-disable-next-line prefer-const
 		let actor: ActorRefFrom<typeof machine>;
-		installGlobalOnErrorHandler(async (_, ev) => {
+		installGlobalOnErrorHandler((_, ev) => {
 			ev.preventDefault();
 			expect(ev.error.message).toEqual(
 				"doesnt_crash_actor_when_error_is_thrown_in_subscribe",
 			);
 
-			await sleep(0);
+			sleep(0).await();
 
 			actor.send({ type: "do" });
 			expect(errorSpy).toHaveBeenCalledTimes(1);
@@ -965,5 +967,51 @@ Error: error_thrown_in_guard_when_transitioning`;
 			"message",
 			expectedErrorMessage,
 		);
+	});
+
+	it("actor continues to work normally after emit callback errors", async () => {
+		const machine = setup({
+			types: {
+				emitted: {} as { type: "emitted"; foo: string },
+			},
+		}).createMachine({
+			on: {
+				someEvent: {
+					actions: emit({ type: "emitted", foo: "bar" }),
+				},
+			},
+		});
+
+		const actor = createActor(machine).start();
+
+		let errorThrown = false;
+
+		actor.on("emitted", () => {
+			errorThrown = true;
+
+			throw new Error("oops");
+		});
+
+		// Send first event - should trigger error but actor should remain active
+
+		actor.send({ type: "someEvent" });
+
+		await new Promise(resolve => setTimeout(resolve, 10, undefined));
+
+		expect(errorThrown).toBe(true);
+
+		expect(actor.getSnapshot().status).toEqual("active");
+
+		// Send second event - should work normally without error
+
+		const event = await new Promise<AnyEventObject>(res => {
+			actor.on("emitted", res);
+
+			actor.send({ type: "someEvent" });
+		});
+
+		expect(event.foo).toBe("bar");
+
+		expect(actor.getSnapshot().status).toEqual("active");
 	});
 });

@@ -163,11 +163,10 @@ export class StateMachine<
 	}
 
 	/**
-	 * Clones this state machine with the provided implementations and merges
-	 * the `context` (if provided).
+	 * Clones this state machine with the provided implementations.
 	 *
-	 * @param implementations Options (`actions`, `guards`, `actors`, `delays`,
-	 *   `context`) to recursively merge with the existing options.
+	 * @param implementations Options (`actions`, `guards`, `actors`, `delays`)
+	 *   to recursively merge with the existing options.
 	 * @returns A new `StateMachine` instance with the provided implementations.
 	 */
 	public provide(
@@ -516,11 +515,58 @@ export class StateMachine<
 			children[actorId] = actorRef;
 		});
 
+		function resolveHistoryReferencedState(
+			root: StateNode<TContext, TEvent>,
+			referenced: { id: string } | StateNode<TContext, TEvent>,
+		) {
+			if (referenced instanceof StateNode) {
+				return referenced;
+			}
+			try {
+				return root.machine.getStateNodeById(referenced.id);
+			} catch {
+				if (isDevelopment) {
+					warn(`Could not resolve StateNode for id: ${referenced.id}`);
+				}
+			}
+		}
+
+		function reviveHistoryValue(
+			root: StateNode<TContext, TEvent>,
+			historyValue: Record<string, ({ id: string } | StateNode<TContext, TEvent>)[]>,
+		): HistoryValue<TContext, TEvent> {
+			if (!historyValue || !typeIs(historyValue, "table")) {
+				return {};
+			}
+			const revived: HistoryValue<TContext, TEvent> = {};
+			for (const [key] of pairs(historyValue)) {
+				const arr = historyValue[key];
+
+				for (const item of arr) {
+					const resolved = resolveHistoryReferencedState(root, item);
+
+					if (!resolved) {
+						continue;
+					}
+
+					revived[key] ??= [];
+					revived[key].push(resolved);
+				}
+			}
+			return revived;
+		}
+
+		const revivedHistoryValue = reviveHistoryValue(
+			this.root,
+			(snapshot as AnyObject).historyValue as any,
+		);
+
 		const restoredSnapshot = createMachineSnapshot(
 			{
 				...(snapshot as object),
 				children,
 				_nodes: [...getAllStateNodes(getStateNodes(this.root, snapshot["value" as never]))],
+				historyValue: revivedHistoryValue,
 			} as never,
 			this,
 		) as MachineSnapshot<

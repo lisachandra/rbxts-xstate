@@ -22,6 +22,7 @@ import type {
 	SnapshotStatus,
 	AnyObject,
 	AnyActor,
+	PersistedHistoryValue,
 } from "./types";
 import { matchesState } from "utils/misc/matchesState";
 import { omit } from "utils/misc/omit";
@@ -353,6 +354,24 @@ export function cloneMachineSnapshot<TState extends AnyMachineSnapshot>(
 	) as TState;
 }
 
+function serializeHistoryValue<TContext extends MachineContext, TEvent extends EventObject>(
+	historyValue: HistoryValue<TContext, TEvent>,
+): PersistedHistoryValue {
+	if (!typeIs(historyValue, "table") || historyValue === undefined) {
+		return {};
+	}
+	const result: PersistedHistoryValue = {};
+
+	for (const [key] of pairs(historyValue)) {
+		const value = historyValue[key];
+		if (Array.isArray(value)) {
+			result[key] = value.map(item => ({ id: item.id }));
+		}
+	}
+
+	return result;
+}
+
 export function getPersistedSnapshot<
 	TContext extends MachineContext,
 	TEvent extends EventObject,
@@ -410,6 +429,7 @@ export function getPersistedSnapshot<
 		...jsonValues,
 		context: persistContext(context) as any,
 		children: childrenJson,
+		historyValue: serializeHistoryValue<TContext, TEvent>(jsonValues.historyValue),
 	};
 
 	return persisted as any;

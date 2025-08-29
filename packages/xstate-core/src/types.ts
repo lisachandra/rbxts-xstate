@@ -10,6 +10,9 @@ import type { Guard, GuardPredicate, UnknownGuard } from "./guards";
 import type { Spawner } from "./createSpawner";
 import type { AnyActorSystem, Clock } from "./createSystem";
 
+// this is needed to make JSDoc `@link` work properly
+import type { SimulatedClock } from "./SimulatedClock";
+
 type PropertyKey = string | number | symbol;
 
 export type Identity<T> = { [K in keyof T]: T[K] };
@@ -1357,6 +1360,8 @@ export type HistoryValue<TContext extends MachineContext, TEvent extends EventOb
 	Array<StateNode<TContext, TEvent>>
 >;
 
+export type PersistedHistoryValue = Record<string, Array<{ id: string }>>;
+
 export type AnyHistoryValue = HistoryValue<any, any>;
 
 export type StateFrom<T extends AnyStateMachine | ((...args: any[]) => AnyStateMachine)> =
@@ -2548,7 +2553,7 @@ export interface InspectedSnapshotEvent extends BaseInspectionEventProperties {
 	snapshot: Snapshot<unknown>;
 }
 
-interface InspectedMicrostepEvent extends BaseInspectionEventProperties {
+export interface InspectedMicrostepEvent extends BaseInspectionEventProperties {
 	type: "@xstate.microstep";
 	event: AnyEventObject; // { type: string, ... }
 	snapshot: Snapshot<unknown>;

@@ -9,12 +9,13 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 import { createMachine, assign, fromPromise, Snapshot, InspectionEvent } from "@rbxts/xstate";
-import randomBase36String from "@rbxts/xstate/out/utils/polyfill/randomBase36String";
+import numberToString from "@rbxts/xstate/out/utils/polyfill/numberToString";
 import { screen, render, waitFor } from "@rbxts/react-testing-library";
 import { useSelector, createActorContext, shallowEqual } from "@rbxts/xstate-react";
 import * as React from "@rbxts/react";
 import RegExp from "@rbxts/regexp";
 import { fireClickEvent } from "./utils";
+import { String } from "@rbxts/luau-polyfill";
 
 describe("createActorContext", () => {
 	it("should work with useSelector", () => {
@@ -117,7 +118,10 @@ describe("createActorContext", () => {
 				},
 				PUSH: {
 					actions: assign(({ context }) => ({
-						arr: [...context.arr, randomBase36String()],
+						arr: [
+							...context.arr,
+							String.slice(numberToString(math.random(), 36), 2 + 1),
+						],
 					})),
 				},
 			},

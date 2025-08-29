@@ -8,8 +8,18 @@ import {
 	jest,
 	test,
 } from "@rbxts/jest-globals";
-import { assign, createActor, createMachine, fromCallback, fromPromise } from "@rbxts/xstate";
+import {
+	AnyObject,
+	assign,
+	createActor,
+	createMachine,
+	fromCallback,
+	fromPromise,
+	Snapshot,
+	StateNode,
+} from "@rbxts/xstate";
 import { trackEntries } from "./utils";
+import { JSON } from "@rbxts/xstate/out/utils/polyfill/json";
 
 describe("history states", () => {
 	it("should go to the most recently visited state (explicit shallow history type)", () => {
@@ -1361,6 +1371,126 @@ describe("multistage history states", () => {
 
 		expect(actorRef.getSnapshot().value).toEqual({
 			running: "turbo",
+		});
+	});
+});
+
+describe("revive history states", () => {
+	const machine = createMachine({
+		initial: "on",
+
+		states: {
+			on: {
+				initial: "first",
+
+				states: {
+					first: {
+						on: { SWITCH: "second" },
+					},
+
+					second: {},
+
+					hist: {
+						type: "history",
+					},
+				},
+
+				on: {
+					POWER: "off",
+				},
+			},
+
+			off: {
+				on: { POWER: "on.hist" },
+			},
+		},
+	});
+
+	const sourceRef = createActor(machine).start();
+
+	sourceRef.send({ type: "SWITCH" });
+
+	sourceRef.send({ type: "POWER" });
+
+	const persistedSnapshot: Snapshot<unknown> = JSON.parse(
+		JSON.stringify(sourceRef.getPersistedSnapshot()),
+	);
+
+	const snapshot = sourceRef.getSnapshot();
+
+	sourceRef.stop();
+
+	it("should restore from stringified snapshot", () => {
+		expect((persistedSnapshot as AnyObject).value).toBe("off");
+
+		const actorRef = createActor(machine, {
+			snapshot: persistedSnapshot,
+		}).start();
+
+		actorRef.send({ type: "POWER" });
+
+		expect(actorRef.getSnapshot().value).toEqual({ on: "second" });
+	});
+
+	it("should ignore unresolved ids as-is and log a warning", () => {
+		const warnSpy = jest.spyOn(jest.globalEnv, "warn");
+
+		const fakeSnapshot = {
+			...persistedSnapshot,
+
+			historyValue: { ["(machine).on.hist"]: [{ id: "nonexistent" }] },
+		};
+
+		expect((fakeSnapshot as AnyObject).value).toBe("off");
+
+		const actorRef = createActor(machine, {
+			snapshot: fakeSnapshot,
+		}).start();
+
+		actorRef.send({ type: "POWER" });
+
+		expect(warnSpy.mock.calls).toEqual(`
+			[
+				"Could not resolve StateNode for id/path: nonexistent"
+			]
+    	`);
+
+		expect(actorRef.getSnapshot().value).toEqual({ on: "first" });
+
+		expect((actorRef.getPersistedSnapshot() as AnyObject).historyValue).toEqual({});
+
+		warnSpy.mockReset();
+	});
+
+	it("should not re-resolve already-instantiated StateNode", () => {
+		expect(snapshot.value).toBe("off");
+
+		expect(snapshot.historyValue["(machine).on.hist"][0]).toBeInstanceOf(StateNode);
+
+		const actorRef = createActor(machine, {
+			snapshot,
+		}).start();
+
+		actorRef.send({ type: "POWER" });
+
+		expect(actorRef.getSnapshot().value).toEqual({ on: "second" });
+	});
+
+	it("should handle null, undefined, and primitive values", () => {
+		([undefined, undefined, 42, "foo", true, false] as Array<defined>).forEach(val => {
+			const fakeSnapshot = { ...persistedSnapshot, historyValue: val };
+
+			expect((fakeSnapshot as AnyObject).value).toBe("off");
+
+			const actorRef = createActor(machine, {
+				snapshot: fakeSnapshot,
+			}).start();
+
+			actorRef.send({ type: "POWER" });
+
+			expect(actorRef.getSnapshot().value).toEqual({ on: "first" });
+
+			expect((actorRef.getPersistedSnapshot() as AnyObject).historyValue).toEqual({});
 		});
 	});
 });

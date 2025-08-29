@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/xstate",
-	"version": "5.19.2-rc.2",
+	"version": "5.20.2",
 	"description": "Finite State Machines and Statecharts for the Modern Web. (Ported to Roblox-TS)",
 	"main": "out/init.luau",
 	"types": "out/index.d.ts",

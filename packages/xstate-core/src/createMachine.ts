@@ -1,6 +1,7 @@
 import { StateMachine } from "./StateMachine";
-import { ResolvedStateMachineTypes, TODO } from "./types";
 import {
+	ResolvedStateMachineTypes,
+	TODO,
 	AnyActorRef,
 	EventObject,
 	AnyEventObject,
