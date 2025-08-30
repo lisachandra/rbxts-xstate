@@ -33,7 +33,7 @@ export function useIdleActorRef<TLogic extends AnyActorLogic>(
 	if (logic.config !== currentConfig) {
 		const newActorRef = createActor(logic, {
 			...options,
-			snapshot: (actorRef.getPersistedSnapshot as Callback)({
+			snapshot: actorRef.getPersistedSnapshot({
 				__unsafeAllowInlineActors: true,
 			}),
 		});

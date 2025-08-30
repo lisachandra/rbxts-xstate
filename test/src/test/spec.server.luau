@@ -20,7 +20,7 @@ local status, result = Jest.runCLI(script, {
 	},
 }, {
 	ReplicatedStorage.TS.shared["xstate-core"],
-	-- capableOfRunningReactTests and ReplicatedStorage.TS.shared["xstate-react"] or nil,
+	capableOfRunningReactTests and ReplicatedStorage.TS.shared["xstate-react"] or nil,
 }):awaitStatus()
 
 if status == "Rejected" or result.results.numFailedTestSuites > 0 or result.results.numFailedTests > 0 then

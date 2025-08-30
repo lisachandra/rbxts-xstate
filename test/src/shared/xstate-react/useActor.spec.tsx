@@ -30,12 +30,13 @@ import {
 	fromCallback,
 	fromObservable,
 	fromPromise,
+	AnyActor,
 } from "@rbxts/xstate";
 import { useActor, useSelector } from "@rbxts/xstate-react";
 import { describeEachReactMode, fireClickEvent } from "./utils";
 import { sleep } from "test/env-utils";
 import { BehaviorSubjectStub } from "shared/xstate-core/utils";
-import { Error } from "@rbxts/luau-polyfill";
+import { Error, setTimeout } from "@rbxts/luau-polyfill";
 
 afterEach(() => {
 	jest.useRealTimers();
@@ -144,7 +145,9 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 	};
 
 	it("should work with the useActor hook", async () => {
-		render(<Fetcher onFetch={() => new Promise(res => res("fake data"))} />);
+		render(
+			<Fetcher onFetch={() => new Promise(res => setTimeout(() => res("fake data"), 100))} />,
+		);
 		const button: TextButton = screen.getByText("Fetch");
 		fireClickEvent(button);
 		screen.getByText("Loading...");
@@ -1023,7 +1026,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 				src: createMachine({
 					on: {
 						PING: {
-							actions: spy,
+							actions: [spy],
 						},
 					},
 				}),
@@ -1034,7 +1037,7 @@ describeEachReactMode("useActor (%s)", ({ suiteKey, render }) => {
 			const [_state, _send, actor] = useActor(m);
 
 			React.useEffect(() => {
-				((actor.system.get("child") as AnyObject).send as Callback)({ type: "PING" });
+				(actor.system.get("child") as AnyActor).send({ type: "PING" });
 			});
 
 			return <></>;

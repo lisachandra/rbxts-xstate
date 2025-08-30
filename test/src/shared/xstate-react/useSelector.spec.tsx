@@ -223,21 +223,25 @@ describeEachReactMode("useSelector (%s)", ({ suiteKey, render }) => {
 
 		// unchanged due to comparison function
 		fireClickEvent(sendSameButton);
+		task.wait();
 		expect(nameEl.Text).toEqual("david");
 		expect(changesEl.Text).toEqual("0");
 
 		// changed
 		fireClickEvent(sendOtherButton);
+		task.wait();
 		expect(nameEl.Text).toEqual("other");
 		expect(changesEl.Text).toEqual("1");
 
 		// changed
 		fireClickEvent(sendSameButton);
+		task.wait();
 		expect(nameEl.Text).toEqual("david");
 		expect(changesEl.Text).toEqual("2");
 
 		// unchanged due to comparison function
 		fireClickEvent(sendSameButton);
+		task.wait();
 		expect(nameEl.Text).toEqual("david");
 		expect(changesEl.Text).toEqual("2");
 	});
