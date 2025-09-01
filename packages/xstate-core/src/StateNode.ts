@@ -1,4 +1,4 @@
-import { Array, Error, Object } from "@rbxts/luau-polyfill";
+import { Array, Error, Number, Object } from "@rbxts/luau-polyfill";
 import { MachineSnapshot } from "./State";
 import type { StateMachine } from "./StateMachine";
 import { NULL_EVENT, STATE_DELIMITER } from "./constants";
@@ -31,12 +31,14 @@ import type {
 	ProvidedActor,
 	NonReducibleUnknown,
 	EventDescriptor,
+	AnyStateNode,
 } from "./types";
 import { is } from "utils/polyfill/is";
 import { mapValues } from "utils/misc/mapValues";
 import { toArray } from "utils/polyfill/array";
 import { toTransitionConfigArray } from "utils/misc/toTransitionConfigArray";
 import { createInvokeId } from "utils/misc/createInvokeId";
+import isDevelopment from "utils/polyfill/isDevelopment";
 
 const EMPTY_OBJECT = {};
 
@@ -55,6 +57,47 @@ const toSerializableAction = (action: UnknownAction) => {
 		};
 	}
 	return action;
+};
+
+const checkStateOrders = (node: AnyStateNode, key: string) => {
+	if (
+		isDevelopment &&
+		!(
+			"_order_" in node.config.states![key] &&
+			typeIs(node.config.states![key]["_order_"], "number")
+		)
+	) {
+		warn(`
+WARNING: XState state definition missing or has an invalid '_order_' property!
+This indicates a potential issue with your XState to Roblox-TS compilation.
+Without a numeric '_order_' property, Lua tables may not maintain the declared
+order of your states, which can lead to unexpected state machine behavior.
+
+To resolve this issue:
+1.  **Verify Transformer Setup:** Ensure your 'rbxts-transformer-xstate' TypeScript
+    transformer is correctly configured and actively running in your build pipeline.
+2.  **Add Tracking Comment:** If this is a custom machine definition, or if the
+    transformer is not automatically picking it up, add the comment
+    '// @xstate-track' directly above your 'createMachine' call
+    or relevant object literal declaration.
+3.  **Check State Structure:** Confirm that the 'states' object in your machine
+    definition directly contains valid object literals for each state.
+
+Node: ${node.path.join(".")} (${key})
+Stack Trace (from 'warn' call origin):
+${debug.traceback()}
+`);
+	}
+};
+
+const sortByOrder = (node: AnyStateNode, a: string, b: string) => {
+	const { _order_: aOrder } = node.config.states![a] as { _order_?: number };
+	const { _order_: bOrder } = node.config.states![b] as { _order_?: number };
+
+	checkStateOrders(node, a);
+	checkStateOrders(node, b);
+
+	return (aOrder ?? 0) < (bOrder ?? 0);
 };
 
 interface StateNodeOptions<TContext extends MachineContext, TEvent extends EventObject> {
@@ -176,14 +219,18 @@ export class StateNode<
 
 		this.states = (
 			this.config.states
-				? mapValues(this.config.states, (stateConfig: AnyStateNodeConfig, key) => {
-						const stateNode = new StateNode(stateConfig, {
-							_parent: this,
-							_key: key,
-							_machine: this.machine,
-						});
-						return stateNode;
-					})
+				? mapValues(
+						this.config.states,
+						(stateConfig: AnyStateNodeConfig, key) => {
+							const stateNode = new StateNode(stateConfig, {
+								_parent: this,
+								_key: key,
+								_machine: this.machine,
+							});
+							return stateNode;
+						},
+						(a, b) => sortByOrder(this, a, b),
+					)
 				: EMPTY_OBJECT
 		) as StateNodesConfig<TContext, TEvent>;
 
@@ -215,14 +262,17 @@ export class StateNode<
 			);
 		}
 
-		Object.keys(this.states).forEach(key => {
-			this.states[key]._initialize();
-		});
+		Object.keys(this.states)
+			.sort((a, b) => sortByOrder(this, a, b))
+			.forEach(key => {
+				this.states[key]._initialize();
+			});
 	}
 
 	/** The well-structured state node definition. */
 	public getDefinition(): StateNodeDefinition<TContext, TEvent> {
 		return {
+			["_order_" as never]: this["_order_" as never],
 			id: this.id,
 			key: this.key,
 			version: this.machine.version,
@@ -243,9 +293,13 @@ export class StateNode<
 					}
 				: undefined,
 			history: this.history,
-			states: mapValues(this.states, (state: StateNode<TContext, TEvent>) => {
-				return state.getDefinition();
-			}) as StatesDefinition<TContext, TEvent>,
+			states: mapValues(
+				this.states,
+				(state: StateNode<TContext, TEvent>) => {
+					return state.getDefinition();
+				},
+				(a, b) => sortByOrder(this, a, b),
+			) as StatesDefinition<TContext, TEvent>,
 			on: this.getOn(),
 			transitions: Array.flat([...Object.values(this.transitions)]).map(t => ({
 				...t,

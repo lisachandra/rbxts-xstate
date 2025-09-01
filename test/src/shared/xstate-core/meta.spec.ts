@@ -11,6 +11,7 @@ import {
 import { createMachine, createActor, setup } from "@rbxts/xstate";
 
 describe("state meta data", () => {
+	// @xstate-track
 	const pedestrianStates = {
 		initial: "walk",
 		states: {

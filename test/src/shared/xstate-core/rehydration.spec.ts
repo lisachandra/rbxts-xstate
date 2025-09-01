@@ -196,7 +196,7 @@ describe("rehydration", () => {
 			states: {
 				a: {
 					invoke: {
-						src: fromPromise(() => Promise.resolve(11)),
+						src: fromPromise(() => Promise.delay(0)),
 						onDone: "b",
 					},
 					on: {

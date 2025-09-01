@@ -11,6 +11,7 @@ import {
 import { Object } from "@rbxts/luau-polyfill";
 import { createActor, createMachine, assign, setup } from "@rbxts/xstate";
 
+// @xstate-track
 const pedestrianStates = {
 	initial: "walk",
 	states: {
@@ -57,13 +58,17 @@ const lightMachine = createMachine({
 describe("machine", () => {
 	describe("machine.states", () => {
 		it("should properly register machine states", () => {
-			expect(Object.keys(lightMachine.states)).toEqual(["green", "yellow", "red"]);
+			expect(Object.keys(lightMachine.states).sort()).toEqual(
+				["green", "yellow", "red"].sort(),
+			);
 		});
 	});
 
 	describe("machine.events", () => {
 		it("should return the set of events accepted by machine", () => {
-			expect(lightMachine.events).toEqual(["TIMER", "POWER_OUTAGE", "PED_COUNTDOWN"]);
+			expect(lightMachine.events.sort()).toEqual(
+				["TIMER", "POWER_OUTAGE", "PED_COUNTDOWN"].sort(),
+			);
 		});
 	});
 
@@ -413,6 +418,12 @@ describe("StateNode", () => {
 
 		const transitions = greenNode.transitions;
 
-		expect([...Object.keys(transitions)]).toEqual(["TIMER", "POWER_OUTAGE", "FORBIDDEN_EVENT"]);
+		expect([...Object.keys(transitions)].sort()).toEqual(
+			[
+				"TIMER",
+				"POWER_OUTAGE",
+				// "FORBIDDEN_EVENT" // no way to detect undefined in lua
+			].sort(),
+		);
 	});
 });

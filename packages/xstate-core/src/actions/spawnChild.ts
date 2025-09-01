@@ -52,7 +52,7 @@ function resolveSpawn(
 	},
 ): BuiltInActionResolution {
 	const logic = typeIs(src, "string") ? resolveReferencedActor(snapshot.machine, src) : src;
-	const resolvedId = typeIs(id, "function") ? id(actionArgs) : id;
+	const resolvedId = `${typeIs(id, "function") ? id(actionArgs) : id}`;
 	let actorRef: AnyActorRef | undefined;
 	let resolvedInput: unknown | undefined = undefined;
 

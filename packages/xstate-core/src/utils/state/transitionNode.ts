@@ -1,4 +1,4 @@
-import { Object } from "@rbxts/luau-polyfill";
+import { Array, Object } from "@rbxts/luau-polyfill";
 import type { MachineSnapshot } from "State";
 import {
 	MachineContext,
@@ -103,7 +103,7 @@ export function transitionParallelNode<TContext extends MachineContext, TEvent e
 		return stateNode.next(snapshot, event);
 	}
 
-	return allInnerTransitions;
+	return Array.sort(allInnerTransitions, (a, b) => a.source.order - b.source.order);
 }
 
 export function transitionAtomicNode<TContext extends MachineContext, TEvent extends EventObject>(

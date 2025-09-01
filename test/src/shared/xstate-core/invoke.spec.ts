@@ -3016,21 +3016,21 @@ describe("invoke", () => {
 		actor.start();
 	});
 
-	it.each([
-		["src with string reference", { src: "someSrc" }],
-		// ['machine', createMachine({ id: 'someId' })],
-		["src containing a machine directly", { src: createMachine({ id: "someId" }) }],
-		[
-			"src containing a callback actor directly",
-			{
-				src: fromCallback(() => {
-					/* ... */
-				}),
-			},
-		],
-	])(
-		"invoke config defined as %s should register unique and predictable child in state",
-		(_type, invokeConfig) => {
+	it("invoke config should register unique and predictable child in state", () => {
+		const testCases = [
+			["src with string reference", { src: "someSrc" }],
+			["src containing a machine directly", { src: createMachine({ id: "someId" }) }],
+			[
+				"src containing a callback actor directly",
+				{
+					src: fromCallback(() => {
+						/* ... */
+					}),
+				},
+			],
+		] as const;
+
+		for (const [_, invokeConfig] of testCases) {
 			const machine = createMachine(
 				{
 					id: "machine",
@@ -3051,14 +3051,14 @@ describe("invoke", () => {
 			);
 
 			expect(createActor(machine).getSnapshot().children["0.machine.a"]).toBeDefined();
-		},
-	);
-
+		}
+	});
 	// https://github.com/statelyai/xstate/issues/464
 	it("xstate.done.actor events should only select onDone transition on the invoking state when invokee is referenced using a string", (_, done) => {
 		let counter = 0;
 		let invoked = false;
 
+		// @xstate-track
 		const createSingleState = (): any => ({
 			initial: "fetch",
 			states: {
@@ -3077,8 +3077,8 @@ describe("invoke", () => {
 			{
 				type: "parallel",
 				states: {
-					first: createSingleState(),
-					second: createSingleState(),
+					first: { ...createSingleState() },
+					second: { ...createSingleState() },
 				},
 			},
 			{
@@ -3111,7 +3111,7 @@ describe("invoke", () => {
 		}, 0);
 	});
 
-	it("xstate.done.actor events should have unique names when invokee is a machine with an id property", (_, done) => {
+	it("xstate.done.actor events should have unique names when invokee is a machine with an id property", () => {
 		const actual: AnyEventObject[] = [];
 
 		const childMachine = createMachine({
@@ -3132,6 +3132,7 @@ describe("invoke", () => {
 			},
 		});
 
+		// @xstate-track
 		const createSingleState = (): any => ({
 			initial: "fetch",
 			states: {
@@ -3146,8 +3147,8 @@ describe("invoke", () => {
 		const testMachine = createMachine({
 			type: "parallel",
 			states: {
-				first: createSingleState(),
-				second: createSingleState(),
+				first: { ...createSingleState() },
+				second: { ...createSingleState() },
 			},
 			on: {
 				"*": {
@@ -3159,8 +3160,6 @@ describe("invoke", () => {
 		});
 
 		createActor(testMachine).start();
-
-		task.wait(0.1);
 
 		expect(actual).toEqual([
 			{

@@ -41,7 +41,7 @@ export function testMultiTransition(
 		return nextState;
 	};
 
-	const restEvents = eventTypes.split(",%s?");
+	const restEvents = eventTypes.gsub("%s", "")[0].split(",");
 	const firstEventType = restEvents.remove(0)!;
 
 	const resultState = restEvents.reduce<AnyMachineSnapshot>(
@@ -136,7 +136,7 @@ export class BehaviorSubjectStub<T> implements Subscribable<T> {
 		err: (err: any) => void = () => {},
 		complete: () => void = () => {},
 	): Subscription {
-		let observer: Observer<T> = toObserver(observerOrNext, err, complete);
+		const observer: Observer<T> = toObserver(observerOrNext, err, complete);
 
 		this._subscribers.push(observer);
 

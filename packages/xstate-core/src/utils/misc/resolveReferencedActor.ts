@@ -14,7 +14,7 @@ export function resolveReferencedActor(machine: AnyStateMachine, src: string) {
 	const invokeConfig = node.config.invoke!;
 	return (
 		(Array.isArray(invokeConfig)
-			? invokeConfig[tonumber(indexStr)!]
+			? invokeConfig[tonumber(indexStr)]
 			: invokeConfig) as InvokeConfig<
 			any,
 			any,

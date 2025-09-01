@@ -88,6 +88,9 @@ importers:
       pkg-up:
         specifier: ^3.1.0
         version: 3.1.0
+      rbxts-transformer-xstate:
+        specifier: 1.0.0
+        version: 1.0.0(typescript@5.5.3)
       roblox-ts:
         specifier: ^3.0.0
         version: 3.0.0
@@ -385,6 +388,11 @@ packages:
   pkg-up@3.1.0:
     resolution: {integrity: sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==}
     engines: {node: '>=8'}
+
+  rbxts-transformer-xstate@1.0.0:
+    resolution: {integrity: sha512-P6rChIdnRWIjYk9RcFtVJmwJHWrEUQWD6QHEyxZaDNCQ7ub5ljTXfwivngUrfC/CoSMJXLBnLYUX9N5Z+B7ZhQ==}
+    peerDependencies:
+      typescript: ^5.7.3
 
   readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
@@ -768,6 +776,10 @@ snapshots:
   pkg-up@3.1.0:
     dependencies:
       find-up: 3.0.0
+
+  rbxts-transformer-xstate@1.0.0(typescript@5.5.3):
+    dependencies:
+      typescript: 5.5.3
 
   readdirp@3.6.0:
     dependencies:

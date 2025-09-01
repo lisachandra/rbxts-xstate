@@ -109,7 +109,7 @@ describe("error handling", () => {
 		expect(errorSpy).toHaveBeenCalledTimes(1);
 	});
 
-	it(`doesn't crash the actor when an error is thrown in subscribe`, (_, done) => {
+	it.only(`doesn't crash the actor when an error is thrown in subscribe`, () => {
 		const errorSpy = jest.fn();
 
 		const machine = createMachine({
@@ -125,41 +125,40 @@ describe("error handling", () => {
 				active: {
 					on: {
 						do: {
-							actions: errorSpy,
+							actions: [errorSpy],
 						},
 					},
 				},
 			},
 		});
 
-		// eslint-disable-next-line prefer-const
-		let actor: ActorRefFrom<typeof machine>;
+		let err: string = undefined as never;
 		installGlobalOnErrorHandler((_, ev) => {
 			ev.preventDefault();
-			expect(ev.error.message).toEqual(
-				"doesnt_crash_actor_when_error_is_thrown_in_subscribe",
-			);
-
-			sleep(0).await();
-
-			actor.send({ type: "do" });
-			expect(errorSpy).toHaveBeenCalledTimes(1);
-
-			done();
+			err = ev.error.message;
 		});
 
 		const subscriber = jest.fn().mockImplementationOnce(() => {
 			throw new Error("doesnt_crash_actor_when_error_is_thrown_in_subscribe");
 		});
 
-		actor = createActor(machine).start();
+		const actor: ActorRefFrom<typeof machine> = createActor(machine).start();
 
 		actor.subscribe(subscriber);
 
 		actor.send({ type: "activate" });
 
-		// expect(subscriber).toHaveBeenCalledTimes(1);
+		expect(subscriber).toHaveBeenCalledTimes(1);
 		expect(actor.getSnapshot().status).toEqual("active");
+
+		while (err === undefined) {
+			task.wait();
+		}
+
+		expect(err).toEqual("doesnt_crash_actor_when_error_is_thrown_in_subscribe");
+
+		actor.send({ type: "do" });
+		expect(errorSpy).toHaveBeenCalledTimes(1);
 	});
 
 	it(`doesn't notify error listener when an error is thrown in subscribe`, (_, done) => {

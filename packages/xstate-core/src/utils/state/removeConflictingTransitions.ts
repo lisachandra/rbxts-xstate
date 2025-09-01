@@ -2,6 +2,7 @@ import { AnyTransitionDefinition, AnyStateNode, AnyHistoryValue } from "types";
 import { hasIntersection } from "utils/misc/hasIntersection";
 import { isDescendant } from "./isDescendant";
 import { computeExitSet } from "./computeExitSet";
+import { Array } from "@rbxts/luau-polyfill";
 
 export function removeConflictingTransitions(
 	enabledTransitions: Array<AnyTransitionDefinition>,
@@ -36,5 +37,5 @@ export function removeConflictingTransitions(
 		}
 	}
 
-	return [...filteredTransitions];
+	return Array.sort([...filteredTransitions], (a, b) => a.source.order - b.source.order);
 }

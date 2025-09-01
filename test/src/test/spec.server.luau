@@ -8,7 +8,11 @@ local TestService = game:GetService("TestService")
 
 local Jest = require(ReplicatedStorage.TS.node_modules["@rbxts"].jest.src)
 
-local capableOfRunningReactTests = pcall(function() print(game:GetService("CoreGui")) end)
+local capableOfRunningReactTests = pcall(function()
+	local a = game:GetService("CoreGui");
+	print(a);
+	assert(a ~= nil)
+end)
 
 local status, result = Jest.runCLI(script, {
 	verbose = false,

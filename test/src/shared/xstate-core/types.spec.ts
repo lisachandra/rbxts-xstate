@@ -457,8 +457,8 @@ describe("states", () => {
 			},
 			type: "parallel",
 			states: {
-				italic: italicState,
-				bold: boldState,
+				italic: { ...italicState },
+				bold: { ...boldState },
 			},
 		});
 	});

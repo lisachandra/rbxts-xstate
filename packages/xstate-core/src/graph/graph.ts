@@ -45,14 +45,23 @@ export function getStateNodes(stateNode: AnyStateNode | AnyStateMachine): AnySta
 	return nodes;
 }
 
+const sortByOrder = (node: AnyStateNode, a: string, b: string) => {
+	const { _order_: aOrder } = node.config.states![a] as { _order_?: number };
+	const { _order_: bOrder } = node.config.states![b] as { _order_?: number };
+
+	return (aOrder ?? 0) < (bOrder ?? 0);
+};
+
 function getChildren(stateNode: AnyStateNode): AnyStateNode[] {
 	if (!stateNode.states) {
 		return [];
 	}
 
-	const children = Object.keys(stateNode.states).map(key => {
-		return stateNode.states[key];
-	});
+	const children = Object.keys(stateNode.states)
+		.sort((a, b) => sortByOrder(stateNode, a, b))
+		.map(key => {
+			return stateNode.states[key];
+		});
 
 	return children;
 }

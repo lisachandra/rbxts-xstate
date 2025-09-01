@@ -7,7 +7,12 @@
 		"rootDir": "src",
 		"outDir": "out",
 		"declaration": false,
-		"declarationMap": false
+		"declarationMap": false,
+		"plugins": [
+			{
+				"transform": "rbxts-transformer-xstate"
+			}
+		]
 	},
 	"exclude": ["out"]
 }

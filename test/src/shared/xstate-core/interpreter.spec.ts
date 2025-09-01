@@ -708,6 +708,7 @@ describe("interpreter", () => {
 	});
 
 	it("should throw an error if initial state sent to interpreter is invalid", () => {
+		// @xstate-track
 		const invalidMachine = {
 			id: "fetchMachine",
 			initial: "create",

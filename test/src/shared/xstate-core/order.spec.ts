@@ -9,7 +9,13 @@ import {
 	test,
 } from "@rbxts/jest-globals";
 import { Array, Object } from "@rbxts/luau-polyfill";
-import { createMachine, StateNode } from "@rbxts/xstate";
+import { AnyStateNode, createMachine, StateNode } from "@rbxts/xstate";
+
+const sortByOrder = (node: AnyStateNode, a: string, b: string) => {
+	const { _order_: aOrder } = node.config.states![a] as { _order_: number };
+	const { _order_: bOrder } = node.config.states![b] as { _order_: number };
+	return aOrder < bOrder;
+};
 
 describe("document order", () => {
 	it("should specify the correct document order for each state node", () => {
@@ -66,7 +72,9 @@ describe("document order", () => {
 		function dfs(node: StateNode<any, any>): StateNode<any, any>[] {
 			return Array.flat([
 				node as any,
-				...Object.keys(node.states).map(key => dfs(node.states[key] as any)),
+				...Object.keys(node.states)
+					.sort((a, b) => sortByOrder(node, a, b))
+					.map(key => dfs(node.states[key] as any)),
 			]);
 		}
 
