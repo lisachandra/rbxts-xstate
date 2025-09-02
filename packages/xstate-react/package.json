@@ -49,7 +49,7 @@
 	},
 	"peerDependencies": {
 		"@rbxts/react": "^17.2.3",
-		"@rbxts/xstate": "^5.19.2-rc.1"
+		"@rbxts/xstate": "*"
 	},
 	"devDependencies": {
 		"@rbxts/compiler-types": "^3.0.0-types.0",

@@ -4,8 +4,7 @@ runs:
     steps:
         - name: Build
           run: |
-              pnpm build:packages
-              pnpm build:test
+              scripts/shell/ci-build.sh
           shell: bash
 
         - name: ESLint
