@@ -1,3 +1,4 @@
+/* eslint-disable roblox-ts/no-namespace-merging -- allowed */
 declare global {
 	export module "@rbxts/jest-globals" {
 		export declare namespace jest {
