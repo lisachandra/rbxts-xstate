@@ -1,24 +1,23 @@
 name: Node CI
 
 on:
-    push:
-        branches:
-            - main
-            - next
-    pull_request:
-        branches:
-            - "**"
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "**"
 
 permissions:
-    contents: read #  to fetch code (actions/checkout)
+  contents: read #  to fetch code (actions/checkout)
 
 jobs:
-    build:
-        timeout-minutes: 20
+  build:
+    timeout-minutes: 20
 
-        runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v4
-            - uses: ./.github/actions/ci-setup
-            - uses: ./.github/actions/ci-checks
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup.yml
+      - uses: ./.github/actions/checks.yml

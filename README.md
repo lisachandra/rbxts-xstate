@@ -4,9 +4,9 @@ This project provides a port of the [XState](https://stately.ai/docs) library us
 
 ## Packages
 
-- **@xstate/core (v5.20.2):** Fully ported and tested. Provides the core XState functionality for defining and managing state machines.
-- **@xstate/react (v5.0.3):** Fully ported and tested. Offers React hooks and utilities for integrating state machines with React.
-- **@xstate/test:** Ported but untested. Provides utilities for testing your state machines.
+- **@xstate/core**: Fully ported and tested. Provides the core XState functionality for defining and managing state machines.
+- **@xstate/react**: Fully ported and tested. Offers React hooks and utilities for integrating state machines with React.
+- **@xstate/test**: Ported but untested. Provides utilities for testing your state machines.
 
 ## Deviations and Limitations
 

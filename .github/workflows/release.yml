@@ -1,38 +1,52 @@
 name: Release
 
 on:
-    push:
-        branches:
-            - main
-            - next
+  push:
+    branches:
+      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions: {}
 
 jobs:
-    release:
-        permissions:
-            contents: write #  to create release (changesets/action)
-            issues: write # to post issue comments (changesets/action)
-            pull-requests: write #  to create pull request (changesets/action)
+  release:
+    permissions:
+      contents: write #  to create release (changesets/action)
+      issues: write # to post issue comments (changesets/action)
+      pull-requests: write #  to create pull request (changesets/action)
 
-        if: github.repository == 'lisachandra/rbxts-xstate'
+    if: github.repository == 'lisachandra/rbxts-xstate'
 
-        timeout-minutes: 20
+    timeout-minutes: 20
 
-        runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v4
-            - uses: ./.github/actions/ci-setup
-            - uses: ./.github/actions/ci-checks
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup.yml
+      - uses: ./.github/actions/checks.yml
 
-            - name: Create Release Pull Request or Publish to npm
-              uses: changesets/action@v1
-              with:
-                  publish: pnpm run release
-                  version: pnpm run version
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create Release Pull Request or Publish to npm
+        uses: changesets/action@v1
+        with:
+          publish: pnpm run release
+          version: pnpm run version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create roblox asset file
+        shell: bash
+        run: |
+          pnpm install
+          rojo sourcemap -o publish/sourcemap.json publish/default.project.json
+          pnpm build:transform publish/src/node_modules publish/sourcemap.json publish/src/include/RuntimeLib.luau
+          rojo build -o build/xstate.rbxm publish/default.project.json
+
+      - name: Upload release artifact
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          files: |
+            build/xstate.rbxm

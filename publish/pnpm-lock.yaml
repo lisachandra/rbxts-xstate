@@ -1,0 +1,65 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
+
+overrides:
+  typescript: ^5.7.3
+  roblox-ts@3.0.0>typescript: '=5.5.3'
+
+importers:
+
+  .:
+    dependencies:
+      '@rbxts/xstate':
+        specifier: workspace:^
+        version: file:../packages/xstate-core
+
+packages:
+
+  '@rbxts/luau-polyfill@1.1.3':
+    resolution: {integrity: sha512-HhTeV1aeCDrr6PoTCc0khnAAxyBcDm0iXeu/t7l96u2Mr1fyA+0ugZd66A1xpThZwz/7YbTSFpiFp5SIFeu2Ug==}
+
+  '@rbxts/regexp@0.2.1-ts.4':
+    resolution: {integrity: sha512-UGHGq9xJ86ObpfY4bKkOeoBSQz6GpCwhfYteoxh5M15QFNS1MG8Ut9BPp8m3r8VOKftk94yY5X0hZ1bKYm439g==}
+
+  '@rbxts/services@1.5.5':
+    resolution: {integrity: sha512-Hu7QH2ecefS60zpakKG3T2vgABydoOJqpSG7nXr59wFAbPk/cA+OcsntYPHUWyHAat0VFGZ5jNZLTLdiqfssvg==}
+
+  '@rbxts/whatwg-abort-controller@3.0.0-rc.3':
+    resolution: {integrity: sha512-nJpSnRf5sPJJlUa0Ntuch3ZCDRC0ocGp9q0QxIxZ+mMdlQqQ1feyVTwxrb3KYhKCIu4Aj3S2vpTQ0+54Gnm7oQ==}
+
+  '@rbxts/whatwg-event-target@6.0.2-rc.3':
+    resolution: {integrity: sha512-EN6oT7ObnzI9PYhJ489XmTvxjkDVbSji0trzIvARYjS244fwL195UNF0eP9MC+w/tG2r0cbdX5uohF/xinTpvA==}
+
+  '@rbxts/xstate@file:../packages/xstate-core':
+    resolution: {directory: ../packages/xstate-core, type: directory}
+
+snapshots:
+
+  '@rbxts/luau-polyfill@1.1.3': {}
+
+  '@rbxts/regexp@0.2.1-ts.4': {}
+
+  '@rbxts/services@1.5.5': {}
+
+  '@rbxts/whatwg-abort-controller@3.0.0-rc.3':
+    dependencies:
+      '@rbxts/luau-polyfill': 1.1.3
+      '@rbxts/services': 1.5.5
+      '@rbxts/whatwg-event-target': 6.0.2-rc.3
+
+  '@rbxts/whatwg-event-target@6.0.2-rc.3':
+    dependencies:
+      '@rbxts/luau-polyfill': 1.1.3
+      '@rbxts/services': 1.5.5
+
+  '@rbxts/xstate@file:../packages/xstate-core':
+    dependencies:
+      '@rbxts/luau-polyfill': 1.1.3
+      '@rbxts/regexp': 0.2.1-ts.4
+      '@rbxts/services': 1.5.5
+      '@rbxts/whatwg-abort-controller': 3.0.0-rc.3
+      '@rbxts/whatwg-event-target': 6.0.2-rc.3
