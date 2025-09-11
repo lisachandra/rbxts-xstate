@@ -2,6 +2,11 @@ name: "CI setup"
 runs:
   using: "composite"
   steps:
+    - name: Install cargo
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+
     - name: Install pnpm
       uses: pnpm/action-setup@v4
 

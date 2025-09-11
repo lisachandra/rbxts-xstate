@@ -24,8 +24,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup.yml
-      - uses: ./.github/actions/checks.yml
+      - uses: ./.github/actions/setup
+      - uses: ./.github/actions/checks
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
