@@ -4,7 +4,10 @@ runs:
   steps:
     - name: Build
       run: |
-        scripts/shell/ci-build.sh
+        for package in packages/*/; do
+          (cd "$package" && pnpm build && pnpm install)
+        done
+        pnpm build:test
       shell: bash
 
     - name: ESLint
