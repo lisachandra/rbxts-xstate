@@ -462,13 +462,10 @@ impl<'a> TSTransformer<'a> {
             return None;
         }
 
-        // Build the node_modules path: node_modules/@rbxts/package-name
-        let node_modules_path = format!("node_modules\\{}", module_path_parts.join("\\"));
+        // Build the node_modules path: node_modules.@rbxts.package-name
+        let node_modules_path = format!("node_modules.{}", module_path_parts.join("."));
 
-        let module_result = self.find_module_in_sourcemap(&node_modules_path);
-        let package_result = self.find_package_in_sourcemap(module_path_parts.last().expect(""));
-
-        if let Some(target_roblox_path) = module_result.or(package_result) {
+        if let Some(target_roblox_path) = self.find_package_in_sourcemap(&node_modules_path) {
             if
                 let Some(source_roblox_path) = self.sourcemap_data.fs_to_roblox.get(
                     self.current_fs_path
@@ -480,34 +477,10 @@ impl<'a> TSTransformer<'a> {
         None
     }
 
-    fn find_package_in_sourcemap(&self, package_name: &str) -> Option<String> {
-        let search_path = format!("node_modules.@rbxts.{}", package_name);
+    fn find_package_in_sourcemap(&self, package_path: &str) -> Option<String> {
         for (roblox_path, _fs_path) in &self.sourcemap_data.roblox_to_fs {
-            if roblox_path.ends_with(&search_path) {
+            if roblox_path.ends_with(&package_path) {
                 return Some(roblox_path.clone());
-            }
-        }
-        None
-    }
-
-    fn find_module_in_sourcemap(&self, search_path: &str) -> Option<String> {
-        // Search through the sourcemap for a matching file path
-        for (roblox_path, fs_path) in &self.sourcemap_data.roblox_to_fs {
-            let fs_path_str = fs_path.to_string_lossy();
-            if
-                fs_path_str.ends_with(search_path) ||
-                fs_path_str.ends_with(&format!("{}\\init.lua", search_path)) ||
-                fs_path_str.ends_with(&format!("{}\\init.luau", search_path))
-            {
-                return Some(roblox_path.clone());
-            }
-        }
-        for fs_path in &self.sourcemap_data.fs_projects {
-            let fs_path_str = fs_path.to_string_lossy();
-            if fs_path_str.contains(search_path) {
-                if let Some(roblox_path) = self.sourcemap_data.fs_to_roblox.get(fs_path) {
-                    return Some(roblox_path.clone());
-                }
             }
         }
         None
