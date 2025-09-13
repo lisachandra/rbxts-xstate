@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/lua,windows,visualstudiocode,react,jetbrains+all,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=lua,windows,visualstudiocode,react,jetbrains+all,linux
 
+publish/pnpm-lock.yaml
+
 /coverage-ts
 .VSCodeCounter
 *.env

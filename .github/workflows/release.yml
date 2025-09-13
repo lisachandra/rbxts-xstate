@@ -40,19 +40,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create roblox asset file
+      - name: Build roblox asset files
         shell: bash
         run: |
-          rm -rf publish/src/node_modules
-          pnpm install --filter publish
-          rojo sourcemap -o publish/sourcemap.json publish/default.project.json
-          pnpm build:transform publish/src/node_modules publish/sourcemap.json publish/src/include/RuntimeLib.luau
           mkdir build
-          rojo build -o build/xstate.rbxm publish/default.project.json
+          for package in packages/*/; do
+            package_name=$(jq -r .name "$package/package.json")
+            rm -rf publish/src/node_modules
+            pnpm add --filter publish --no-lockfile $package_name@workspace:^
+            rojo sourcemap -o publish/sourcemap.json publish/default.project.json
+            pnpm build:transform publish/src publish/sourcemap.json publish/src/include/RuntimeLib.luau
+            rojo build -o "build/${package_name//\//-}.rbxm" publish/default.project.json
+            pnpm remove --filter publish --no-lockfile $package_name
+          done
 
-      - name: Upload release artifact
-        uses: softprops/action-gh-release@v2
-        if: steps.changesets.outputs.published == 'true'
+      - name: Upload action artifacts
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            build/xstate.rbxm
+          name: build
+          path: build
