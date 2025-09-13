@@ -31,6 +31,7 @@ jobs:
       - uses: ./.github/actions/checks
 
       - name: Create Release Pull Request or Publish to npm
+        id: changesets
         uses: changesets/action@v1
         with:
           publish: pnpm run release
@@ -46,11 +47,12 @@ jobs:
           pnpm install --filter publish
           rojo sourcemap -o publish/sourcemap.json publish/default.project.json
           pnpm build:transform publish/src/node_modules publish/sourcemap.json publish/src/include/RuntimeLib.luau
+          mkdir build
           rojo build -o build/xstate.rbxm publish/default.project.json
 
       - name: Upload release artifact
         uses: softprops/action-gh-release@v2
-        if: github.ref_type == 'tag'
+        if: steps.changesets.outputs.published == 'true'
         with:
           files: |
             build/xstate.rbxm
