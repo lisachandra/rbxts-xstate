@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  CI: true
+
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions: {}
@@ -39,7 +42,8 @@ jobs:
       - name: Create roblox asset file
         shell: bash
         run: |
-          pnpm install
+          rm -rf publish/src/node_modules
+          pnpm install --filter publish
           rojo sourcemap -o publish/sourcemap.json publish/default.project.json
           pnpm build:transform publish/src/node_modules publish/sourcemap.json publish/src/include/RuntimeLib.luau
           rojo build -o build/xstate.rbxm publish/default.project.json
