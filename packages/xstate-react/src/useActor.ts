@@ -60,9 +60,15 @@ export function useActor<TLogic extends AnyActorLogic>(
 		};
 	}, [actorRef]);
 
-	return [
-		actorSnapshot,
+	// Memoize the send closure per actor ref: the hook previously returned a fresh
+	// `bind(false, actorRef.send, actorRef)` on every render, so any effect keyed on
+	// `[send, ...]` tore down and re-fired without bound on every snapshot-triggered
+	// re-render (unbounded CLOSE→notify→render→teardown→refire loop under the Roact 17
+	// mock scheduler; >4GB Studio wedge). Matches the existing getSnapshot/subscribe idiom.
+	const send = useCallback(
 		bind(false, actorRef["send"] as never, actorRef) as typeof actorRef.send,
-		actorRef,
-	];
+		[actorRef],
+	);
+
+	return [actorSnapshot, send, actorRef];
 }
